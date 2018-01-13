@@ -1,0 +1,86 @@
+﻿.accordionMenu {
+    border-radius: 4px
+}
+.accordionMenu h3 {
+    margin:0;
+    padding: 10px 0 10px 10px;
+    border-top: 1px solid #c0c0c0; 
+    border-left: 1px solid #c0c0c0; 
+    border-right: 1px solid #c0c0c0; 
+    font-weight: 400;       
+    cursor:pointer;
+    background:#f0f0f0;
+    color:#fff;
+    text-align:left;
+    font-size: 16px;
+    color: #222;
+}
+.accordionMenu, .accordionMenu ul, .accordionMenu a {
+    width: 220px
+}
+.accordionMenu h3.sel {
+    background: #dadada;
+    color: #666
+}
+.accordionMenu h3.sel i {
+    color: #dadada
+}
+
+.accordionMenu h3 i {
+    font-size: 13px;
+    vertical-align: middle;
+    padding: 4px 5px 0 0;
+    float: right;
+    color: #a0a0a0
+}
+.accordionMenu h3:hover, .accordionMenu ul a:hover {
+    background: #dadada
+}
+
+.accordionMenu > ul {
+    margin:0;
+    padding:0;
+}
+.accordionMenu > ul li {
+    list-style-type:none;
+    height: 38px
+}
+
+.accordionMenu > ul li a {
+  display: block;
+  padding: 8px 0 0 6px;
+  height: 39px;
+  color: #333;
+  text-decoration: none;
+  background:#fafafa;
+  border: 1px solid #c0c0c0; 
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.accordionMenu > ul li a.isRead {
+    color: #909090;
+}
+.accordionMenu > ul li.isRead a {
+    color: #909090;
+}
+.accordionMenu > ul li a:hover {
+    background: #c9e9f7
+}
+
+.accordionMenu .current {
+    background: #c9e9f7;
+    font-weight: bold;
+}
+.factMenu h2 {
+    font-size: 22px;
+    margin-bottom: 6px;
+    width: 220px;
+}
+.factMenu h2 .status {
+    font-size: 15px;
+    padding: 5px 0 0 0;
+    vertical-align: middle;
+    float: right;
+    font-weight: normal;
+    color: #707070
+}

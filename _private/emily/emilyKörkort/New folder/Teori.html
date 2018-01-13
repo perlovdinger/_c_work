@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://www.ktponline.se/User/Theory -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+    <link href="./Teori_files/CSS" rel="stylesheet">
+
+    
+        <meta name="viewport" content="width=1150px">
+
+    <script type="text/javascript" src="./Teori_files/jquery-1.9.1.min.js.ladda ned"></script>
+    
+    <link href="./Teori_files/CSS(1)" rel="stylesheet" type="text/css">
+    <title>Teori</title>
+    <link rel="icon" href="http://www.ktponline.se/img/favicon.ico">
+</head>
+<body ondragstart="return false" onselectstart="return false">    
+    <div class="bgMainWrapper stdColor">
+        <div class="topWrapper">
+            <div class="centerWrapper">
+                <div class="masterUserHeader">
+                    <div class="logo">
+                        <a href="http://www.ktponline.se/User">
+                            <img alt="Logo" src="./Teori_files/iconKorkortsteoriS.png">
+                        </a>
+                        <p class="logoText">
+                            KTPOnline <span>B-Bil</span>
+                        </p>
+                    </div>
+                    <div class="rightMenu" style="float:right">
+                        <div class="accInfo">
+                            Behörighet: <strong>B-Bil</strong>
+                            <span style="padding-left: 15px">Konto giltigt till: <strong>2017-05-19</strong></span>
+                            <div class="settingsLink">
+                                <a href="http://www.ktponline.se/User"><i class="fa fa-home"></i> Huvudmeny</a>
+                                    <a id="txtPopup" onclick="ShowNotePopup();"><i class="fa fa-pencil-square-o"></i> Anteckningar</a>
+                                <div class="popupWrapper" style="left: 942.578px;">
+                                    <div class="popupBoxTriangle"></div>
+                                    <div class="notePopup">
+                                        <p style="margin-bottom: 5px">Anteckningar <span class="close" onclick="CloseNotePopup()">Stäng <i class="fa fa-times-circle"></i></span></p>
+                                        <textarea maxlength="500" id="txtNotes"></textarea><br>
+                                        <button id="btnSaveNote" class="blueBtn" onclick="SaveNotes();">Spara</button>
+                                        <img id="popupLoader" style="display: none" src="./Teori_files/loading2.gif">
+                                        <p id="savePopupStatus" style="display: inline-block; color: #1b9c0d"><i class="fa fa-check" style="color: #1b9c0d; margin: 0 3px 0 6px; font-size: 18px"></i>Sparat</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="logoutWrapper">
+                            <img style="vertical-align: middle; padding: 0 4px 3px 0" src="./Teori_files/iconUser.png">
+                                <span style="font-weight: bold; color: #fff">uluf5894</span>
+                                                            <div class="logout">
+                                    <form method="post" id="frmLogoutTop" action="http://www.ktponline.se/User/Logout">
+                                        <a onclick="$(&#39;#frmLogoutTop&#39;).submit();"><i class="fa fa-sign-out"></i> Logga ut </a>
+                                    </form>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="mobBars" onclick="ShowMobMenu();">
+                        <i class="fa fa-bars"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mobMenu">
+            <form method="post" id="frmLogoutTopMob" action="http://www.ktponline.se/User/Logout">
+                <a onclick="$(&#39;#frmLogoutTopMob&#39;).submit();" class="mobLogout"><i class="fa fa-sign-out"></i> Logga ut </a>
+            </form>
+            <a href="http://www.ktponline.se/User"><i class="fa fa-home"></i> Huvudmeny</a>
+                <a id="txtPopup" onclick="ShowNotePopup();"><i class="fa fa-pencil-square-o"></i> Anteckningar</a>
+                    </div>
+
+        <div class="centerWrapper">
+            <div class="contentWrapper">
+                
+<script src="./Teori_files/leanModal.js.ladda ned"></script>
+<script>
+    var berigLetter = "B";
+    var headerNum = 1;
+    var index = 0; 
+    var grpCount = 0;
+
+    var FactNameSegments = "factSegments";
+    var FactNameTopics = "factTopics";
+
+    $(function () {
+        $("#btnResetStats").leanModal({ top: 200, overlay: 0.6, closeButton: ".modal_close" });
+        $("#leftmenu ul").hide();
+        $("#leftmenu h3").click(function () {
+            var $this = $(this);
+            $("#leftmenu h3").removeClass("sel");
+            $this.addClass("sel");
+            $this.next("ul").siblings("ul").slideUp();
+            $this.next("ul").find("ul").slideUp();
+            $this.next().slideToggle(300);
+        });
+        $("#leftmenu ul li a").click(function () {
+            var $this = $(this);
+            $("#leftmenu ul li a").removeClass("current");
+            $this.addClass("current");
+        });
+
+        $("#leftMenuBottom ul").hide();
+        $("#leftMenuBottom h3").click(function () {
+            var $this = $(this);
+            $("#leftMenuBottom h3").removeClass("sel");
+            $this.addClass("sel");
+            $this.next("ul").siblings("ul").slideUp();
+            $this.next("ul").find("ul").slideUp();
+            $this.next().slideToggle(300);
+        });
+        $("#leftMenuBottom ul li a").click(function () {
+            var $this = $(this);
+            $("#leftMenuBottom ul li a").removeClass("current");
+            $this.addClass("current");
+        });
+        GetStats();
+    });
+    function GetStats() {
+        if (typeof (Storage) !== "undefined") {
+            var factSegments = window.localStorage.FactNameSegments; 
+            var factTopics = window.localStorage.FactNameTopics;
+
+            if (factSegments == null) {
+                window.localStorage.FactNameSegments = [];
+                factSegments = [];
+            }
+            if (factTopics == null) {
+                window.localStorage.FactNameTopics = [];
+                factTopics = [];
+            }
+            
+            $("#countFactSegmentsTotal").html($("#leftmenu li").length);
+            $("#countFactTopicsTotal").html($("#leftMenuBottom li").length);
+
+            if (factSegments.length > 1) {
+                var elems = $("#leftmenu li a");
+                if (elems != null && elems.length > 0) {
+                    for (i = 0; i < elems.length; i++) {
+                        if (factSegments.indexOf($(elems[i]).data("id")) >= 0) {
+                            //console.log("Is Read: " + $(elems[i]).data("id"));
+                            $(elems[i]).addClass("isRead");
+                        }
+                    }
+                }
+            }
+            if (factTopics.length > 1) {
+                var elems = $("#leftMenuBottom li");
+                if (elems != null && elems.length > 0) {
+                    for (i = 0; i < elems.length; i++) {
+                        if (factTopics.indexOf($(elems[i]).data("index")) >= 0) {
+                            $(elems[i]).addClass("isRead");
+                        }
+                    }
+                }
+            }
+            UpdateStats();          
+        }
+    }   
+
+    function UpdateStats() {
+        var factSegments = window.localStorage.FactNameSegments.split(",");
+        var factTopics = window.localStorage.FactNameTopics.split(",");
+        //console.log(factTopics);
+        //console.log(factSegments);
+        $("#countFactSegmentsDone").html(factSegments.length - 1);
+        $("#countFactTopicsDone").html(factTopics.length - 1);
+    }
+
+    function ShowCategory(num) {
+        $("#divTheory").hide();
+        $("#textTheory").hide();
+        if (num == 1) {
+            $("#textTheory").show();
+        }
+        if (num == 2) {
+            $("#divTheory").show();
+        }
+    }
+</script>
+
+<style type="text/css">
+    .factLeftMenu { width: 240px; display: inline-block; vertical-align: top }
+    .topButtons { display: block; padding-top: 15px; margin-top: 5px; border-top: 2px solid #e0e0e0 }
+    .topButtons button { min-width: 160px; padding: 7px; font-size: 15px; margin: 0 10px 0 0; display: inline-block }
+    .topButtons button i { color: #7d7d7d }
+    @media (max-width: 768px) {
+    .topButtons button { margin-bottom: 15px } 
+    }
+</style>
+<link href="./Teori_files/sidebar-menu.css" rel="stylesheet">
+
+
+<input id="isact" type="hidden" value="1">
+<div style="margin-top: 30px">
+    <h2 style="display: inline-block"><i class="fa fa-book" style="color: #2493C5; padding-right: 8px"></i>Teori</h2>
+    <button type="button" class="silverBtn" onclick="window.history.back()" style="display: inline-block; vertical-align:middle; margin: 0 0 13px 20px"><i style="color: #404040" class="fa fa-chevron-left"></i> Tillbaka</button>
+    <div class="topButtons">
+        <button type="button" class="silverBtn" onclick="ShowCategory(1);"><i class="fa fa-file-text"></i> Avsnitt</button>
+        <button type="button" class="silverBtn" onclick="location.href = &#39;/User/SakB&#39;"><i class="fa fa-list-ul"></i> Säkerhetskontrollen</button>
+        <button type="button" class="silverBtn" onclick="location.href = &#39;/User/Vm&#39;"><i class="fa fa-exclamation-triangle"></i> Vägmärken</button>
+        <button type="button" class="silverBtn" onclick="location.href= &#39;/User/Vmtest&#39;"><i class="fa fa-info-circle"></i> Vägmärkestest</button>
+    </div>
+</div>
+<div class="contentBox" id="textTheory" style="">
+        <div class="factLeftMenu">
+            <div class="factMenu">
+                <h2>Avsnitt <span class="status">(<span id="countFactSegmentsDone">1</span> / <span id="countFactSegmentsTotal">41</span>)</span></h2>
+                <div class="accordionMenu" id="leftmenu">
+                    <h3 class="sel">Om körkortet<i class="fa fa-chevron-right"></i></h3>
+                    <ul style="display: block;">
+                        <li><a title="Körkortsbehörigheter" data-id="1" onclick="GetFact(this,&#39;behörigheter&#39;);">Behörigheter</a></li>
+                        <li><a title="Ta körkort" data-id="2" onclick="GetFact(this,&#39;ta-körkort&#39;);">Ta körkort</a></li>
+                        <li><a title="Körkort med vilkor" data-id="3" onclick="GetFact(this,&#39;körkort-med-villkor&#39;);">Körkort med villkor</a></li>
+                        <li><a title="Återkallat körkort" data-id="4" onclick="GetFact(this,&#39;körkortsåterkallelse&#39;);">Körkortsåterkallelse</a></li>
+                    </ul>
+                    <h3 class="">Trafikregler<i class="fa fa-chevron-right"></i></h3>
+                    <ul style="display: none;">
+                        <li><a title="Att svänga" data-id="5" onclick="GetFact(this,&#39;att-svänga&#39;);" class="isRead current">Att svänga</a></li>
+                        <li><a title="Avstånd" data-id="6" onclick="GetFact(this,&#39;avstånd&#39;);">Avstånd mellan fordon</a></li>
+                        <li><a title="Backa &amp; Vända" data-id="7" onclick="GetFact(this,&#39;backa-vända&#39;);">Backa &amp; Vända</a></li>
+                        <li><a title="Barn i trafiken" data-id="8" onclick="GetFact(this,&#39;barn-i-trafiken&#39;);">Barn i trafiken</a></li>
+                        <li><a title="Cirkulationsplatser" data-id="9" onclick="GetFact(this,&#39;cirkulationsplatser&#39;);">Cirkulationsplatser</a></li>
+                        <li><a title="Grundregeln" data-id="10" onclick="GetFact(this,&#39;grundregeln&#39;);">Grundregeln</a></li>
+                        <li><a title="Gågata" data-id="11" onclick="GetFact(this,&#39;gågata&#39;);">Gågata</a></li>
+                        <li><a title="Hastigheter" data-id="12" onclick="GetFact(this,&#39;hastigheter&#39;);">Hastigheter</a></li>
+                        <li><a title="Högerregeln" data-id="13" onclick="GetFact(this,&#39;högerregeln&#39;);">Högerregeln</a></li>
+                        <li><a title="Järnvägskorsningar" data-id="14" onclick="GetFact(this,&#39;järnvägskorsningar&#39;);">Järnvägskorsningar</a></li>
+                        <li><a title="Köra på landsväg" data-id="15" onclick="GetFact(this,&#39;köra-på-landsväg&#39;);">Köra på landsväg</a></li>
+                        <li><a title="Körfältsbyte" data-id="16" onclick="GetFact(this,&#39;körfältsbyte&#39;);">Körfältsbyte</a></li>
+                        <li><a title="Mörkerkörning" data-id="17" onclick="GetFact(this,&#39;mörkerkörning&#39;);">Mörkerkörning</a></li>
+                        <li><a title="Omkörning" data-id="18" onclick="GetFact(this,&#39;omkörning&#39;);">Omkörning</a></li>
+                        <li><a title="Stanna och parkera" data-id="19" onclick="GetFact(this,&#39;stanna-parkera&#39;);">Stanna &amp; Parkera</a></li>
+                        <li><a title="Tecken &amp; signaler" data-id="20" onclick="GetFact(this,&#39;tecken-signaler&#39;);">Tecken &amp; signaler</a></li>
+                        <li><a title="Utfartsregeln" data-id="21" onclick="GetFact(this,&#39;utfartsregeln&#39;);">Utfartsregeln</a></li>
+                        <li><a title="Vägren" data-id="22" onclick="GetFact(this,&#39;vägren&#39;);">Vägren</a></li>
+                        <li><a title="Vägmarkeringar" data-id="23" onclick="GetFact(this,&#39;vägmarkeringar&#39;);">Vägmarkeringar</a></li>
+                        <li><a title="Väjningsplikt" data-id="24" onclick="GetFact(this,&#39;väjningsplikt&#39;);">Väjningsplikt</a></li>
+                        <li><a title="Övergångsställen" data-id="25" onclick="GetFact(this,&#39;övergångsställen&#39;);">Övergångsställen</a></li>
+                    </ul>
+                    <h3>Föraren<i class="fa fa-chevron-right"></i></h3>
+                    <ul style="display: none;">
+                        <li><a title="Alkohol" data-id="26" onclick="GetFact(this,&#39;alkohol&#39;);">Alkohol</a></li>
+                        <li><a title="Böter" data-id="27" onclick="GetFact(this,&#39;böter&#39;);">Böter</a></li>
+                        <li><a title="Om att bli fartblind" data-id="28" onclick="GetFact(this,&#39;fartblind&#39;);">Fartblindhet</a></li>
+                        <li><a title="Halt väglag" data-id="29" onclick="GetFact(this,&#39;halt-väglag&#39;);">Halt väglag</a></li>
+                        <li><a title="Köra med mediciner" data-id="31" onclick="GetFact(this,&#39;mediciner&#39;);">Mediciner</a></li>
+                        <li><a title="Körkort och syn" data-id="32" onclick="GetFact(this,&#39;synen&#39;);">Synen</a></li>
+                        <li><a title="Trafikolyckor" data-id="33" onclick="GetFact(this,&#39;trafikolyckor&#39;);">Trafikolyckor</a></li>
+                        <li><a title="Viltolyckor" data-id="34" onclick="GetFact(this,&#39;viltolyckor&#39;);">Viltolyckor</a></li>
+                    </ul>
+                        <h3>Miljö<i class="fa fa-chevron-right"></i></h3>
+                    <ul style="display: none;">
+                        <li><a title="Körteknik" data-id="35" onclick="GetFact(this,&#39;körteknik&#39;);">Körteknik</a></li>
+                        <li><a title="Miljöklasser" data-id="36" onclick="GetFact(this,&#39;miljöklasser&#39;);">Miljöklasser</a></li>
+                        <li><a title="Avgaser och ämnen" data-id="37" onclick="GetFact(this,&#39;ämnen&#39;);">Ämnen</a></li>
+                    </ul>
+                        <h3 style="border-bottom: 1px solid #c0c0c0">Fordonet<i class="fa fa-chevron-right"></i></h3>
+                        <ul style="display: none;">
+                            <li><a title="Bil och mc belysning" data-id="38" onclick="GetFact(this,&#39;belysning&#39;);">Belysning</a></li>
+                            <li><a title="Bil bromsar" data-id="39" onclick="GetFact(this,&#39;bromsar&#39;);">Bromsar</a></li>
+                            <li><a title="Däck" data-id="40" onclick="GetFact(this,&#39;Däck&#39;);">Däck</a></li>
+                            <li><a title="Fordon försäkring" data-id="41" onclick="GetFact(this,&#39;försäkring&#39;);">Försäkring</a></li>
+                            <li><a title="Bil Köregenskaper" data-id="42" onclick="GetFact(this,&#39;köregenskaper&#39;);">Köregenskaper</a></li>
+                        </ul>
+                                    </div>
+            </div>
+            <div class="factMenu">
+                <h2 style="margin: 15px 0 6px 0">Ämnen <span class="status">(<span id="countFactTopicsDone">0</span> / <span id="countFactTopicsTotal">189</span>)</span></h2>
+                <div class="accordionMenu" id="leftMenuBottom">
+                    <h3>Fordonet<i class="fa fa-chevron-right"></i></h3>
+                    <ul style="display: none;">
+                                    <li data-index="109" data-id="0" onclick="LoadTheoryItem(this);"><a>ABS-bromsar</a></li>
+                                    <li data-index="145" data-id="1" onclick="LoadTheoryItem(this);"><a>Airbag</a></li>
+                                    <li data-index="104" data-id="2" onclick="LoadTheoryItem(this);"><a>Avgaser</a></li>
+                                    <li data-index="112" data-id="3" onclick="LoadTheoryItem(this);"><a>Batteri</a></li>
+                                    <li data-index="153" data-id="4" onclick="LoadTheoryItem(this);"><a>Bromssystemet</a></li>
+                                    <li data-index="106" data-id="5" onclick="LoadTheoryItem(this);"><a>Bränsleförbrukning</a></li>
+                                    <li data-index="136" data-id="6" onclick="LoadTheoryItem(this);"><a>DOT-kod</a></li>
+                                    <li data-index="111" data-id="7" onclick="LoadTheoryItem(this);"><a>Dubbdäck</a></li>
+                                    <li data-index="139" data-id="8" onclick="LoadTheoryItem(this);"><a>Dubbdäck på släpvagn</a></li>
+                                    <li data-index="140" data-id="9" onclick="LoadTheoryItem(this);"><a>Däckslitage</a></li>
+                                    <li data-index="110" data-id="10" onclick="LoadTheoryItem(this);"><a>Friktionsdäck</a></li>
+                                    <li data-index="142" data-id="11" onclick="LoadTheoryItem(this);"><a>Glykol</a></li>
+                                    <li data-index="107" data-id="12" onclick="LoadTheoryItem(this);"><a>Koldioxid</a></li>
+                                    <li data-index="113" data-id="13" onclick="LoadTheoryItem(this);"><a>Koloxid</a></li>
+                                    <li data-index="108" data-id="14" onclick="LoadTheoryItem(this);"><a>Kväveoxid</a></li>
+                                    <li data-index="151" data-id="15" onclick="LoadTheoryItem(this);"><a>Kylsystem</a></li>
+                                    <li data-index="101" data-id="16" onclick="LoadTheoryItem(this);"><a>Laddningslampan</a></li>
+                                    <li data-index="143" data-id="17" onclick="LoadTheoryItem(this);"><a>Motorolja</a></li>
+                                    <li data-index="152" data-id="18" onclick="LoadTheoryItem(this);"><a>Motorvärmare</a></li>
+                                    <li data-index="133" data-id="19" onclick="LoadTheoryItem(this);"><a>Mönsterdjup</a></li>
+                                    <li data-index="102" data-id="20" onclick="LoadTheoryItem(this);"><a>Oljetryckslampan</a></li>
+                                    <li data-index="114" data-id="21" onclick="LoadTheoryItem(this);"><a>Regummerade däck</a></li>
+                                    <li data-index="103" data-id="22" onclick="LoadTheoryItem(this);"><a>Start med hjälp av star..</a></li>
+                                    <li data-index="131" data-id="23" onclick="LoadTheoryItem(this);"><a>Styrservo</a></li>
+                                    <li data-index="144" data-id="24" onclick="LoadTheoryItem(this);"><a>Växel</a></li>
+
+                    </ul>
+                    <h3>Trafikregler<i class="fa fa-chevron-right"></i></h3>
+                    <ul style="display: none;">
+                                    <li data-index="212" data-id="0" onclick="LoadTheoryItem(this);"><a>Alternativ vänstersväng</a></li>
+                                    <li data-index="270" data-id="1" onclick="LoadTheoryItem(this);"><a>Annan fara</a></li>
+                                    <li data-index="201" data-id="2" onclick="LoadTheoryItem(this);"><a>Avsmalnande väg</a></li>
+                                    <li data-index="26" data-id="3" onclick="LoadTheoryItem(this);"><a>Barn i trafiken</a></li>
+                                    <li data-index="299" data-id="4" onclick="LoadTheoryItem(this);"><a>Blinkers</a></li>
+                                    <li data-index="226" data-id="5" onclick="LoadTheoryItem(this);"><a>Boggitryck</a></li>
+                                    <li data-index="232" data-id="6" onclick="LoadTheoryItem(this);"><a>Cirkulationsplats</a></li>
+                                    <li data-index="240" data-id="7" onclick="LoadTheoryItem(this);"><a>Datumparkering</a></li>
+                                    <li data-index="227" data-id="8" onclick="LoadTheoryItem(this);"><a>Enkelriktad gata</a></li>
+                                    <li data-index="229" data-id="9" onclick="LoadTheoryItem(this);"><a>Enskild väg</a></li>
+                                    <li data-index="23" data-id="10" onclick="LoadTheoryItem(this);"><a>Farlig vägkorsning</a></li>
+                                    <li data-index="291" data-id="11" onclick="LoadTheoryItem(this);"><a>Farthinder</a></li>
+                                    <li data-index="255" data-id="12" onclick="LoadTheoryItem(this);"><a>Flera kurvor</a></li>
+                                    <li data-index="228" data-id="13" onclick="LoadTheoryItem(this);"><a>Flervägsstopp</a></li>
+                                    <li data-index="237" data-id="14" onclick="LoadTheoryItem(this);"><a>Fordonshastigheter</a></li>
+                                    <li data-index="220" data-id="15" onclick="LoadTheoryItem(this);"><a>Fordonshöjd</a></li>
+                                    <li data-index="222" data-id="16" onclick="LoadTheoryItem(this);"><a>Fordonslängd</a></li>
+                                    <li data-index="266" data-id="17" onclick="LoadTheoryItem(this);"><a>Förbjuden sväng</a></li>
+                                    <li data-index="288" data-id="18" onclick="LoadTheoryItem(this);"><a>Förbjuden U-sväng</a></li>
+                                    <li data-index="27" data-id="19" onclick="LoadTheoryItem(this);"><a>Förbud mot att stanna</a></li>
+                                    <li data-index="279" data-id="20" onclick="LoadTheoryItem(this);"><a>Förbud mot fordon med f..</a></li>
+                                    <li data-index="278" data-id="21" onclick="LoadTheoryItem(this);"><a>Förbud mot fordonstrafi..</a></li>
+                                    <li data-index="267" data-id="22" onclick="LoadTheoryItem(this);"><a>Förbud mot motordrivna..</a></li>
+                                    <li data-index="269" data-id="23" onclick="LoadTheoryItem(this);"><a>Förbud mot motordrivna..</a></li>
+                                    <li data-index="200" data-id="24" onclick="LoadTheoryItem(this);"><a>Grundregeln</a></li>
+                                    <li data-index="235" data-id="25" onclick="LoadTheoryItem(this);"><a>Gula vägmarkeringar</a></li>
+                                    <li data-index="245" data-id="26" onclick="LoadTheoryItem(this);"><a>Gågata</a></li>
+                                    <li data-index="215" data-id="27" onclick="LoadTheoryItem(this);"><a>Gårdsgata</a></li>
+                                    <li data-index="264" data-id="28" onclick="LoadTheoryItem(this);"><a>Gårdsgata upphör</a></li>
+                                    <li data-index="216" data-id="29" onclick="LoadTheoryItem(this);"><a>Huvudled</a></li>
+                                    <li data-index="233" data-id="30" onclick="LoadTheoryItem(this);"><a>Högerregeln</a></li>
+                                    <li data-index="271" data-id="31" onclick="LoadTheoryItem(this);"><a>Infartsförbud</a></li>
+                                    <li data-index="249" data-id="32" onclick="LoadTheoryItem(this);"><a>Järnvägskorsning utan b..</a></li>
+                                    <li data-index="21" data-id="33" onclick="LoadTheoryItem(this);"><a>Järnvägsövergångar</a></li>
+                                    <li data-index="282" data-id="34" onclick="LoadTheoryItem(this);"><a>Körfält för fordon i li..</a></li>
+                                    <li data-index="260" data-id="35" onclick="LoadTheoryItem(this);"><a>Körfält upphör</a></li>
+                                    <li data-index="293" data-id="36" onclick="LoadTheoryItem(this);"><a>Körfältsbyte</a></li>
+                                    <li data-index="280" data-id="37" onclick="LoadTheoryItem(this);"><a>Lokaliseringsmärken</a></li>
+                                    <li data-index="230" data-id="38" onclick="LoadTheoryItem(this);"><a>Långsamtgående fordon</a></li>
+                                    <li data-index="275" data-id="39" onclick="LoadTheoryItem(this);"><a>Minimiavstånd mellan fo..</a></li>
+                                    <li data-index="273" data-id="40" onclick="LoadTheoryItem(this);"><a>Motortrafikled upphör</a></li>
+                                    <li data-index="224" data-id="41" onclick="LoadTheoryItem(this);"><a>Motorväg</a></li>
+                                    <li data-index="263" data-id="42" onclick="LoadTheoryItem(this);"><a>Mötande har väjningspli..</a></li>
+                                    <li data-index="213" data-id="43" onclick="LoadTheoryItem(this);"><a>Möte</a></li>
+                                    <li data-index="262" data-id="44" onclick="LoadTheoryItem(this);"><a>Mötesplats</a></li>
+                                    <li data-index="28" data-id="45" onclick="LoadTheoryItem(this);"><a>Nedsatt hörsel</a></li>
+                                    <li data-index="29" data-id="46" onclick="LoadTheoryItem(this);"><a>Nedsatt syn</a></li>
+                                    <li data-index="231" data-id="47" onclick="LoadTheoryItem(this);"><a>Obevakade- och bevakade..</a></li>
+                                    <li data-index="252" data-id="48" onclick="LoadTheoryItem(this);"><a>Ojämn väg</a></li>
+                                    <li data-index="25" data-id="49" onclick="LoadTheoryItem(this);"><a>Omkörning till höger</a></li>
+                                    <li data-index="223" data-id="50" onclick="LoadTheoryItem(this);"><a>Omkörningsförbud</a></li>
+                                    <li data-index="285" data-id="51" onclick="LoadTheoryItem(this);"><a>Parkering - Rörelsehind..</a></li>
+                                    <li data-index="221" data-id="52" onclick="LoadTheoryItem(this);"><a>Parkeringsförbud</a></li>
+                                    <li data-index="211" data-id="53" onclick="LoadTheoryItem(this);"><a>Parkeringstider</a></li>
+                                    <li data-index="242" data-id="54" onclick="LoadTheoryItem(this);"><a>Polismans tecken</a></li>
+                                    <li data-index="287" data-id="55" onclick="LoadTheoryItem(this);"><a>Påbjuden sväng</a></li>
+                                    <li data-index="243" data-id="56" onclick="LoadTheoryItem(this);"><a>Rekommenderad hastighet</a></li>
+                                    <li data-index="253" data-id="57" onclick="LoadTheoryItem(this);"><a>Rörlig bro</a></li>
+                                    <li data-index="294" data-id="58" onclick="LoadTheoryItem(this);"><a>Sammanvävning</a></li>
+                                    <li data-index="268" data-id="59" onclick="LoadTheoryItem(this);"><a>Sidvind</a></li>
+                                    <li data-index="236" data-id="60" onclick="LoadTheoryItem(this);"><a>Skolpatruller</a></li>
+                                    <li data-index="295" data-id="61" onclick="LoadTheoryItem(this);"><a>Slirig vägbana</a></li>
+                                    <li data-index="272" data-id="62" onclick="LoadTheoryItem(this);"><a>Slut omkörningsförbud</a></li>
+                                    <li data-index="265" data-id="63" onclick="LoadTheoryItem(this);"><a>Slut omkörningsförbud -..</a></li>
+                                    <li data-index="244" data-id="64" onclick="LoadTheoryItem(this);"><a>Spärrlinje</a></li>
+                                    <li data-index="297" data-id="65" onclick="LoadTheoryItem(this);"><a>Spärrlinje</a></li>
+                                    <li data-index="251" data-id="66" onclick="LoadTheoryItem(this);"><a>Stenras</a></li>
+                                    <li data-index="250" data-id="67" onclick="LoadTheoryItem(this);"><a>Stenskott</a></li>
+                                    <li data-index="219" data-id="68" onclick="LoadTheoryItem(this);"><a>Stopp</a></li>
+                                    <li data-index="256" data-id="69" onclick="LoadTheoryItem(this);"><a>Svag vägkant</a></li>
+                                    <li data-index="296" data-id="70" onclick="LoadTheoryItem(this);"><a>Tilläggstavlor</a></li>
+                                    <li data-index="277" data-id="71" onclick="LoadTheoryItem(this);"><a>Tunnel</a></li>
+                                    <li data-index="214" data-id="72" onclick="LoadTheoryItem(this);"><a>Tätbebyggelse</a></li>
+                                    <li data-index="234" data-id="73" onclick="LoadTheoryItem(this);"><a>Utmärkning av last</a></li>
+                                    <li data-index="290" data-id="74" onclick="LoadTheoryItem(this);"><a>Utsträckning</a></li>
+                                    <li data-index="246" data-id="75" onclick="LoadTheoryItem(this);"><a>Varning för korsning me..</a></li>
+                                    <li data-index="292" data-id="76" onclick="LoadTheoryItem(this);"><a>Varning för kö</a></li>
+                                    <li data-index="247" data-id="77" onclick="LoadTheoryItem(this);"><a>Varning för trafiksigna..</a></li>
+                                    <li data-index="286" data-id="78" onclick="LoadTheoryItem(this);"><a>Varning för övergångsst..</a></li>
+                                    <li data-index="289" data-id="79" onclick="LoadTheoryItem(this);"><a>Varningslinje</a></li>
+                                    <li data-index="24" data-id="80" onclick="LoadTheoryItem(this);"><a>Vägarbete</a></li>
+                                    <li data-index="248" data-id="81" onclick="LoadTheoryItem(this);"><a>Vägkorsning med ansluta..</a></li>
+                                    <li data-index="258" data-id="82" onclick="LoadTheoryItem(this);"><a>Vägnummermärke</a></li>
+                                    <li data-index="259" data-id="83" onclick="LoadTheoryItem(this);"><a>Vägnummermärke - Europa..</a></li>
+                                    <li data-index="298" data-id="84" onclick="LoadTheoryItem(this);"><a>Vägrenen</a></li>
+                                    <li data-index="281" data-id="85" onclick="LoadTheoryItem(this);"><a>Vägskylt - Motortrafikl..</a></li>
+                                    <li data-index="257" data-id="86" onclick="LoadTheoryItem(this);"><a>Vägvisning</a></li>
+                                    <li data-index="22" data-id="87" onclick="LoadTheoryItem(this);"><a>Väjningsplikt</a></li>
+                                    <li data-index="210" data-id="88" onclick="LoadTheoryItem(this);"><a>Zon: Parkeringsförbud</a></li>
+                                    <li data-index="261" data-id="89" onclick="LoadTheoryItem(this);"><a>Återvändsgränd</a></li>
+
+                    </ul>
+                    <h3>Människan<i class="fa fa-chevron-right"></i></h3>
+                    <ul style="display: none;">
+                                    <li data-index="402" data-id="0" onclick="LoadTheoryItem(this);"><a>Alkohol</a></li>
+                                    <li data-index="403" data-id="1" onclick="LoadTheoryItem(this);"><a>Fartblindhet</a></li>
+                                    <li data-index="405" data-id="2" onclick="LoadTheoryItem(this);"><a>Grupptryck</a></li>
+                                    <li data-index="411" data-id="3" onclick="LoadTheoryItem(this);"><a>Impulsiva förare</a></li>
+                                    <li data-index="401" data-id="4" onclick="LoadTheoryItem(this);"><a>Mediciner och körning</a></li>
+                                    <li data-index="407" data-id="5" onclick="LoadTheoryItem(this);"><a>Reaktionstid</a></li>
+                                    <li data-index="409" data-id="6" onclick="LoadTheoryItem(this);"><a>Stress</a></li>
+                                    <li data-index="410" data-id="7" onclick="LoadTheoryItem(this);"><a>Synen</a></li>
+                                    <li data-index="408" data-id="8" onclick="LoadTheoryItem(this);"><a>Synillusioner</a></li>
+                                    <li data-index="404" data-id="9" onclick="LoadTheoryItem(this);"><a>Trötthet vid körning</a></li>
+                                    <li data-index="406" data-id="10" onclick="LoadTheoryItem(this);"><a>Äldre förare</a></li>
+
+                    </ul>
+                    <h3 style="border-bottom: 1px solid #c0c0c0">Komplettering<i class="fa fa-chevron-right"></i></h3>
+                    <ul style="display: none;">
+                                    <li data-index="510" data-id="0" onclick="LoadTheoryItem(this);"><a>3-sekundersregeln</a></li>
+                                    <li data-index="574" data-id="1" onclick="LoadTheoryItem(this);"><a>Begreppet väg</a></li>
+                                    <li data-index="539" data-id="2" onclick="LoadTheoryItem(this);"><a>Bensin</a></li>
+                                    <li data-index="550" data-id="3" onclick="LoadTheoryItem(this);"><a>Bilbälte</a></li>
+                                    <li data-index="516" data-id="4" onclick="LoadTheoryItem(this);"><a>Bogsering</a></li>
+                                    <li data-index="564" data-id="5" onclick="LoadTheoryItem(this);"><a>Bötesbelopp</a></li>
+                                    <li data-index="562" data-id="6" onclick="LoadTheoryItem(this);"><a>Cykelöverfarter</a></li>
+                                    <li data-index="532" data-id="7" onclick="LoadTheoryItem(this);"><a>Defensiv körning</a></li>
+                                    <li data-index="571" data-id="8" onclick="LoadTheoryItem(this);"><a>Dieselmotorer</a></li>
+                                    <li data-index="512" data-id="9" onclick="LoadTheoryItem(this);"><a>Dimljus</a></li>
+                                    <li data-index="540" data-id="10" onclick="LoadTheoryItem(this);"><a>Däckbeteckningar</a></li>
+                                    <li data-index="561" data-id="11" onclick="LoadTheoryItem(this);"><a>Efterfordon</a></li>
+                                    <li data-index="537" data-id="12" onclick="LoadTheoryItem(this);"><a>Farligt gods</a></li>
+                                    <li data-index="504" data-id="13" onclick="LoadTheoryItem(this);"><a>Flygande inspektion</a></li>
+                                    <li data-index="580" data-id="14" onclick="LoadTheoryItem(this);"><a>Fordons plats på väg</a></li>
+                                    <li data-index="570" data-id="15" onclick="LoadTheoryItem(this);"><a>Fordonsbelysning</a></li>
+                                    <li data-index="536" data-id="16" onclick="LoadTheoryItem(this);"><a>Fortkörningsböter</a></li>
+                                    <li data-index="568" data-id="17" onclick="LoadTheoryItem(this);"><a>Försäkringar</a></li>
+                                    <li data-index="566" data-id="18" onclick="LoadTheoryItem(this);"><a>Halka</a></li>
+                                    <li data-index="518" data-id="19" onclick="LoadTheoryItem(this);"><a>Halvljus</a></li>
+                                    <li data-index="541" data-id="20" onclick="LoadTheoryItem(this);"><a>HA-Olja</a></li>
+                                    <li data-index="581" data-id="21" onclick="LoadTheoryItem(this);"><a>Hastighet per sekund</a></li>
+                                    <li data-index="545" data-id="22" onclick="LoadTheoryItem(this);"><a>Hastighetsanpassning</a></li>
+                                    <li data-index="546" data-id="23" onclick="LoadTheoryItem(this);"><a>Hastighetsbedömning</a></li>
+                                    <li data-index="565" data-id="24" onclick="LoadTheoryItem(this);"><a>Hastighetsvinning</a></li>
+                                    <li data-index="515" data-id="25" onclick="LoadTheoryItem(this);"><a>Helljus</a></li>
+                                    <li data-index="501" data-id="26" onclick="LoadTheoryItem(this);"><a>Hjälpa skadade vid olyc..</a></li>
+                                    <li data-index="569" data-id="27" onclick="LoadTheoryItem(this);"><a>Katalysator</a></li>
+                                    <li data-index="519" data-id="28" onclick="LoadTheoryItem(this);"><a>Kultryck</a></li>
+                                    <li data-index="575" data-id="29" onclick="LoadTheoryItem(this);"><a>Köra med husvagn</a></li>
+                                    <li data-index="557" data-id="30" onclick="LoadTheoryItem(this);"><a>Körkortsbehörigheter</a></li>
+                                    <li data-index="567" data-id="31" onclick="LoadTheoryItem(this);"><a>Miljöanpassad körning</a></li>
+                                    <li data-index="558" data-id="32" onclick="LoadTheoryItem(this);"><a>Mobilanvändning under k..</a></li>
+                                    <li data-index="595" data-id="33" onclick="LoadTheoryItem(this);"><a>Moralutveckling</a></li>
+                                    <li data-index="547" data-id="34" onclick="LoadTheoryItem(this);"><a>Mörkerkörning</a></li>
+                                    <li data-index="572" data-id="35" onclick="LoadTheoryItem(this);"><a>När du blir omkörd</a></li>
+                                    <li data-index="509" data-id="36" onclick="LoadTheoryItem(this);"><a>Nödhjul</a></li>
+                                    <li data-index="560" data-id="37" onclick="LoadTheoryItem(this);"><a>Omkörning i mörker</a></li>
+                                    <li data-index="578" data-id="38" onclick="LoadTheoryItem(this);"><a>Parkeringsvakter</a></li>
+                                    <li data-index="505" data-id="39" onclick="LoadTheoryItem(this);"><a>Reaktions- broms- och s..</a></li>
+                                    <li data-index="506" data-id="40" onclick="LoadTheoryItem(this);"><a>Registreringsbesiktning</a></li>
+                                    <li data-index="301" data-id="41" onclick="LoadTheoryItem(this);"><a>Risker vid omkörning</a></li>
+                                    <li data-index="514" data-id="42" onclick="LoadTheoryItem(this);"><a>Signalering</a></li>
+                                    <li data-index="508" data-id="43" onclick="LoadTheoryItem(this);"><a>Skador på egendom</a></li>
+                                    <li data-index="556" data-id="44" onclick="LoadTheoryItem(this);"><a>Släpvagn med B-behörigh..</a></li>
+                                    <li data-index="554" data-id="45" onclick="LoadTheoryItem(this);"><a>Säkerhetskontrollen</a></li>
+                                    <li data-index="573" data-id="46" onclick="LoadTheoryItem(this);"><a>Taklast</a></li>
+                                    <li data-index="511" data-id="47" onclick="LoadTheoryItem(this);"><a>Tjänstevikt</a></li>
+                                    <li data-index="533" data-id="48" onclick="LoadTheoryItem(this);"><a>Totalvikt</a></li>
+                                    <li data-index="507" data-id="49" onclick="LoadTheoryItem(this);"><a>Trafikförsäkring</a></li>
+                                    <li data-index="576" data-id="50" onclick="LoadTheoryItem(this);"><a>Trafikolycka</a></li>
+                                    <li data-index="552" data-id="51" onclick="LoadTheoryItem(this);"><a>Trafikolyckor</a></li>
+                                    <li data-index="555" data-id="52" onclick="LoadTheoryItem(this);"><a>Utryckningsfordon</a></li>
+                                    <li data-index="513" data-id="53" onclick="LoadTheoryItem(this);"><a>Varningsblinkers</a></li>
+                                    <li data-index="517" data-id="54" onclick="LoadTheoryItem(this);"><a>Vattenplaning</a></li>
+                                    <li data-index="553" data-id="55" onclick="LoadTheoryItem(this);"><a>Viltolyckor</a></li>
+                                    <li data-index="544" data-id="56" onclick="LoadTheoryItem(this);"><a>Vinterväglag</a></li>
+                                    <li data-index="579" data-id="57" onclick="LoadTheoryItem(this);"><a>Vägmarkeringar</a></li>
+                                    <li data-index="548" data-id="58" onclick="LoadTheoryItem(this);"><a>Vägmärken</a></li>
+                                    <li data-index="577" data-id="59" onclick="LoadTheoryItem(this);"><a>Vägtrafikanter</a></li>
+                                    <li data-index="302" data-id="60" onclick="LoadTheoryItem(this);"><a>Vänstersväng</a></li>
+                                    <li data-index="563" data-id="61" onclick="LoadTheoryItem(this);"><a>Återkallelse</a></li>
+                                    <li data-index="549" data-id="62" onclick="LoadTheoryItem(this);"><a>Över- och understyrning</a></li>
+
+                    </ul>
+                </div>
+            </div>
+            <a style="max-width: 200px; margin-top: 15px; display: block" title="Definitioner inom trafik och fordon." data-id="" onclick="GetFact(this,&#39;def&#39;);"><i class="fa fa-book"></i> Definitioner inom trafik och fordon.</a>
+            <a id="btnResetStats" href="http://www.ktponline.se/User/Theory#modalReset" style="max-width: 200px; margin-top: 15px; display: block" title="Nollställ markerad teori"><i class="fa fa-eraser"></i> Avmarkera läst teori.</a>
+
+        </div>
+        <div id="headFactWrapper">    <div class="factMain">
+        <h1>Att svänga</h1>
+        <p>
+            När du ska svänga det vill säga köra in på en annan väg eller byta körfält finns det speciella trafikregler som reglerar detta.
+        </p>
+        <h3>I korsningar</h3>
+        <p>
+            Du får sväng i en korsning så länge det kan ske utan fara eller onödigt hinder för andra som färdas i samma riktning. Du ska även vara uppmärksam mot den bakomvarande trafiken samt om du ska svänga till vänster se till att svägen kan ske utan hinder för mötande fordon.
+            <br><br>
+            När du ska svänga i en korsning, lämna eller korsa den körbana som du färdas på <strong>måste du förvissa dig om att det kan ske utan hinder</strong> för trafikanterna på den körbana som du avser att köra in på.
+        </p>
+        <div class="imgRow">
+            <img alt="svänga vid övergångsställe" title="svänga vid övergångsställe" src="./Teori_files/svänga-övergångsställe.jpg">
+            <p>
+                I situationen på bilden ska den blåa bilen vänta med att svänga tills fotgängaren passerat övergångsstället.
+            </p>
+        </div>        
+        <h3>Vänstersväng</h3>
+        <a name="vänstersväng" href="http://www.ktponline.se/User/Theory#"></a>
+        <div class="imgRow">
+            <img alt="Vänstersväng på landsväg" title="Vänstersväng på landsväg" src="./Teori_files/vänstersväng.jpg">
+            <p>
+                Vänstersvängen är en av de <strong>vanligaste olyckstyperna</strong> där bakomvarande fordon kör in i fordonet som ska svänga. Detta kan leda till mycket allvarliga olyckor då fordonet som blir påkört kan knuffas ut i körfältet med mötande trafik.
+            </p>
+        </div>
+        <p>
+            Om du som fordonsförare bedömer att en vänstersväng inte kan ske utan risk är det bättre att sväng till höger i korsningen och vända på en riskfri plats och sedan köra rakt fram i korsningen.          
+            Om inte möjligheten finns att svänga till höger i korsningen kan man fortsätta rakt fram förbi korsningen till nästa möjlighet att svänga till höger och sedan vända och köra tillbaka och göra en högersväng.
+        </p>
+        <h3>Alternativ vänstersväng</h3>
+        <div class="imgRow">
+            <img alt="Spansk sväng en alternativ vänstersväng" title="Spansk sväng en alternativ vänstersväng" src="./Teori_files/spansk-sväng.png">
+            <p>
+                 En del korsningar med mycket trafik har byggts om med en s.k Spansk sväng eller alternativ vänstersväng. Detta innebär att vänstersväng förbjuds och den som ska svänga vänster, först svänger av på en avfart till höger och sedan köra rakt fram genom korsningen. Alternativa vänstersvängar utmärks generellt alltid med ett vägmärke.
+            </p>
+
+        </div>
+
+    </div>
+</div>
+        <div id="factWrapper" style="display: none;">       
+            <div class="theoryContentWrapper theoryText" style="border-radius: 0 0 6px 0">
+                <div class="inner">
+                        <img id="theoryImg" src="http://www.ktponline.se/User/Theory" style="display: none">
+                        <h3 id="theoryTextHeader"></h3>
+                        <p id="theoryText"></p>
+                        <div id="navButtons" class="buttons">
+                            <a id="btnPrevItem" class="button silverBtn" onclick="LoadPrevItem();" title="Nästa avsnitt">
+                                <i class="fa fa-arrow-left"></i>
+                            </a>
+                            <a id="btnNextItem" class="button silverBtn" onclick="LoadNextItem();" title="Föregående avsnitt">
+                                <i class="fa fa-arrow-right"></i>
+                            </a>
+                        </div>
+                </div>
+                <div id="divAddTheoryImg">
+                    <img id="addTImg">
+                </div>
+            </div>     
+        </div>
+</div>
+<div id="modalReset" class="modalWindow">
+    <h2>Nollställ</h2>
+    <p style="display: block; margin-bottom: 15px;">Vill du avmarkera läst teori?</p>
+    <button type="button" class="modal_close yes" onclick="ResetStats();">Ja</button>
+    <button type="button" class="modal_close no" onclick="">Nej</button>
+</div>        
+<script>
+    var nextId = 0;
+    var prevId = 0;
+    var curElem;
+    function GetFact(e, name) {       
+        $("#factWrapper").hide();
+        $("#headFactWrapper").show();
+        var readItems = window.localStorage.FactNameSegments.split(",");
+        if (readItems.indexOf($(e).data("id").toString()) < 0) {
+            readItems.push($(e).data("id"));
+            window.localStorage.FactNameSegments = readItems;
+            $(e).addClass("isRead");
+            UpdateStats();
+        }
+        var a = $("#isact").val();
+        if (a==1) {
+            $.get("/User/GetFact", { fn: name }, function (data) {
+                $("#headFactWrapper").html(data);
+            });
+        }
+        else {
+            var html = [];
+            html.push("<div style='text-align: center'>");
+            html.push("<img alt='Funktionen är inte tillgänglig' src='/img/bigLock.png'>");
+            html.push("<h2>Teorin är inte tillgänglig</h2>");
+            html.push("<p>Aktivera kontot för att låsa upp denna del.</p>");
+            html.push("</div>");
+            $("#headFactWrapper").html(html.join(""));
+        }
+    }
+    function LoadTheoryItem(e) {
+        $("#factWrapper").show();
+        $("#headFactWrapper").hide();
+        window.scrollTo(0, 0);
+        nextId = $(e).next().data("index");
+        prevId = $(e).prev().data("index");
+
+        var readItems = window.localStorage.FactNameTopics.split(",");
+        if (readItems.indexOf($(e).data("index").toString()) < 0) {
+            readItems.push($(e).data("index"));
+            window.localStorage.FactNameTopics = readItems;
+            $(e).addClass("isRead");
+            UpdateStats();
+        }
+
+        if (curElem != null) {
+            $(curElem).find("a").removeClass("current");
+        }
+        curElem = $(e);
+        $(e).find("a").addClass("current");
+
+        $("#navButtons").show();
+        if (prevId == null) {
+            $("#btnPrevItem").hide();
+        }
+        else {
+            $("#btnPrevItem").show();
+        }
+        if (nextId == null) {
+            $("#btnNextItem").hide();
+        }
+        else {
+            $("#btnNextItem").show();
+        }       
+
+        var index = $(e).data("index");
+        $.get("/User/GetTItem", { tid: index })
+          .done(function (data) {
+              $("#theoryTextHeader").html(data.split(';')[1]);
+              $("#theoryText").html(data.split(';')[2]);
+              $("#theoryImg").show();
+              if (data.split(';')[3] == "1") {
+                  $("#theoryImg").attr("src", "/usrres/ts/" + index + ".jpg");
+                  $("#divAddTheoryImg").show('fast');
+                  $("#addTImg").attr("src", "/usrres/ts/g" + index + ".jpg")
+              }
+              else {
+                  $("#theoryImg").attr("src", "/usrres/ts/" + index + ".jpg");
+                  $("#divAddTheoryImg").hide();
+              }
+          });
+    }
+    function LoadNextItem() {
+        $("#btnPrevItem").show();
+        var elem = $(curElem).next();
+        LoadTheoryItem(elem);
+    }
+    function LoadPrevItem() {
+        $("#btnNextItem").show();
+        var elem = $(curElem).prev();
+        LoadTheoryItem(elem);
+    }
+    function ResetStats() {
+        window.localStorage.FactNameSegments = [];
+        window.localStorage.FactNameTopics = [];       
+        UpdateStats();
+        location.reload();
+    }
+</script>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="centerWrapper">
+            <div class="copyText">
+                KTPOnline.se © 2011-2016
+            </div>
+            <div class="links">
+                <a href="http://www.ktponline.se/User"><i class="fa fa-home"></i> Huvudmeny</a>
+                    <a onclick="$(&#39;#frmLogoutTop&#39;).submit();" class="logout"><i class="fa fa-sign-out"></i> Logga ut </a>
+                <a class="responsiveSelector" onclick="ToggleResponsive(1);" style="display: inline-block !important"><i class="fa fa-tablet"></i> Mobilanpassad</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            var left = $("#txtPopup").position().left;
+            var w = $(".popupWrapper").width();
+            $(".popupWrapper").css("left", (left - ((w / 2) / 2) + 10) + "px");
+        });
+        function ToggleResponsive(active) {
+            $.get("/User/ToggleResponsive", { r: active }, function (data) {
+                location.reload();
+            });
+        }
+        function ShowMobMenu() {
+            if ($(".mobMenu").is(":visible")) {
+                $(".mobMenu").slideUp(100);
+            }
+            else {
+                $(".mobMenu").slideDown(100);
+            }
+        }
+        function GetNotes() {
+            $.get("/User/GetUserNote", function (data) {
+                $("#txtNotes").val(data);
+                $("#btnSaveNote").show();
+                $("#popupLoader").hide();
+            });
+        }
+        function SaveNotes() {
+            $.post("/User/SaveNote", { note: $("#txtNotes").val() }, function (data) {
+                if (data == "1") {
+                    $("#savePopupStatus").show();
+                }
+            });
+        }
+        function ShowNotePopup() {
+            GetNotes();
+            $(".popupWrapper").fadeIn(200);
+            $("#savePopupStatus").hide();
+        }
+        function CloseNotePopup() {
+            $(".popupWrapper").fadeOut(200);
+        }
+    </script>
+
+
+<div id="lean_overlay"></div></body></html>

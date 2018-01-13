@@ -1,0 +1,2091 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>k&ouml;rkort</title>
+<style type="text/css">
+    li { list-style: none;  margin: 0; }
+    p { margin: 0; }
+    span.foldopened { color: white; font-size: xx-small;
+    border-width: 1; font-family: monospace; padding: 0em 0.25em 0em 0.25em; background: #e0e0e0;
+    VISIBILITY: visible;
+    cursor:pointer; }
+
+
+    span.foldclosed { color: #666666; font-size: xx-small;
+    border-width: 1; font-family: monospace; padding: 0em 0.25em 0em 0.25em; background: #e0e0e0;
+    VISIBILITY: hidden;
+    cursor:pointer; }
+
+    span.foldspecial { color: #666666; font-size: xx-small; border-style: none solid solid none;
+    border-color: #CCCCCC; border-width: 1; font-family: sans-serif; padding: 0em 0.1em 0em 0.1em; background: #e0e0e0;
+    cursor:pointer; }
+
+    span.l { color: red; font-weight: bold; }
+
+    a.mapnode:link {text-decoration: none; color: black; }
+    a.mapnode:visited {text-decoration: none; color: black; }
+    a.mapnode:active {text-decoration: none; color: black; }
+    a.mapnode:hover {text-decoration: none; color: black; background: #eeeee0; }
+
+</style>
+<!-- ^ Position is not set to relative / absolute here because of Mozilla -->
+</head>
+<body>
+
+<script type="text/javascript">
+   // Here we implement folding. It works fine with MSIE5.5, MSIE6.0 and
+   // Mozilla 0.9.6.
+
+   if (document.layers) {
+      //Netscape 4 specific code
+      pre = 'document.';
+      post = ''; }
+   if (document.getElementById) {
+      //Netscape 6 specific code
+      pre = 'document.getElementById("';
+      post = '").style'; }
+   if (document.all) {
+      //IE4+ specific code
+      pre = 'document.all.';
+      post = '.style'; }
+
+function layer_exists(layer) {
+   try {
+      eval(pre + layer + post);
+      return true; }
+   catch (error) {
+      return false; }}
+
+function show_layer(layer) {
+   eval(pre + layer + post).position = 'relative'; 
+   eval(pre + layer + post).visibility = 'visible'; }
+
+function hide_layer(layer) {
+   eval(pre + layer + post).visibility = 'hidden';
+   eval(pre + layer + post).position = 'absolute'; }
+
+function hide_folder(folder) {
+    hide_folding_layer(folder)
+    show_layer('show'+folder);
+
+    scrollBy(0,0); // This is a work around to make it work in Browsers (Explorer, Mozilla)
+}
+
+function show_folder(folder) {
+    // Precondition: all subfolders are folded
+
+    show_layer('hide'+folder);
+    hide_layer('show'+folder);
+    show_layer('fold'+folder);
+
+    scrollBy(0,0); // This is a work around to make it work in Browsers (Explorer, Mozilla)
+
+    var i;
+    for (i=1; layer_exists('fold'+folder+'_'+i); ++i) {
+       show_layer('show'+folder+'_'+i); }
+}
+function show_folder_completely(folder) {
+    // Precondition: all subfolders are folded
+
+    show_layer('hide'+folder);
+    hide_layer('show'+folder);
+    show_layer('fold'+folder);
+
+    scrollBy(0,0); // This is a work around to make it work in Browsers (Explorer, Mozilla)
+
+    var i;
+    for (i=1; layer_exists('fold'+folder+'_'+i); ++i) {
+       show_folder_completely(folder+'_'+i); }
+}
+
+
+
+function hide_folding_layer(folder) {
+   var i;
+   for (i=1; layer_exists('fold'+folder+'_'+i); ++i) {
+       hide_folding_layer(folder+'_'+i); }
+
+   hide_layer('hide'+folder);
+   hide_layer('show'+folder);
+   hide_layer('fold'+folder);
+
+   scrollBy(0,0); // This is a work around to make it work in Browsers (Explorer, Mozilla)
+}
+
+function fold_document() {
+   var i;
+   var folder = '1';
+   for (i=1; layer_exists('fold'+folder+'_'+i); ++i) {
+       hide_folder(folder+'_'+i); }
+}
+
+function unfold_document() {
+   var i;
+   var folder = '1';
+   for (i=1; layer_exists('fold'+folder+'_'+i); ++i) {
+       show_folder_completely(folder+'_'+i); }
+}
+
+</script>
+<SPAN class="foldspecial" onclick="fold_document()">All +</SPAN>
+<SPAN class="foldspecial" onclick="unfold_document()">All -</SPAN>
+<p>k&ouml;rkort
+<ul><li>Om k&ouml;rkortet
+<ul><li>beh&ouml;righeter
+<ul><li>AM
+<ul><li>15&#229;r Moped &amp; Traktor
+
+</li>
+
+</ul>
+</li>
+<li>A1
+<ul><li>16 &#229;r l&auml;tt motorcykel
+
+</li>
+
+</ul>
+</li>
+<li>A
+<ul><li>18 &#229;r tung motorcykel h&ouml;gst 25 kW motoreffekt
+
+</li>
+<li>f&ouml;r h&ouml;gre effekt A-k&ouml;rkort i 2 &#229;r
+
+</li>
+
+</ul>
+</li>
+<li>B
+<ul><li>18 &#229;r personbil - Total vikt 3,5 ton - l&auml;tt sl&auml;p fordon
+<ul><li>&nbsp;
+
+</li>
+
+</ul>
+</li>
+<li>l&auml;tt lastbil
+
+</li>
+<li>3-4 hjul motorcykel,terr&auml;ng vagn
+
+</li>
+
+</ul>
+</li>
+<li>C
+<ul><li>18 &#229;r Tung lastbil - total vikt &gt; 3,5 ton
+
+</li>
+<li>m&#229;ste ha B k&ouml;rkort
+
+</li>
+
+</ul>
+</li>
+<li>D
+<ul><li>21 &#229;r Buss 
+
+</li>
+
+</ul>
+</li>
+<li>E
+<ul><li>sl&auml;p fordon oavsett vikt
+
+</li>
+
+</ul>
+</li>
+<li>yrkes m&auml;ssig trafik
+<ul><li>ytterligare utbildning
+
+</li>
+<li>Taxi
+<ul><li>taxi &nbsp;f&ouml;rar legitimation
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>TrafikRegler
+<ul><li>Inledning &amp; begrepp
+<ul><li>Definition av v&auml;gren, k&ouml;rf&auml;lt, k&ouml;rbana och v&auml;g
+<ul><li><p>V&auml;gen &auml;r allt (k&ouml;rbana, k&ouml;rf&auml;lt och v&auml;gren) tillsammans.
+<p>K&ouml;rbanan &auml;r b&#229;da k&ouml;rf&auml;lten tillsammans.
+<p>K&ouml;rf&auml;lten &auml;r d&auml;r bilarna &#229;ker. V&auml;gen har normalt 2 k&ouml;rf&auml;lt i motsatta riktningar. De beh&ouml;ver inte vara markerade.
+<p>V&auml;grenen &auml;r omr&#229;det utanf&ouml;r k&ouml;rbanan.
+<p>S&auml;kerhetszon som i f&ouml;rsta hand ska anv&auml;ndas av g&#229;ende, cyklister, mopedister och l&#229;ngsamtg&#229;ende fordon.
+<p>Inte ett k&ouml;rf&auml;lt f&ouml;r bilar.
+<p>Du kan k&ouml;ra ut p&#229; v&auml;grenen en kort stund om det till exempel &auml;r f&ouml;r att underl&auml;tta en omk&ouml;rning. Var dock mycket f&ouml;rsiktig om sikten &auml;r begr&auml;nsad.
+<p>Alla p&#229; v&auml;grenen har v&auml;jningsplikt mot trafikanterna i de riktiga k&ouml;rf&auml;lten.
+</li>
+</ul>
+</li>
+
+</ul>
+</li>
+<li>K&ouml;rf&auml;lt &#8211;&nbsp;placering
+<ul><li>Vilket k&ouml;rf&auml;lt du ska v&auml;lja
+<ul><li><p>Grundregeln &auml;r att du ska v&auml;lja k&ouml;rf&auml;ltet l&auml;ngst till h&ouml;ger.
+<p>I f&ouml;ljande situationer f&#229;r du dock v&auml;lja det k&ouml;rf&auml;lt som &auml;r l&auml;mpligast f&ouml;r din fortsatta f&auml;rd:
+<p>Minst 2 markerade k&ouml;rf&auml;lt i din f&auml;rdriktning och 70 km/h eller l&auml;gre hastighetsbegr&auml;nsning. I detta fall f&#229;r du &auml;ven k&ouml;ra om till h&ouml;ger.
+<p>K&ouml;rf&auml;ltsv&auml;gvisare eller k&ouml;rf&auml;ltspilar finns.
+</li>
+</ul>
+</li>
+<li>Hur bilen ska placeras i k&ouml;rf&auml;ltet
+<ul><li><p>Grundregeln &auml;r att du ska ligga i mitten av ditt k&ouml;rf&auml;lt. Det finns dock situationer d&auml;r andra placeringar &auml;r l&auml;mpligare.
+<p>Dagsljus med god sikt &#229;t sidorna
+<ul><li><p>Om sikten &#229;t sidorna &auml;r god (ingen skog eller djupa diken) kan du ligga n&#229;got &#229;t h&ouml;ger i k&ouml;rf&auml;ltet. Detta ger dig god marginal till m&ouml;tande fordon.
+</li>
+</ul><p>M&ouml;rker
+<ul><li>K&ouml;r n&auml;rmare mitten av v&auml;gen (v&auml;nster i k&ouml;rf&auml;ltet).
+
+</li>
+
+</ul></li>
+</ul>
+</li>
+<li>Kollektivk&ouml;rf&auml;lt (bussfil)
+<ul><li><span style="color: #ff0000;">f&ouml;ljande fordon anv&auml;nda kollektivk&ouml;rf&auml;lten:</span>
+<ul><li>Cyklister.
+
+</li>
+<li>Moped klass II (inte EU-mopeder allts&#229;).
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>V&auml;jningsregler 
+<ul><li>Viktigt f&ouml;rtydligande om huvudledsskylten
+<ul><li>Huvudled
+
+</li>
+<li><span style="color: #ff0000;">M&auml;rket Huvudled &auml;r upprepat efter varje korsning, inte f&ouml;re korsningen</span>
+
+</li>
+
+</ul>
+</li>
+<li><span id="show1_1" class="foldclosed" onClick="show_folder('1_1')" style="POSITION: absolute">+</span> <span id="hide1_1" class="foldopened" onClick="hide_folder('1_1')">-</span>
+Viktigt f&ouml;rtydligande om h&ouml;gerregelsskylten
+<ul id="fold1_1" style="POSITION: relative; VISIBILITY: visible;"><li>M&auml;rket Varning f&ouml;r v&auml;gkorsning beh&ouml;ver inte sitta uppe f&ouml;r att h&ouml;gerregeln ska g&auml;lla.
+
+</li>
+
+</ul>
+</li>
+<li>H&ouml;gerregeln g&auml;ller inte
+<ul><li>N&auml;r du ska k&ouml;ra in p&#229; huvudled.
+
+</li>
+<li>N&auml;r du k&ouml;r p&#229; huvudled.
+
+</li>
+<li>D&auml;r det finns fungerande trafiksignaler.
+
+</li>
+<li>I cirkulationsplatser.
+
+</li>
+<li>D&auml;r v&auml;gm&auml;rkena V&auml;jningsplikt och Stopplikt finns.
+
+</li>
+<li>N&auml;r du l&auml;mnar ett accelerationsf&auml;lt.
+
+</li>
+
+</ul>
+</li>
+<li>kolla ex p&#229; h&ouml;gerregel
+
+</li>
+<li>Bussregeln
+<ul><li><p>50 km/h eller l&auml;gre: Du ska l&auml;mna bussen f&ouml;retr&auml;de om den blinkar ut (g&auml;ller enbart k&ouml;rf&auml;ltet l&auml;ngst till h&ouml;ger).
+<p>&Ouml;ver 50 km/h: Bussen ska alltid l&auml;mna dig f&ouml;retr&auml;de.
+</li>
+</ul>
+</li>
+
+</ul>
+</li>
+<li>&Ouml;verg&#229;ngsst&auml;llen
+<ul><li><span id="show1_2" class="foldclosed" onClick="show_folder('1_2')" style="POSITION: absolute">+</span> <span id="hide1_2" class="foldopened" onClick="hide_folder('1_2')">-</span>
+Obevakat &ouml;verg&#229;ngsst&auml;lle
+<ul id="fold1_2" style="POSITION: relative; VISIBILITY: visible;"><li>Fordonsf&ouml;rare har v&auml;jningsplikt mot g&#229;ende som &auml;r p&#229;, eller som just ska g&#229; ut p&#229;, &ouml;verg&#229;ngsst&auml;llet.
+
+</li>
+
+</ul>
+</li>
+<li>Bevakat &ouml;verg&#229;ngsst&auml;lle
+<ul><li><p>Bevakat = fungerande trafiksignal eller polis finns.
+<p>B&#229;de fordonsf&ouml;rare och g&#229;ende ska r&auml;tta sig efter trafiksignalerna.
+<p>Om du som fordonsf&ouml;rare f&#229;r gr&ouml;nt, m&#229;ste du &auml;nd&#229; l&#229;ta g&#229;ende passera som har g&#229;tt ut n&auml;r det var gr&ouml;nt f&ouml;r dem, men som inte hunnit &ouml;ver innan omslaget till r&ouml;tt.
+<p>&Auml;ven om personer g&#229;r mot r&ouml;tt n&auml;r du har gr&ouml;nt, har du inte &#8221;r&auml;tt&#8221; att orsaka en farlig situation genom att k&ouml;ra.
+</li>
+</ul>
+</li>
+
+</ul>
+</li>
+<li>Stanna &amp; parkera
+<ul><li>F&ouml;rbjudet att stanna och parkera (stoppf&ouml;rbud)
+<ul><li><span style="color: #ff0000;">P&#229; och 10 meter f&ouml;re &ouml;verg&#229;ngsst&auml;lle, g&#229;ngbana, cykelpassage, cykel&ouml;verfart eller cykelbana.</span>
+
+</li>
+<li><span style="color: #ff0000;">Inom 10 meter fr&#229;n en korsning.</span>
+
+</li>
+<li>S&#229; att du skymmer sikten eller v&auml;gm&auml;rken.
+
+</li>
+<li>I en tunnel.
+
+</li>
+<li>P&#229; v&auml;g med heldragen linje p&#229; din sida, om det &auml;r mindre &auml;n 3 meter fr&#229;n din bil till linjen.
+
+</li>
+<li>I cirkulationsplats.
+
+</li>
+<li>I kollektivk&ouml;rf&auml;lt.
+
+</li>
+<li>Vid gul heldragen linje.
+
+</li>
+<li>I sp&auml;rromr&#229;de.
+
+</li>
+<li>I korsning mellan bilv&auml;g och j&auml;rnv&auml;g eller sp&#229;rv&auml;g.
+
+</li>
+<li>P&#229; g&#229;ng- och cykelbana.
+
+</li>
+<li>P&#229; motorv&auml;g och motortrafikled.
+
+</li>
+
+</ul>
+</li>
+<li>F&ouml;rbjudet att parkera (parkeringsf&ouml;rbud)
+<ul><li><span style="color: #ff0000;">D&auml;r det &auml;r f&ouml;rbjudet att stanna &auml;r det alltid f&ouml;rbjudet att parkera.</span>
+
+</li>
+<li>D&auml;r skylten F&ouml;rbud mot att parkera fordon sitter.
+
+</li>
+<li><span style="color: #ff0000;">Inom 30 meter f&ouml;re och efter j&auml;rnv&auml;gs- och sp&#229;rv&auml;gskorsning.</span>
+
+</li>
+<li>S&#229; att fordonet st&#229;r mot f&auml;rdriktningen (&#8221;fel sida av v&auml;gen&#8221;).
+
+</li>
+<li>P&#229; huvudled.
+<ul><li>Undantag: G&auml;ller inte om P-skylt finns.
+
+</li>
+
+</ul>
+</li>
+<li>S&#229; att du blockerar n&#229;gons utfart.
+
+</li>
+<li>Utanf&ouml;r ett annat fordon eller hinder (dubbelparkering).
+<ul><li>Undantag: G&auml;ller inte om du parkerar bredvid en cykel, moped eller motorcykel (tv&#229;hjuliga fordon).
+
+</li>
+
+</ul>
+</li>
+<li>S&#229; att n&#229;got hjul &auml;r utanf&ouml;r en parkeringsruta eller liknande anvisningslinje.
+
+</li>
+<li>P&#229; en m&ouml;tesplats (M-skylt).
+
+</li>
+<li>Vid en gul streckad linje.
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>a
+<ul><li><p><span style="color: #ff0000;">F&ouml;rbjudet att stanna och parkera: &#8221;[&#8230;] 10 meter f&ouml;re &ouml;verg&#229;ngsst&auml;lle [&#8230;] Observera att f&ouml;rbudet inte g&auml;ller efter &ouml;verg&#229;ngsst&auml;llet&#8221;</span>
+</li>
+</ul>
+</li>
+<li>&nbsp;
+<ul><li><p><span style="color: #ff0000;">KOLLEKTIVK&Ouml;RF&Auml;LT</span>
+<p>Cyklister och mopedister p&#229; b&#229;da klassens mopeder (Moped klass 1 &amp; Moped klass 2) f&#229;r k&ouml;ra i kollektivk&ouml;rf&auml;lt, m
+</li>
+</ul>
+</li>
+<li>begrepp
+<ul><li>Fordon
+<ul><li>motordrivna
+<ul><li>bil
+<ul><li>persobil
+
+</li>
+<li>lastbil
+
+</li>
+<li>buss
+
+</li>
+
+</ul>
+</li>
+<li>motorcykel
+<ul><li>l&auml;tt MC
+
+</li>
+<li>tung MC
+
+</li>
+
+</ul>
+</li>
+<li>moped
+<ul><li>klass 1 EU moped
+
+</li>
+<li>klass 2
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>sl&auml;p fordon
+
+</li>
+<li>cykel
+
+</li>
+<li>h&auml;stfordon
+
+</li>
+
+</ul>
+</li>
+<li>v&auml;g
+
+</li>
+<li>k&ouml;rbana
+
+</li>
+<li>v&auml;ggren
+
+</li>
+<li>k&ouml;rf&auml;lt
+
+</li>
+<li>v&auml;g markeringar
+
+</li>
+
+</ul>
+</li>
+<li>V&auml;g m&auml;rken
+<ul><li>Varningsm&auml;rken
+
+</li>
+<li>V&auml;jningsplikts m&auml;rken
+
+</li>
+<li>f&ouml;rbudsm&auml;rken
+
+</li>
+<li>p&#229;budsm&auml;rken
+
+</li>
+<li>anvisningsm&auml;rken
+
+</li>
+<li>lokaliseringsv&auml;gm&auml;rken
+
+</li>
+<li>till&auml;ggstavlor
+
+</li>
+
+</ul>
+</li>
+<li>stadsk&ouml;rning
+<ul><li>viktigt
+<ul><li>r&auml;tt anpassad fart
+
+</li>
+<li>&ouml;gon kontakt
+
+</li>
+<li>placering
+
+</li>
+<li>h&auml;nsyn till barn och &auml;ldre
+
+</li>
+
+</ul>
+</li>
+<li>v&auml;jning
+<ul><li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">h&ouml;gerregel</span>
+<ul><li>skyldig att sl&auml;ppa trafik fr&#229;n h&ouml;ger
+
+</li>
+<li>varnings m&auml;rke med korsning finns ibland
+
+</li>
+<li>g&auml;ller inte
+<ul><li>vid infart och k&ouml;rning p&#229; huvudled
+
+</li>
+<li>d&auml;r v&auml;g m&auml;rkenj stopp och v&auml;jnings plikt anv&auml;nts
+
+</li>
+<li>d&auml;r det finns fungerande trafikt ljus
+
+</li>
+<li>d&auml;r accelarations f&auml;lt anv&auml;nds
+
+</li>
+<li>i cirkulations plats
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>huvud led korsning
+<ul><li>trafik fr&#229;n v&auml;nster h&ouml;ger har v&auml;jningsplikt
+
+</li>
+<li>det f&ouml;rekommer flerv&auml;gsstopp korsningar
+<ul><li>den som stannar f&ouml;rst k&ouml;r f&ouml;rst
+
+</li>
+<li>&ouml;gonkontakt
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>sv&auml;ng i korsning
+<ul><li>sv&auml;ng till v&auml;nster - v&auml;j f&ouml;r m&ouml;tande trafik
+
+</li>
+
+</ul>
+</li>
+<li>v&auml;jningsplikt n&auml;r
+<ul><li>du k&ouml;r ut p&#229; gata fr&#229;n
+<ul><li>parkeringsplats
+
+</li>
+<li>fastighet
+
+</li>
+<li>bensinstation
+
+</li>
+<li>..
+
+</li>
+
+</ul>
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">h&ouml;gerregel</span>
+<ul><li>skyldig att sl&auml;ppa fordon trafik fr&#229;n h&ouml;ger
+<ul><li><span style="color: #ff0000;">ej cykel</span>
+
+</li>
+
+</ul>
+</li>
+<li>varnings m&auml;rke med korsning finns ibland
+
+</li>
+<li>g&auml;ller inte
+<ul><li>vid infart och k&ouml;rning p&#229; huvudled
+
+</li>
+<li>d&auml;r v&auml;g m&auml;rkenj stopp och v&auml;jnings plikt anv&auml;nts
+
+</li>
+<li>d&auml;r det finns fungerande trafikt ljus
+
+</li>
+<li>d&auml;r accelarations f&auml;lt anv&auml;nds
+
+</li>
+<li>i cirkulations plats
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>huvud led korsning
+<ul><li>trafik fr&#229;n v&auml;nster h&ouml;ger har v&auml;jningsplikt
+
+</li>
+<li>det f&ouml;rekommer flerv&auml;gsstopp korsningar
+<ul><li>den som stannar f&ouml;rst k&ouml;r f&ouml;rst
+
+</li>
+<li>&ouml;gonkontakt
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>sv&auml;ng i korsning
+<ul><li>sv&auml;ng till v&auml;nster - v&auml;j f&ouml;r m&ouml;tande trafik
+
+</li>
+
+</ul>
+</li>
+<li>v&auml;jningsplikt n&auml;r
+<ul><li>du k&ouml;r ut p&#229; gata fr&#229;n
+<ul><li>parkeringsplats
+
+</li>
+<li>fastighet
+
+</li>
+<li>bensinstation
+
+</li>
+<li>..
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>passera stillast&#229;ende buss
+<ul><li>s&auml;nk fart var beredd stanna om h&ouml;gsta hastighet &auml;r 50 km/h
+
+</li>
+
+</ul>
+</li>
+<li>vissa undantag
+<ul><li>fri v&auml;g
+<ul><li>polis,brand,ambulans har r&auml;tt att bryta trafikregler
+
+</li>
+<li>t&#229;g
+
+</li>
+<li>sp&#229;rvagn
+
+</li>
+
+</ul>
+</li>
+<li>ej hindra processioner t.ex begravingst&#229;g
+
+</li>
+<li>gult varningsljus
+<ul><li>v&auml;g arbete varning
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>placering
+<ul><li>dubbel riktad
+<ul><li>om h&ouml;ger: placering h&ouml;ger
+
+</li>
+<li>om rakt: placering h&ouml;ger eller mitt
+
+</li>
+<li>om v&auml;nster: placering v&auml;nster n&auml;r k&ouml;rbarnans mitt
+
+</li>
+
+</ul>
+</li>
+<li>enkel riktad
+<ul><li>om h&ouml;ger: placering h&ouml;ger
+
+</li>
+<li>om rakt: placering h&ouml;ger eller mitt
+
+</li>
+<li><span style="color: #990000;">om v&auml;nster: placering v&auml;nster</span>
+
+</li>
+
+</ul>
+</li>
+<li>cyklister
+<ul><li>vingelavst&#229;nd
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>hastighet
+<ul><li>t&auml;tbebyggt oftast 50 km/h
+
+</li>
+
+</ul>
+</li>
+<li>Rangordning
+<ul><li>polismans tecken
+
+</li>
+<li>trafik signal
+
+</li>
+<li>v&auml;gm&auml;rke
+
+</li>
+
+</ul>
+</li>
+<li>stopp signal skylt
+<ul><li>stanna vid stopp linje om r&ouml;tt ljus
+
+</li>
+
+</ul>
+</li>
+<li>omk&ouml;rning
+<ul><li>om max 70 km/h och minst 2 k&ouml;rf&auml;lt
+<ul><li>omk&ouml;rning till&#229;tet p&#229; h&ouml;ger och v&auml;nster sida
+
+</li>
+
+</ul>
+</li>
+<li>f&ouml;rbjudet
+<ul><li>om fara
+
+</li>
+<li>om m&ouml;tande trafik
+
+</li>
+<li>om bakomvarande p&#229;b&ouml;rjar omk&ouml;rning
+
+</li>
+<li>p&#229; v&auml; sida om framf&ouml;r bil p&#229;b&ouml;rjar v&auml; sv&auml;nng
+
+</li>
+<li>f&ouml;re j&auml;rnv&auml;gskoorsning
+
+</li>
+<li>f&ouml;re &ouml;verg&#229;ngsst&auml;lle el cykel avfart
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li><span style="color: #990000;">parkering</span>
+
+</li>
+<li>f&ouml;rbjudet stanna
+<ul><li>j&auml;rnv&auml;gs korsning
+
+</li>
+<li>sp&#229;rv&auml;gskorsning
+
+</li>
+<li>tunnel
+
+</li>
+<li>...
+
+</li>
+
+</ul>
+</li>
+<li>datum parkering
+<ul><li>j&auml;mna eller udda datum
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>landsv&auml;g k&ouml;rning
+<ul><li>avst&#229;nd till bil framf&ouml;r
+<ul><li>avst&#229;nd till framf&ouml;rvarande 3-sek
+
+</li>
+<li>samma avst&#229;nd som hastighet - 70 km/h 70 meter
+
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">g&auml;ller i bra underlag</span>
+
+</li>
+
+</ul>
+</li>
+<li>fartblindhet
+
+</li>
+<li>tunnelseende - periferi ses ej
+
+</li>
+<li>v&auml;garbete
+<ul><li>l&#229;g fart stort avst&#229;nd
+
+</li>
+<li>h&auml;nsyn
+
+</li>
+
+</ul>
+</li>
+<li>omk&ouml;rning
+<ul><li>stora krav p&#229; bed&ouml;mningar
+
+</li>
+<li>hur l&#229;ng str&auml;cka kan du &ouml;verblicka - r&auml;cker den ?
+
+</li>
+<li>avbryt omk&ouml;rning om det beh&ouml;vs
+
+</li>
+<li>till&#229;ten ?
+
+</li>
+<li>risk att bil framf&ouml;r skall sv&auml;nga v&auml; ?
+
+</li>
+<li>n&auml;r du blir omk&ouml;rd
+<ul><li>h&#229;ll till h&ouml;ger
+
+</li>
+<li>&ouml;ka inte farten
+
+</li>
+<li>ev. minska farten
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>v&auml;grenen
+<ul><li>&auml;r inget extra k&ouml;rf&auml;lt !
+
+</li>
+<li>s&auml;kerhetsomr&#229;de
+
+</li>
+<li>man kan anv&auml;nda f&ouml;r att sl&auml;ppa fram trafik
+
+</li>
+
+</ul>
+</li>
+<li>v&auml;nster sv&auml;ng landsv&auml;g
+<ul><li>placering intill mittlinje
+
+</li>
+<li>vrid inte hjul till v&auml;nster
+<ul><li>om du blir p&#229;k&ouml;rd kan du kastas ut mot m&ouml;tande
+
+</li>
+
+</ul>
+</li>
+<li>spanska sv&auml;ngen
+
+</li>
+<li>undvik v&auml;nstersv&auml;ng om det finns trafik bakom
+
+</li>
+
+</ul>
+</li>
+<li>j&auml;rnv&auml;gs korsningar
+<ul><li>sikten bestmmer farten
+
+</li>
+<li>v&auml;xla ner f&ouml;re korsning
+
+</li>
+<li>skulle du fastna mellan bommar - k&ouml;r igenom dem
+
+</li>
+<li>starta in f&ouml;r tidigt
+
+</li>
+<li>finns det stopp m&auml;rke - stanna vid stopp linje
+
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">f&ouml;rbjudet att k&ouml;ra om f&ouml;re eller i korsning</span>
+
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">f&ouml;rbjudet att stanna i korsning</span>
+
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">f&ouml;rbjudet att parkera n&auml;rmare &auml;n 30 m fr&#229;n korsning</span>
+
+</li>
+
+</ul>
+</li>
+<li>viltfaran
+<ul><li>risk st&ouml;rst
+<ul><li>gryning/skymning
+
+</li>
+<li>maj - juni
+
+</li>
+<li>sept-okt
+
+</li>
+
+</ul>
+</li>
+<li>om olycka
+<ul><li>m&auml;rk ut plats vid kollisison
+
+</li>
+<li>varnings blinkers
+
+</li>
+<li>varningstriangel
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>stanna
+<ul><li>l&#229;ngt fram om parkeringsplats
+
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">parkeringsf&ouml;rbud p&#229; huvudled g&ouml;r att du inte f&#229;&#229;r stanna och svara i telefon</span>
+
+</li>
+
+</ul>
+</li>
+<li>n&ouml;dstopp
+<ul><li>stanna l&#229;ng ut p&#229; kanten med varnings blinker
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>motorv&auml;g
+<ul><li>M&auml;rks ut med skylten Motorv&auml;g.
+
+</li>
+<li>Trafiken i de b&#229;da riktningarna &auml;r alltid avskild. Inga m&ouml;ten allts&#229;.
+
+</li>
+<li>bara bil buss lastbil motorcykel
+
+</li>
+<li>f&ouml;rbud
+<ul><li><span style="color: #ff0000;">P&#229; motorv&auml;g &auml;r det f&ouml;rbjudet att</span>
+<ul><li><p>Stanna och parkera.
+<p>V&auml;nda (inte till&#229;tet att anv&auml;nda v&auml;ndplatser och h&#229;l i mittr&auml;ckena som &auml;r till f&ouml;r utryckningsfordon och v&auml;garbetare).
+<p>Backa.
+<p>G&#229;.
+<p>Cykla.
+<p>Lifta och att plocka upp liftare.
+<p>K&ouml;ra moped.
+<p>Anv&auml;nda v&auml;grenen annat &auml;n i n&ouml;dfall.
+<p>Bogsera.
+<ul><li><p>Undantag: Om du f&#229;tt stopp p&#229; motorv&auml;gen &auml;r det till&#229;tet att bogsera p&#229; v&auml;grenen, dock endast fram till n&auml;rmaste avfart.
+</li>
+</ul><p>K&ouml;ra fordon som inte &auml;r konstruerade f&ouml;r att framf&ouml;ras i minst 40 km/h.
+<p>Undantag: F&ouml;rbjudet att k&ouml;ra EU-moped, trots att de f&#229;r k&ouml;ra i 45 km/h.
+<p>K&ouml;ra traktor eller motorredskap.
+<ul><li>Undantag: Till&#229;tet att k&ouml;ra motorredskap klass I inr&auml;ttad som mobilkran.
+
+</li>
+
+</ul></li>
+</ul>
+</li>
+
+</ul>
+</li>
+<li>risker
+<ul><li>korta avst&#229;nd
+
+</li>
+<li>enformig k&ouml;rning
+
+</li>
+<li>vattenplaning
+
+</li>
+
+</ul>
+</li>
+<li>Ingen korsande trafik i samma plan. (Trafiken leds om p&#229; broar och liknande.)
+
+</li>
+<li>B&#229;de avfarten och p&#229;farten tillh&ouml;r motorv&auml;gen, vilket g&ouml;r att samma regler g&auml;ller &auml;ven d&auml;r.
+
+</li>
+<li>H&#229;ll dig alltid i h&ouml;ger k&ouml;rf&auml;lt, utom n&auml;r du g&ouml;r omk&ouml;rningar.
+
+</li>
+<li><span style="color: #ff0000;">Finns inget accelerationsf&auml;lt har de anslutande fordonen v&auml;jningsplikt mot trafiken p&#229; motorv&auml;gen.</span>
+
+</li>
+
+</ul>
+</li>
+<li>motortrafikled
+<ul><li><p>M&auml;rks ut med skylten Motortrafikled.
+<p>Samma s&auml;kerhet och regler som motorv&auml;g, f&ouml;rutom:
+<ul><li>Trafiken &auml;r inte alltid uppdelad i olika k&ouml;rbanor. Du kan allts&#229; f&#229; m&ouml;ten.
+
+</li>
+<li>Accelerationsf&auml;lt kan saknas och avfarterna kan vara kortare &auml;n p&#229; motorv&auml;gar.
+
+</li>
+<li>Inte f&ouml;rbjudet att anv&auml;nda v&auml;grenen.
+
+</li>
+
+</ul><p>Eftersom s&auml;kerhetskraven inte &auml;r lika stora p&#229; motortrafikleder, &auml;r de mer olycksdrabbade &auml;n motorv&auml;gar.
+<p>M&#229;nga motortrafikleder har dock utrustats med vajerr&auml;cken, s&#229; kallade 2+1-v&auml;gar. Detta &auml;r mycket effektivt n&auml;r det g&auml;ller att f&ouml;rhindra m&ouml;tesolyckor.
+<p>Fartblindhet
+<p>N&auml;r du saktar in efter att ha k&ouml;rt fort en l&auml;ngre tid, tycker du f&ouml;rmodligen att du k&ouml;r l&#229;ngsammare &auml;n vad du faktiskt g&ouml;r. Detta kallas fartblindhet och resultatet kan bli missbed&ouml;mning av avst&#229;nd och stoppstr&auml;ckan.
+<p>Risken f&ouml;r fartblindhet &ouml;kar med
+<ul><li>Breda v&auml;gar utan distraktioner.
+
+</li>
+<li>Tystg&#229;ende och bekv&auml;ma bilar.
+
+</li>
+<li>H&ouml;g hastighet under l&#229;ng tid.
+
+</li>
+
+</ul></li>
+</ul>
+</li>
+<li>motorv&auml;g &amp; motortrafikled
+<ul><li>Tunga lastbilar
+<ul><li><p><span style="color: #ff0000;font-family: SansSerif, sans-serif; font-weight: bold; ">Tunga lastbilar f&#229;r k&ouml;ra i max 90 km/h p&#229; motorv&auml;gar och motortrafikleder. P&#229; andra v&auml;gar f&#229;r tunga lastbilar k&ouml;ra i max 80 km/h.</span>
+</li>
+</ul>
+</li>
+
+</ul>
+</li>
+<li>bilens inre s&auml;kerhet
+<ul><li>bilb&auml;lte n&auml;ra kroppen , dra till,ta av jackan
+
+</li>
+<li>justera h&ouml;jd p&#229; huvudskyddet
+<ul><li>wiplash
+
+</li>
+
+</ul>
+</li>
+<li>krockkudde viktigt skydd
+
+</li>
+<li>bilbarnstol i frams&auml;tet f&#229;r inte anv&auml;ndas utan att krockkudde kopplas bort
+
+</li>
+<li>l&auml;gg tyngre grejer l&#229;gt
+
+</li>
+
+</ul>
+</li>
+<li><span id="show1_3" class="foldclosed" onClick="show_folder('1_3')" style="POSITION: absolute">+</span> <span id="hide1_3" class="foldopened" onClick="hide_folder('1_3')">-</span>
+barns&auml;kerhet
+<ul id="fold1_3" style="POSITION: relative; VISIBILITY: visible;"><li>0-9 m&#229;n 
+<ul><li>bak&#229;tv&auml;nt babyskydd
+
+</li>
+
+</ul>
+</li>
+<li>9-m&#229;n-4 &#229;r
+<ul><li>bak&#229;t v&auml;nd bilbarnstol
+
+</li>
+
+</ul>
+</li>
+<li>4 &#229;r-
+<ul><li>fram&#229;tv&auml;nd b&auml;ltestol eller b&auml;lteskudde
+
+</li>
+
+</ul>
+</li>
+<li>minst 135 cm 
+<ul><li>sitta som vuxen men i baks&auml;tet
+
+</li>
+
+</ul>
+</li>
+<li>minst 140
+<ul><li>f&#229;r sitta vid plats med krockkudde
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>bilens k&ouml;regenskaper
+<ul><li><p>stopp str&auml;cka = reaktions str&auml;cka + bromsstr&auml;cka
+<p>reaktions str&auml;ckans l&auml;ngd avg&ouml;rs av farten och reaktions tid
+<p>r&auml;kna ut reaktions str&auml;ckan
+<ul><li>Stryk 0 i farten och multiplicera med 3
+<ul><li><span style="color: #ff0000;">60 km -&gt; 6*3=18 meter</span>
+
+</li>
+
+</ul>
+</li>
+
+</ul><span style="color: #ff0000;">&#xa;    <p>&#xa;      <b>Hastighet per sekund</b>&#xa;    </p>&#xa;    <p>&#xa;      Omvandling km/timmen till meter/sekund&#xa;    </p>&#xa;    <p>&#xa;      stryk sista siffran och multiplcera med 3&#xa;    </p>&#xa;    <p>&#xa;      Ex: 30km /timmen = 9 meter sekund&#xa;    </p>&#xa;    <p>&#xa;      &#xa0;&#xa0;&#xa0;&#xa0;50km /timmen = 15 meter sekund &#xa;    </p>&#xa;  </span>
+<p>om du &ouml;kar farten till det dubbla -&gt; r&ouml;relse energi 4 ggr st&ouml;rre
+<p>om du &ouml;kar farten 3 g&#229;nger -&gt; r&ouml;relse energi 9 ggr st&ouml;rre
+<p>bromstr&auml;ckan p&#229;verkas ocks&#229; av
+<ul><li>v&auml;glag
+
+</li>
+<li>d&auml;ck
+
+</li>
+<li>bromsar
+
+</li>
+<li>bromsteknik
+
+</li>
+<li>lastens placering
+
+</li>
+
+</ul><p>tv&auml;rbromsning
+<ul><li>bil g&#229;r inte att styra
+
+</li>
+
+</ul><p>understyrning
+<ul><li>vrid ratt men upplever att bilen sv&auml;nger LITE
+<ul><li>framd&auml;ck vattenplanar
+
+</li>
+<li>bromsar utan ABS
+
+</li>
+<li>motorbroms med framhjulsdrift
+
+</li>
+<li>l&#229;gt ringtryck fram
+
+</li>
+
+</ul>
+</li>
+
+</ul><p>&ouml;verstyrning
+<ul><li>vrid ratt men upplever att bilen sv&auml;nger MYCKET
+<ul><li>bakd&auml;ck vattenplanar
+
+</li>
+<li>f&ouml;raren bromsar h&#229;rt
+
+</li>
+<li>motorbroms med framhjulsdrift
+
+</li>
+<li>l&#229;gt ringtryck bak
+
+</li>
+<li>sidvind
+
+</li>
+
+</ul>
+</li>
+
+</ul><p><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">bakhjulssladd farlig vid h&#229;rd inbromsning</span>
+<ul><li>s&auml;mre bakd&auml;ck &auml;n framd&auml;ck
+
+</li>
+<li>felaktig bromskraft f&ouml;rdelning
+
+</li>
+<li>d&#229;liga st&ouml;td&auml;mpare bak
+
+</li>
+
+</ul><p>b&auml;sta d&auml;ck p&#229; bak-axel
+<p>drivsystem
+<ul><li>framhjulsdriven
+<ul><li>de flesta moderna
+
+</li>
+<li>b&auml;ttre p&#229; vinterv&auml;g
+
+</li>
+<li>&nbsp;
+
+</li>
+
+</ul>
+</li>
+<li>bakhjulsdriven
+<ul><li>s&auml;mre v&auml;gegenskaper p&#229; d&#229;ligt v&auml;glag
+
+</li>
+
+</ul>
+</li>
+<li>4-hjuls driven
+<ul><li>stora f&ouml;rdelar p&#229; sn&ouml;/is
+
+</li>
+
+</ul>
+</li>
+
+</ul><p>anti-spinn system
+<ul><li>de flesta nya bilar
+<ul><li>halt v&auml;glagg
+
+</li>
+
+</ul>
+</li>
+
+</ul><p>antisladd system
+<ul><li>ESP,ESC,DSTC
+<ul><li>k&auml;nner av om ett hjul sladdar
+
+</li>
+
+</ul>
+</li>
+
+</ul><p>bromssystem
+<ul><li>hydrauliskt
+<ul><li>bromsv&auml;tskan &ouml;verf&ouml;r kraften
+
+</li>
+
+</ul>
+</li>
+<li>tv&#229;krets
+<ul><li>l&auml;ckage p&#229; ena s&#229; funkar de 2 andra hjulen
+
+</li>
+
+</ul>
+</li>
+<li>vakuumservo (bromsservo)
+<ul><li>f&ouml;rst&auml;rker bromskraft
+
+</li>
+<li>&nbsp;
+
+</li>
+
+</ul>
+</li>
+<li>trum servo
+<ul><li>&auml;ldre bilar
+
+</li>
+<li>&nbsp;
+
+</li>
+
+</ul>
+</li>
+<li>skivbroms
+
+</li>
+<li>bromsv&auml;tskan
+<ul><li>kontrollera niv&#229;
+
+</li>
+<li>fel beror p&#229; l&auml;ckage eller utslitna bromsklotsar
+
+</li>
+<li>drar &#229;t sig fukt
+
+</li>
+<li>b&ouml;r bytas vartannat &#229;r
+
+</li>
+
+</ul>
+</li>
+<li>parkerings broms
+<ul><li>separat broms p&#229; bakhjulen
+
+</li>
+
+</ul>
+</li>
+<li>f&auml;rdbroms
+<ul><li>kraft &ouml;verf&ouml;rs med bromsv&auml;tska
+
+</li>
+
+</ul>
+</li>
+<li>varningslampa ABS
+<ul><li>risk f&ouml;r hjull&#229;sning under h&#229;rd broms
+
+</li>
+
+</ul>
+</li>
+<li>bromsvarnings lampa
+<ul><li>k&ouml;r inte vidare 
+
+</li>
+<li>b&auml;rgning
+
+</li>
+
+</ul>
+</li>
+<li>broms kontroll
+<ul><li>tryck broms h&#229;rt i 20 sek
+<ul><li>om pedal sjunker - l&auml;ckage
+
+</li>
+<li>om broms tar l&#229;ngt ner - slitna bromsar
+
+</li>
+<li>om fj&auml;drande broms - luft i systemet
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul><p><span style="color: #ff0000;">m&ouml;nsterdjup</span>
+<ul><li><span style="color: #ff0000;font-family: SansSerif, sans-serif; ">minsta till&#229;tna 1,6 mm</span>
+
+</li>
+<li><span style="color: #ff0000;">om vinter v&auml;glag k&ouml;rning 3 mm</span>
+
+</li>
+<li>nytt har 9 mm
+
+</li>
+
+</ul><p><span style="color: #ff0000;">d&auml;ckbyte</span>
+<ul><li><span style="color: #ff0000;">1 dec - 31 mars</span>
+<ul><li>vinterd&auml;ck m&#229;ste anv&auml;ndas vid vinterv&auml;glag
+
+</li>
+
+</ul>
+</li>
+<li>16 april - 30 Sept
+<ul><li>dubb d&auml;ck f&ouml;rbud
+<ul><li>g&auml;ller inte om vinterv&auml;glag
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>dubbd&auml;ck
+<ul><li>bra i sn&ouml; och is
+
+</li>
+<li>sliter mer p&#229; v&auml;gar
+
+</li>
+
+</ul>
+</li>
+<li>friktions d&auml;ck
+<ul><li>vinterd&auml;ck utan dubbar
+<ul><li>bra is sn&ouml; - s&auml;mre p&#229; is
+
+</li>
+<li>sliter inte p&#229; v&auml;gar
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul><p>styrsystem
+<ul><li>nya bilar har servo styrning
+<ul><li>funkar inte n&auml;r motorn &auml;r av, t.ex vid bogserings
+
+</li>
+
+</ul>
+</li>
+
+</ul><p>generatorn
+<ul><li>str&ouml;m som lagras i batteriet alstras av generatorn
+
+</li>
+<li>generator rem driver generatorn - den kan g&#229; av
+
+</li>
+<li>laddningslampa
+
+</li>
+
+</ul><p>s&auml;kringar
+<ul><li>man ser om de &auml;r s&ouml;nder genoma tt tr&#229;d &auml;r av
+
+</li>
+
+</ul><p>starthj&auml;lp
+<ul><li>koppla ihop plus med plus och minus med minus
+
+</li>
+
+</ul><p>kyl system
+<ul><li>fyll p&#229; kylv&auml;tska (glykol och vatten)
+<ul><li>f&ouml;rhindrar frysning
+
+</li>
+
+</ul>
+</li>
+
+</ul><p>olja
+<ul><li>gl&ouml;m inte att kontrollera regelbundet ( 1 g&#229;ng i m&#229;naden)
+
+</li>
+<li>om olje lampa lyser - stoppa bilen och st&auml;ng av motorn
+
+</li>
+
+</ul><p>avgas system
+<p><span style="color: #ff0000;">kontroll lampor</span>
+<ul><li>sid 146
+
+</li>
+<li>olje lampa ser ut som oljekanna
+
+</li>
+<li>laddnings lampa ser ut som batteri
+
+</li>
+<li>motor temperatur som m&auml;tare
+
+</li>
+
+</ul><p>m&ouml;rker k&ouml;rning
+<ul><li>m&ouml;rker seende
+
+</li>
+<li>bl&auml;ndning
+
+</li>
+<li>siktstr&auml;ckor
+<ul><li>helljus
+<ul><li>belyser 100 m
+
+</li>
+<li>refflex syns p&#229; 300m
+
+</li>
+
+</ul>
+</li>
+<li>halv ljus
+<ul><li>belyser 5-30 m
+
+</li>
+<li>ser m&ouml;rka kl&auml;der 25 m
+
+</li>
+<li>ser ljusa kl&auml;der 60 m
+
+</li>
+<li>ser reflex 125 m
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>ljusbehandling landsv&auml;g - m&ouml;te
+<ul><li>k&ouml;r p&#229; helljus s&#229; l&auml;nge som m&ouml;jligt
+
+</li>
+<li>s&auml;nk &nbsp;farten
+
+</li>
+<li>hel ljus i m&ouml;tes&ouml;gonblicket
+
+</li>
+
+</ul>
+</li>
+
+</ul><p>bilens belysning
+<ul><li>helljus
+<ul><li>anv&auml;nd s&#229; ofta som m&ouml;jligt
+
+</li>
+
+</ul>
+</li>
+<li>halvljus
+
+</li>
+<li>dimljus
+<ul><li>vissa bilar &auml;r utrustade 
+
+</li>
+<li>i dagsljus kan de ers&auml;tta halvljus
+
+</li>
+
+</ul>
+</li>
+<li>varselljus
+<ul><li>det &auml;r f&ouml;rbjudet att ha halv,dim och varsel t&auml;nt samtigt
+
+</li>
+
+</ul>
+</li>
+<li>parkeringsljus
+<ul><li>n&auml;r du st&#229;r utmed en v&auml;g
+
+</li>
+
+</ul>
+</li>
+<li>bakljus
+<ul><li>alltid t&auml;nda med parkering/hel och halv
+
+</li>
+
+</ul>
+</li>
+
+</ul><p>halka
+<ul><li>underkylt regn
+
+</li>
+<li>vatten planing
+
+</li>
+<li><span id="show1_4" class="foldclosed" onClick="show_folder('1_4')" style="POSITION: absolute">+</span> <span id="hide1_4" class="foldopened" onClick="hide_folder('1_4')">-</span>
+k&ouml;rning med sl&auml;pvagn i halt v&auml;glag
+<ul id="fold1_4" style="POSITION: relative; VISIBILITY: visible;"><li>risk f&ouml;r f&auml;llknivsverkan
+
+</li>
+
+</ul>
+</li>
+<li><span style="color: #ff0000;font-family: SansSerif, sans-serif; font-weight: bold; ">k&ouml;r du f&ouml;r fort - klarar du inte alla situationer du kan r&#229;ka ut f&ouml;r</span>
+
+</li>
+
+</ul></li>
+</ul>
+</li>
+<li>M&auml;nniskan
+<ul><li>st&ouml;rre ben&auml;genhet till olycka
+<ul><li>festprissen
+
+</li>
+<li>&auml;ventyraren
+
+</li>
+<li>olycksf&#229;geln
+<ul><li><span style="color: #ff0000;font-family: SansSerif, sans-serif; font-weight: bold; ">15% av befolkningen &auml;r inblandade i 50 % av alla olyckor</span>
+
+</li>
+<li>handla f&ouml;rst och t&auml;nka sen
+
+</li>
+<li>bortf&ouml;rklaringar
+
+</li>
+<li>presiget&auml;nkande
+
+</li>
+<li>sj&auml;lvh&auml;vdelse
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>Reaktions tid
+<ul><li>Stoppstr&auml;ckan = reaktionsstr&auml;ckan + bromsstr&auml;ckan
+
+</li>
+<li>Reaktionsstr&auml;ckans l&auml;ngd p&#229;verkas av
+
+</li>
+<li>Fordonets hastighet (proportionerlig &ouml;kning):
+
+</li>
+<li><span style="color: #ff0000;">2 g&#229;nger h&ouml;gre fart = 2 g&#229;nger l&auml;ngre reaktionsstr&auml;cka.</span>
+
+</li>
+<li><span style="color: #ff0000;">5 g&#229;nger h&ouml;gre fart = 5 g&#229;nger l&auml;ngre reaktionsstr&auml;cka.</span>
+
+</li>
+
+</ul>
+</li>
+<li>stress
+
+</li>
+<li>synen
+<ul><li>krav p&#229; synsk&auml;rpa m&#229;ste vara 0.5
+<ul><li>&#229;tminstone med glas&ouml;gon linser
+
+</li>
+
+</ul>
+</li>
+<li>normalt synf&auml;lt 180 grader
+
+</li>
+<li>direktseende &auml;r bara 1-2 % , resten blir perifert synf&auml;lt
+
+</li>
+
+</ul>
+</li>
+<li>mobil
+<ul><li>stanna innan du ringer
+
+</li>
+<li>anv&auml;nd mobilsvar
+
+</li>
+<li>be passagerare svara
+
+</li>
+<li>SMS &auml;r mycket h&ouml;g risk
+
+</li>
+
+</ul>
+</li>
+<li>&auml;ldre bilf&ouml;rare
+<ul><li>anpassar k&ouml;rning
+
+</li>
+<li>undviker m&ouml;rker t&auml;t trafik
+
+</li>
+<li>problem i korsningar
+
+</li>
+
+</ul>
+</li>
+<li>tr&ouml;tthet
+<ul><li>p&#229;verkar
+
+</li>
+<li>tr&ouml;tthet vid k&ouml;rning utan natt s&ouml;mn kan j&auml;mf&ouml;ras med 0.8 promille alkohol
+
+</li>
+<li>tupplur p&#229; 20 min kan &ouml;vervinna tr&ouml;tthet
+
+</li>
+
+</ul>
+</li>
+<li>alkohol
+<ul><li>s&ouml;mnig
+
+</li>
+<li>f&ouml;rorsakar 150 personers liv varje &#229;r
+
+</li>
+<li>du m&#229;ste ta st&auml;llning
+<ul><li>kan du t&auml;nka dig att &#229;ka med alkohol p&#229;verkad
+
+</li>
+<li>hur blir ditt liv om du som berusad d&ouml;dar ett barn ?`+
+
+</li>
+
+</ul>
+</li>
+<li><span style="color: #ff0000;font-family: SansSerif, sans-serif; font-weight: bold; ">lagen </span>
+<ul><li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">0,2 promille</span>
+<ul><li>Rattfylleri
+<ul><li>b&ouml;ter eller f&auml;ngelse i h&ouml;gst 6 m&#229;nader
+
+</li>
+<li>k&ouml;rkort &#229;terkallas 1 m&#229;n - 3 &#229;r
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">1 promille</span>
+<ul><li>Grovt rattfylleri
+<ul><li>f&auml;ngelse upp tilll tv&#229; &#229;r
+
+</li>
+<li>om v&#229;llande till annas d&ouml;d upp till 6 &#229;r
+
+</li>
+<li>k&ouml;rkort &#229;terkallas minst 1 &#229;r
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>narkotika
+<ul><li>0,0 % alkohol
+
+</li>
+<li>100 % k&ouml;rodduglig
+
+</li>
+<li>100 % oansvarig
+
+</li>
+
+</ul>
+</li>
+<li>milj&ouml;n
+<ul><li><span id="show1_5" class="foldclosed" onClick="show_folder('1_5')" style="POSITION: absolute">+</span> <span id="hide1_5" class="foldopened" onClick="hide_folder('1_5')">-</span>
+vad kan du g&ouml;ra ?
+<ul id="fold1_5" style="POSITION: relative; VISIBILITY: visible;"><li>cykla ta buss kortare str&auml;ckor
+
+</li>
+<li>n&auml;stan h&auml;lften av a bilresor kortare &auml;n 5 km
+
+</li>
+<li>i t&auml;torter &auml;r de flesta kortare &auml;n 3 km
+
+</li>
+<li>avgas rening fungerar d&#229;lig
+
+</li>
+<li>stora utsl&auml;pp 
+
+</li>
+
+</ul>
+</li>
+<li>eco driving
+<ul><li>&ouml;ka farten best&auml;mt upp till 300 v/min
+
+</li>
+<li>hoppa &ouml;ver v&auml;xel
+
+</li>
+<li>planera k&ouml;rning- undvik start stopp
+
+</li>
+<li>motorbromsa tidigt
+
+</li>
+<li>uppe i fart h&#229;ll motorvarv s&#229; l&#229;gt som m&ouml;jligt
+
+</li>
+
+</ul>
+</li>
+<li>vad kan du g&ouml;ra ?
+<ul><li>kall starter
+<ul><li>anv&auml;nd motorv&auml;rmare
+
+</li>
+
+</ul>
+</li>
+<li>rulla l&auml;tt
+<ul><li>ta av takr&auml;cke
+
+</li>
+<li>l&#229;gt luft motst&#229;nd
+
+</li>
+<li>fyllda d&auml;ck
+
+</li>
+
+</ul>
+</li>
+<li>regelbunden service
+
+</li>
+<li>tv&auml;tta bil milj&ouml;v&auml;nligt
+
+</li>
+<li>v&auml;lj bil med h&ouml;g s&auml;kerhet och l&#229;g br&auml;nslef&ouml;rbrukning
+
+</li>
+<li>v&auml;lje en bil med katalysator
+
+</li>
+<li>katalysator renar avgaser
+<ul><li>omvandlar 80-95 % skadliga &auml;mnen till koldioxid och vatten
+
+</li>
+<li>fungerar inte f&ouml;rr&auml;n viss arbetstemperatur
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>milj&ouml; klassade bilar
+<ul><li>inf&ouml;rdes 1993
+
+</li>
+<li>milj&ouml;klass 2005
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li><span style="color: #ff0000;">kompletteringar</span>
+<ul><li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">hastigheter</span>
+<ul><li><span style="color: #cc3300;">sida 234-235</span>
+
+</li>
+
+</ul>
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">bil provning</span>
+<ul><li><span style="color: #cc3300;">sida 236-237</span>
+
+</li>
+
+</ul>
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">registreringsbevis</span>
+<ul><li><span style="color: #ff0000;">sida 238-239</span>
+
+</li>
+
+</ul>
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">f&ouml;rs&auml;kringar</span>
+<ul><li><span style="color: #ff0000;">sida 240-241</span>
+
+</li>
+<li>trafik f&ouml;rs&auml;kring
+<ul><li>obligatorisk
+
+</li>
+<li>t&auml;cker kostnader vid olycka
+
+</li>
+<li>dock inte kostnader p&#229; egna bilen
+
+</li>
+
+</ul>
+</li>
+<li>delksko f&ouml;rs&auml;kring
+<ul><li>brand,st&ouml;ld,glas,r&auml;ddning...
+
+</li>
+
+</ul>
+</li>
+<li>Vagnskade f&ouml;rs&auml;kring
+<ul><li>ers&auml;'tter skador d&#229; olyckan &auml;r ens fel
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">lasta bilen</span>
+<ul><li><span style="color: #ff0000;">sida 242-243</span>
+
+</li>
+
+</ul>
+</li>
+<li><span style="font-family: SansSerif, sans-serif; font-weight: bold; ">k&ouml;ra med sl&auml;pvagn</span>
+<ul><li><span style="color: #990000;">sida 244-245</span>
+
+</li>
+<li>bil
+<ul><li>tj&auml;nste vikt=olastad inkl. f&ouml;rare
+
+</li>
+
+</ul>
+</li>
+<li>sl&auml;pvagn
+<ul><li>tj&auml;nste vikt=sl&auml;pvagn olastad
+
+</li>
+<li>total vikt = tj&auml;nste vikt + maxlast
+
+</li>
+
+</ul>
+</li>
+<li>max last= sl&auml;pvagnens eller bilens max till&#229;tna enligt registerringsbevis
+
+</li>
+<li>brutto vikt=bil eller sl&auml;pvags vikt vid visst tillf&auml;lle
+
+</li>
+<li>sl&auml;pvagnar med total vikt &ouml;ver 750 kg
+<ul><li>f&auml;rdbroms
+
+</li>
+
+</ul>
+</li>
+<li>sl&auml;pvagnar med tj&auml;nste vikt &ouml;ver 400 kg
+<ul><li>parkerings broms
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+<li>bogsering
+<ul><li>h&ouml;gsta till&#229;tna hastighet &auml;r 30 km/h
+
+</li>
+<li>om avst&#229;nd mellan bilar &gt; 2 m ska bogserlina ha flagga
+
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul><SCRIPT type="text/javascript">
+fold_document();
+</SCRIPT>
+</body>
+</html>
