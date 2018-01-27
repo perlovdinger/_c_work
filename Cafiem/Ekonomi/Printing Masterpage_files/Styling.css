@@ -1,0 +1,489 @@
+﻿body {
+    font-family: Verdana;
+    color: Black;
+}
+
+/*
+span
+{
+    font-size: 14px;
+}
+*/
+
+#HeaderPanel, #ContentPanel, #FooterPanel, .ContentPanelPortrait, .HeaderPanelPortrait, .FooterPanelPortrait {
+    width: 1000px;
+}
+
+.ContentPanelLandscape, .HeaderPanelLandscape, .FooterPanelLandscape {
+    width: 1400px;
+}
+
+#HeaderCompanyName, #HeaderOrgNo, .FooterEmployeeInfo, .FooterVismaService {
+    font-size: 14px;
+}
+
+
+
+
+/* Header */
+#HeaderPanel, .HeaderPanelLandscape, .HeaderPanelPortrait {
+    border-bottom: 1px solid black;
+    margin-top: 53px;
+}
+
+.Header {
+    width: 100%;
+    font-size: 35px;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+}
+
+#HeaderCompanyNameAndOrgNoBox {
+    margin-bottom: 4px;
+}
+
+
+#HeaderCompanyName {
+    height: 23px;
+}
+
+
+
+/* Content */
+#ContentPanel, .ContentPanelLandscape, .ContentPanelPortrait {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.ContentFiscalYearText, .ContentPeriodText {
+    width: 130px;
+}
+
+
+/* Footer */
+#FooterPanel, .FooterPanelLandscape, .FooterPanelPortrait {
+    border-top: 1px solid black;
+    padding-top: 4px;
+}
+
+.FooterEmployeeInfo {
+    float: left;
+    margin-left: 3px;
+}
+
+.FooterVismaService {
+    float: right;
+    margin-right: 3px;
+}
+
+.pageNumberering {
+    margin: 20px;
+    border: 1px;
+    border-color: black;
+    width: 100%;
+    text-align: center;
+    color: #888;
+}
+
+
+
+
+/* Tables */
+
+#ContentPanel table, .ContentPanelLandscape table, .ContentPanelPortrait table {
+    font-size: 14px;
+    width: 100%;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+thead {
+    display: table-header-group;
+    background: #e3e8ec;
+}
+
+td {
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    vertical-align: top;
+}
+
+    td p {
+        white-space: nowrap;
+        margin-left: 5px;
+    }
+
+th {
+    font-size: 14px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    vertical-align: bottom;
+}
+
+.CellSeparator {
+    background: black;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+}
+
+.RightAlignedText {
+    text-align: right;
+}
+
+.LeftAlignedText {
+    text-align: left;
+}
+
+.centerAlignedText {
+    text-align: center;
+}
+
+/* Row Styles BalanceReport*/
+.BalanceReportTotalSummationFirstColumn {
+    font-size: 14px;
+    font-weight: bold;
+    border-top: 1px solid black;
+}
+
+.BalanceReportTotalSummationSumColumn {
+    font-size: 14px;
+    font-weight: bold;
+    border-top: 1px solid black;
+}
+
+.BalanceReportRowLevel1 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.BalanceReportRowLevel1FirstColumn {
+    padding-top: 14px;
+    padding-bottom: 20px;
+}
+
+.BalanceReportRowLevel2 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.BalanceReportRowLevel2FirstColumn {
+}
+
+.BalanceReportRowLevel3 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.BalanceReportRowLevel3FirstColumn {
+    padding-left: 20px;
+}
+
+
+.BalanceReportRowLevel4 {
+    font-size: 14px;
+}
+
+.BalanceReportRowLevel4FirstColumn {
+    padding-left: 40px;
+}
+
+.BalanceReportRowLevel5 {
+    font-size: 14px;
+}
+
+.RowDummy {
+    padding-bottom: 30px;
+}
+
+.BalanceReportRowLevel5FirstColumn {
+    padding-left: 60px;
+}
+
+
+/* Sum rows for BalanceReport) */
+
+.BalanceReportRowLevel1SummationFirstColumn {
+    font-weight: bold;
+    font-size: 14px;
+    padding-bottom: 30px;
+}
+
+.BalanceReportRowLevel1SummationSumColumn {
+    font-weight: bold;
+    border-top: 1px solid black;
+}
+
+
+.BalanceReportRowLevel2SummationFirstColumn {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.BalanceReportRowLevel2SummationSumColumn {
+    border-top: 1px solid black;
+    padding-bottom: 30px;
+}
+
+
+.BalanceReportRowLevel3Summation {
+}
+
+.BalanceReportRowLevel3SummationSumColumn {
+    border-top: 1px solid black;
+    padding-bottom: 30px;
+}
+
+.BalanceReportRowLevel5Summation {
+}
+
+.BalanceReportRowLevel5SummationSumColumn {
+    border-top: 1px solid black;
+    padding-bottom: 30px;
+}
+
+
+
+
+
+/* Row Styles IncomeStatementReport */
+.IncomeStatementHeaders {
+    font-weight: bold;
+}
+
+.IncomeStatementSummations, .IncomeStatementSummationOfResult {
+    font-weight: bold;
+}
+
+.IncomeStatementSummationsSumColumn, .IncomeStatementSummationOfResultSumColumn, .IncomeStatementAccountsSummationSumColumn {
+    border-top: 1px solid black;
+    padding-bottom: 30px;
+}
+
+.IncomeStatementAccounts {
+}
+
+.IncomeStatementAccountsFirstColumn {
+    padding-left: 60px;
+}
+
+.IncomeStatementDetails {
+}
+
+
+
+
+/* Row Styles LedgerReport*/
+.LedgerReportAccount {
+    font-weight: bold;
+    background-color: #eff3f6;
+}
+
+.LedgerReportAccountColumn2Cell {
+    display: none;
+}
+
+.LedgerReportAccountColumn3Cell {
+    display: none;
+}
+
+.LedgerReportAccountColumn4Cell {
+    display: none;
+}
+
+.LedgerReportAccountColumn5Cell {
+    display: none;
+}
+
+.LedgerReportAccountColumn6Cell {
+    display: none;
+}
+
+.LedgerReportAccountColumn7Cell {
+    display: none;
+}
+
+.LedgerReportAccountColumn8Cell {
+    display: none;
+}
+
+.LedgerReportOpeningBalance {
+    font-style: italic;
+    background-color: #eff3f6;
+}
+
+.LedgerReportOpeningBalanceColumn5Cell {
+    display: none;
+}
+
+.LedgerReportOpeningBalanceColumn6Cell {
+    display: none;
+}
+
+.LedgerReportOpeningBalanceColumn7Cell {
+    display: none;
+}
+
+.LedgerReportAccountEvent {
+}
+
+.LedgerReportClosingBalance {
+    border-bottom: 1px solid black;
+}
+
+.LedgerReportClosingBalanceColumn5Cell {
+    display: none;
+}
+
+.LedgerReportClosingBalanceColumn6Cell {
+    display: none;
+}
+
+.LedgerReportEmptyRow {
+    font-size: x-small;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+/* Row Styles VoucherReport*/
+.VoucherReportVoucher {
+    font-weight: bold;
+    background-color: #eff3f6;
+}
+
+.VoucherReportVoucherRowColumn4Cell {
+    display: none;
+}
+
+.VoucherReportClosingRow {
+    font-size: x-small;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    border-bottom: 1px solid black;
+}
+
+.VoucherReportClosingRowFi {
+    padding-bottom: 0px;
+    padding-top: 0px;
+    border-bottom: 1px solid black;
+}
+
+#rowDebit.VoucherReportClosingRowFi,
+#rowCredit.VoucherReportClosingRowFi {
+    border-top: 1px solid black;
+}
+
+.VoucherReportSummaryClosingRow {
+    padding-bottom: 0px;
+    padding-top: 0px;
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+}
+
+.VoucherReportEmptyRow {
+    font-size: x-small;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+/* Shared row styles 
+   - UnpaidCustomerInvoicesReport
+   - UnpaidSupplierInvoicesReport
+*/
+
+.ReportsStandardRow {
+}
+
+.ReportsEmptyRow,
+.ReportsClosingRow {
+    font-size: x-small;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.ReportsClosingRow {
+    border-bottom: 1px solid black;
+}
+
+.ReportsSummation {
+    background-color: #eff3f6;
+}
+
+.ReportsSummationColumn5Cell,
+.ReportsSummationColumn6Cell,
+.InvoicesColumnHeaderRow {
+    display: none;
+}
+
+.InvoicesGroupHeaderRow {
+    font-weight: 700;
+}
+
+/* Row Styles ChartOfAccountsReport*/
+
+.ChartOfAccountsReport {
+}
+
+.ChartOfAccountsReportEmptyRow {
+    font-size: x-small;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+/* VatPerAccountReportPdf */
+.VatPerAccountReportPdfAccountRow {
+}
+
+.VatPerAccountReportPdfSumRow {
+    font-weight: bold;
+}
+
+.VatPerAccountReportPdfHeading2 {
+    font-weight: bold;
+    font-size: 22px;
+}
+
+
+
+/* Creditcheck */
+
+.CreditcheckHeaderAlt {
+    font: 15px Verdana;
+    font-weight: bold;
+    background-color: #E3E8EC;
+}
+
+.CreditcheckFirstCol {
+    font: 16px Verdana;
+    width: 280px;
+}
+
+.CreditcheckSecondCol {
+    font: 16px Verdana;
+    width: 720px;
+}
+
+.watermark {
+    margin-top: 800px;
+    margin-left: 60px;
+    width: 1000px;
+    height: 500px;
+    font-size: 54px;
+    opacity: 0.2;
+    -webkit-transform: rotate(-48deg);
+    -webkit-transform-origin: 0% 0%;
+}
+
+.watermarkBackgroundPdf {
+    width: 1000px;
+    height: 500px;
+    font-size: 54px;
+    -webkit-transform-origin: 0% 0%;
+}
