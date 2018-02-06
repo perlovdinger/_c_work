@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE eSKDUpload PUBLIC "-//Skatteverket, Sweden//DTD Skatteverket eSKDUpload-DTD Version 6.0//SV" "https://www1.skatteverket.se/demoeskd/eSKDUpload_6p0.dtd">
+<eSKDUpload Version="6.0">
+  <OrgNr>559126-2083</OrgNr>
+  <Moms>
+    <Period>201712</Period>
+    <MomsIngAvdr>2119</MomsIngAvdr>
+    <MomsBetala>-2119</MomsBetala>
+  </Moms>
+</eSKDUpload>

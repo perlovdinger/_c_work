@@ -164,15 +164,17 @@
 </node>
 </node>
 <node CREATED="1516131514667" ID="ID_1579360565" MODIFIED="1516131517101" POSITION="right" TEXT="Adwise">
-<node CREATED="1516131518325" ID="ID_1119617474" MODIFIED="1516131568820" TEXT="Fakturering sker m&#xe5;natligen"/>
+<node CREATED="1516131518325" ID="ID_1119617474" MODIFIED="1517865734250" TEXT="Fakturering sker m&#xe5;natligen">
+<icon BUILTIN="button_ok"/>
+</node>
 </node>
 <node CREATED="1516132755690" ID="ID_1958098110" MODIFIED="1516132759986" POSITION="right" TEXT="skatteverket">
 <node CREATED="1516132761700" ID="ID_1026222741" LINK="https://www.skatteverket.se/foretagochorganisationer/arbetsgivare/arbetsgivarregistrering/dittansvarsomarbetsgivare.4.361dc8c15312eff6fd16ec2.html" MODIFIED="1516132775497" TEXT="Ditt ansvar som arbetsgivare">
 <node CREATED="1516132868562" ID="ID_1610021066" MODIFIED="1516132869829" TEXT="skyldighet">
-<node CREATED="1516132883406" MODIFIED="1516132883406" TEXT="g&#xf6;ra skatteavdrag n&#xe4;r du betalar ut l&#xf6;n och annan ers&#xe4;ttning f&#xf6;r arbete"/>
-<node CREATED="1516132883406" MODIFIED="1516132883406" TEXT="betala arbetsgivaravgifter"/>
-<node CREATED="1516132883406" MODIFIED="1516132883406" TEXT="l&#xe4;mna arbetsgivardeklarationer (redovisa skatt och avgifter)"/>
-<node CREATED="1516132883406" MODIFIED="1516132883406" TEXT="l&#xe4;mna kontrolluppgifter."/>
+<node CREATED="1516132883406" ID="ID_1389102438" MODIFIED="1516132883406" TEXT="g&#xf6;ra skatteavdrag n&#xe4;r du betalar ut l&#xf6;n och annan ers&#xe4;ttning f&#xf6;r arbete"/>
+<node CREATED="1516132883406" ID="ID_234044880" MODIFIED="1516132883406" TEXT="betala arbetsgivaravgifter"/>
+<node CREATED="1516132883406" ID="ID_553896036" MODIFIED="1516132883406" TEXT="l&#xe4;mna arbetsgivardeklarationer (redovisa skatt och avgifter)"/>
+<node CREATED="1516132883406" ID="ID_758465212" MODIFIED="1516132883406" TEXT="l&#xe4;mna kontrolluppgifter."/>
 </node>
 <node CREATED="1516132927498" ID="ID_1123138269" MODIFIED="1516132932526" TEXT="Beh&#xf6;ver g&#xf6;ra">
 <node CREATED="1516132933471" ID="ID_1157960236" MODIFIED="1516132939013" TEXT="Vid anst&#xe4;llning">
@@ -198,8 +200,7 @@
       <font color="rgb(18, 18, 18)" face="Open Sans Regular, arial, sans-serif">anst&#228;llde och r&#228;kna ut <b>arbetsgivaravgifter</b>.</font>
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
 <node CREATED="1516133079336" ID="ID_1117753429" MODIFIED="1516133079977" TEXT="L&#xe4;mna en l&#xf6;nespecifikation"/>
@@ -213,8 +214,7 @@
       Arbetsgivaravgifter och skatteavdrag ska redovisas i en <b>arbetsgivardeklaration</b>.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1516133298251" ID="ID_1609774696" MODIFIED="1516133307935">
 <richcontent TYPE="NODE"><html>
@@ -226,8 +226,7 @@
       <font color="rgb(18, 18, 18)" face="Open Sans Regular, arial, sans-serif" size="14px">Deklarationen f&#246;r en m&#229;nad l&#228;mnar du vanligtvis den 12:e i den <b>efterf&#246;ljande</b>&#160; m&#229;naden. Du l&#228;mnar allts&#229; in deklarationen f&#246;r m&#229;naden maj den 12:e juni.</font>
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
 <node CREATED="1516133192946" ID="ID_1824992085" MODIFIED="1516133194292" TEXT="Betala till Skatteverket."/>
@@ -243,9 +242,11 @@
 <node CREATED="1516130575950" ID="ID_669989634" MODIFIED="1516130578191" POSITION="right" TEXT="2018">
 <node CREATED="1516130679007" ID="ID_1812095276" MODIFIED="1516130681515" TEXT="Jan"/>
 <node CREATED="1516130681922" ID="ID_443572061" MODIFIED="1516130683677" TEXT="Feb">
-<node COLOR="#990000" CREATED="1516131591499" ID="ID_858943035" MODIFIED="1516131703394" TEXT="1 Feb:Fakturera Adwise"/>
+<node COLOR="#990000" CREATED="1516131591499" ID="ID_858943035" MODIFIED="1517865756899" TEXT="1 Feb:Fakturera Adwise">
+<icon BUILTIN="button_ok"/>
+</node>
 <node CREATED="1516131716367" ID="ID_1049705336" MODIFIED="1516131743431" TEXT="9 Feb">
-<node CREATED="1516130655829" ID="ID_92660610" MODIFIED="1516131332143">
+<node CREATED="1516130655829" ID="ID_92660610" MODIFIED="1517865767488">
 <richcontent TYPE="NODE"><html>
   <head>
     
@@ -259,6 +260,7 @@
     </p>
   </body>
 </html></richcontent>
+<icon BUILTIN="button_ok"/>
 </node>
 </node>
 <node CREATED="1516132469029" ID="ID_671898460" MODIFIED="1516132469029" TEXT="12 feb        Du ska ha betalat in Moms"/>
@@ -280,7 +282,6 @@
 <node CREATED="1516133340625" ID="ID_1806655575" MODIFIED="1516133409881" TEXT="12 April Betala till Skatteverket."/>
 </node>
 </node>
-<node CREATED="1516130647078" ID="ID_95634728" MODIFIED="1516130647078" POSITION="right" TEXT=""/>
 <node CREATED="1505233939300" ID="ID_320943283" MODIFIED="1505234374665" POSITION="right" TEXT="Registrera dig som arbetsgivare">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <node CREATED="1505233948835" ID="ID_1939118248" MODIFIED="1505233953879">
