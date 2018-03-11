@@ -1,0 +1,157 @@
+
+function GetSubject(index) {
+	var Fields = GetScopeFields();
+
+	switch(index) {
+		case 0:
+			return '' + (scope.Fields.RecipientOfPaymentRegNbr || "") + Translate("Subject_Concat") + (scope.Fields.RecipientOfPaymentCompany || "") + '- Submited';
+		case 1:
+			return '' + (scope.Fields.RecipientOfPaymentRegNbr || "") + Translate("Subject_Concat") + (scope.Fields.RecipientOfPaymentCompany || "") + '- Approved';
+		case 2:
+			return '' + (scope.Fields.RecipientOfPaymentRegNbr || "") + Translate("Subject_Concat") + (scope.Fields.RecipientOfPaymentCompany || "") + '- Rejected';
+		case 3:
+			return '' + (scope.Fields.RecipientOfPaymentRegNbr || "") + Translate("Subject_Concat") + (scope.Fields.RecipientOfPaymentCompany || "") + '- Self Approved';
+		case 4:
+			return '' + (scope.Fields.RecipientOfPaymentRegNbr || "") + Translate("Subject_Concat") + (scope.Fields.RecipientOfPaymentCompany || "") + '';
+	};
+	return '';
+};
+
+function GetSavedSubject() {
+	var Fields = GetScopeFields();
+
+	return 'Saved:' + (scope.Fields.RecipientOfPaymentRegNbr || "") + Translate("Subject_Concat") + (scope.Fields.RecipientOfPaymentCompany || "") + '';
+};
+
+function SendForm() {
+// route the form according to the current routing step
+	var scope = GetScope();
+
+	switch(scope.Message.CurrentRoute) {
+		case 0:
+			Step_0();
+			break;
+		case 1:
+			Step_1();
+			break;
+		case 2:
+			Step_2();
+			break;
+	};
+};
+
+function Step_0() {
+	var scope = GetScope();
+	var Fields = GetScopeFields();
+
+	// scope.Message.AddRoute(condition, media, recipient, subject, currentRoute, nextRoute, sendAsUser, confirmationMode, autoAttachFolder, testRouting, notification, isTask, attachFiles)
+
+	scope.Message.AddRoute(true, 'html', scope.Fields.AttestEmail, GetSubject(4), 0, 1, false, '', '', true, '', false, true);
+};
+
+function Step_1() {
+	var scope = GetScope();
+	var Fields = GetScopeFields();
+
+	// scope.Message.AddRoute(condition, media, recipient, subject, currentRoute, nextRoute, sendAsUser, confirmationMode, autoAttachFolder, testRouting, notification, isTask, attachFiles)
+
+	scope.Message.AddRoute(scope.RTG2(), 'html', scope.Fields.IssuerEmail, GetSubject(2), 1, 2, false, '', '', false, '', false, true);
+	scope.Message.AddRoute(scope.RTG1(), 'html', scope.Fields.IssuerEmail, GetSubject(1), 1, 3, false, '', '', false, '', false, true);
+};
+
+function Step_2() {
+	var scope = GetScope();
+	var Fields = GetScopeFields();
+
+	// scope.Message.AddRoute(condition, media, recipient, subject, currentRoute, nextRoute, sendAsUser, confirmationMode, autoAttachFolder, testRouting, notification, isTask, attachFiles)
+
+	scope.Message.AddRoute(true, 'html', scope.Fields.AttestEmail, GetSubject(4), 2, 1, false, '', '', true, '', false, true);
+};
+
+
+function IsFormValid() {
+
+	scope.ValidMessage = Translate("Msg_IsValid");
+
+	
+	if (scope.isDirtySpecOfTripTableRow()) {
+		if (SpecOfTripTableValidateRow()) scope.SpecOfTripButton1Click()
+		else return false;
+	}
+	if (scope.isDirtyTripTableRow()) {
+		if (TripTableValidateRow()) scope.TripButton1Click()
+		else return false;
+	}
+
+	var v = new Validators();
+	switch (scope.Message.CurrentRoute) {
+		case 0:
+			// CheckIf(function, cond, field, msg, lang, focus)
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentCompany', "", scope.CurrentLanguage, 'RecipientOfPaymentCompany')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentName', "", scope.CurrentLanguage, 'RecipientOfPaymentName')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentCity', "", scope.CurrentLanguage, 'RecipientOfPaymentCity')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentEmplNo', "", scope.CurrentLanguage, 'RecipientOfPaymentEmplNo')) return false;
+			if (!v.CheckIf(VALID_EmplNo, null, null, Translate("Msg_ValidEmplNo"), scope.CurrentLanguage, 'RecipientOfPaymentEmplNo')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentEmail', "", scope.CurrentLanguage, 'RecipientOfPaymentEmail')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentPSAcb', "", scope.CurrentLanguage, 'RecipientOfPaymentPSAcb')) return false;
+			if (!v.CheckIf(VALID_RecipientCompanyCheckField, null, null, Translate("Msg_RecipientCompany"), scope.CurrentLanguage, '')) return false;
+			if (!v.CheckIf(v.IsDynamicTableRowsMin, null, 'SpecOfTripTable', Translate("Msg_ValidDynamicTableRowMin"), scope.CurrentLanguage, 'SpecOfTripDatePicker', 1)) return false;
+			if (!v.CheckIf(VALID_CompensationPeriod, null, null, Translate("Msg_ValidCompensationPeriods"), scope.CurrentLanguage, 'SpecOfTripTable')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'SpecOfTripTotalSum', "", scope.CurrentLanguage, 'SpecOfTripTotalSum')) return false;
+			if (!v.CheckIf(v.IsInRange, null, 'SpecOfTripKMTotal', "", scope.CurrentLanguage, 'SpecOfTripKMTotal', 1, 9999)) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'SpecOfTripChargeCostCenter', "", scope.CurrentLanguage, 'SpecOfTripChargeCostCenter')) return false;
+			if (!v.CheckIf(v.IsNumeric, null, 'SpecOfTripChargeCostCenter', "", scope.CurrentLanguage, 'SpecOfTripChargeCostCenter')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'AttestCbo', "", scope.CurrentLanguage, 'AttestCbo')) return false;
+
+			break;
+		case 1:
+			// CheckIf(function, cond, field, msg, lang, focus)
+			if (!v.CheckIf(v.IsOptionSelected, null, 'AttestAttested', "", scope.CurrentLanguage, 'AttestAttestedYes')) return false;
+			if (!v.CheckIf(v.IsEmpty, scope.VLD1, 'AttestComment', "", scope.CurrentLanguage, 'AttestComment')) return false;
+
+			break;
+		case 2:
+			// CheckIf(function, cond, field, msg, lang, focus)
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentCompany', "", scope.CurrentLanguage, 'RecipientOfPaymentCompany')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentName', "", scope.CurrentLanguage, 'RecipientOfPaymentName')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentCity', "", scope.CurrentLanguage, 'RecipientOfPaymentCity')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentEmplNo', "", scope.CurrentLanguage, 'RecipientOfPaymentEmplNo')) return false;
+			if (!v.CheckIf(VALID_EmplNo, null, null, "", scope.CurrentLanguage, '')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentEmail', "", scope.CurrentLanguage, 'RecipientOfPaymentEmail')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentPSAcb', "", scope.CurrentLanguage, 'RecipientOfPaymentPSAcb')) return false;
+			if (!v.CheckIf(VALID_RecipientCompany, null, null, "", scope.CurrentLanguage, '')) return false;
+			if (!v.CheckIf(v.IsDynamicTableRowsMin, null, 'SpecOfTripTable', "", scope.CurrentLanguage, 'SpecOfTripButton1', 1)) return false;
+			if (!v.CheckIf(VALID_CompensationPeriod, null, null, "", scope.CurrentLanguage, '')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'SpecOfTripTotalSum', "", scope.CurrentLanguage, 'SpecOfTripTotalSum')) return false;
+			if (!v.CheckIf(v.IsInRange, null, 'SpecOfTripKMTotal', "", scope.CurrentLanguage, 'SpecOfTripKMTotal', 1, 9999)) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'AttestCbo', "", scope.CurrentLanguage, 'AttestCbo')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'AttestName', "", scope.CurrentLanguage, 'AttestName')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'AttestEmail', "", scope.CurrentLanguage, 'AttestEmail')) return false;
+
+			break;
+		}
+		return true;
+}
+function SpecOfTripTableValidateRow() {
+
+	var scope = GetScope();
+	var v = new Validators();
+
+		if (!v.CheckIf(v.IsEmpty, null, 'SpecOfTripDatePicker', Translate("Msg_DateValid"), scope.CurrentLanguage, 'SpecOfTripDatePicker')) return false;
+		if (!v.CheckIf(v.IsDate, null, 'SpecOfTripDatePicker', "", scope.CurrentLanguage, 'SpecOfTripDatePicker')) return false;
+		if (!v.CheckIf(v.IsDateBefore, null, 'SpecOfTripDatePicker', "", scope.CurrentLanguage, 'SpecOfTripDatePicker', 0)) return false;
+		if (!v.CheckIf(v.IsEmpty, null, 'SpecOfTripPlace', Translate("Msg_VisitPlaceValid"), scope.CurrentLanguage, 'SpecOfTripPlace')) return false;
+		if (!v.CheckIf(v.IsEmpty, null, 'SpecOfTripAssignment', Translate("Msg_AssigmentValid"), scope.CurrentLanguage, 'SpecOfTripAssignment')) return false;
+		if (!v.CheckIf(v.IsNumeric, scope.VLD4, 'SpecOfTripTollFee', "", scope.CurrentLanguage, 'SpecOfTripTollFee')) return false;
+		if (!v.CheckIf(v.IsOptionSelected, scope.VLD5IsTypeTripSelected, 'SpecOfTripTrip', Translate("Msg_BusinessTypeValid"), scope.CurrentLanguage, 'SpecOfTripTrip')) return false;
+		if (!v.CheckIf(v.IsNumeric, scope.VLD3, 'SpecOfTripKM', "", scope.CurrentLanguage, 'SpecOfTripKM')) return false;
+		if (!v.CheckIf(v.IsOptionSelected, scope.VLD5IsTypeTripSelected, 'SpecOfTripTrip', Translate("Msg_BusinessTypeValid"), scope.CurrentLanguage, 'SpecOfTripTrip')) return false;
+	return true;
+}
+function TripTableValidateRow() {
+
+	var scope = GetScope();
+	var v = new Validators();
+
+	return true;
+}

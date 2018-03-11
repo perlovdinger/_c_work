@@ -1,0 +1,93 @@
+
+function GetSubject(index) {
+	var Fields = GetScopeFields();
+
+	switch(index) {
+		case 3:
+			return '' + (scope.Fields.RecipientOfPaymentRegNbr || "") + Translate("Subject_Concat") + (scope.Fields.RecipientOfPaymentCompany || "") + '';
+	};
+	return '';
+};
+
+function GetSavedSubject() {
+	var Fields = GetScopeFields();
+
+	return 'Saved:' + (scope.Fields.RecipientOfPaymentRegNbr || "") + Translate("Subject_Concat") + (scope.Fields.RecipientOfPaymentCompany || "") + '';
+};
+
+function SendForm() {
+// route the form according to the current routing step
+	var scope = GetScope();
+
+	switch(scope.Message.CurrentRoute) {
+		case 0:
+			Step_0();
+			break;
+	};
+};
+
+function Step_0() {
+	var scope = GetScope();
+	var Fields = GetScopeFields();
+
+	// scope.Message.AddRoute(condition, media, recipient, subject, currentRoute, nextRoute, sendAsUser, confirmationMode, autoAttachFolder, testRouting, notification, isTask, attachFiles)
+
+	scope.Message.AddRoute(true, 'html', scope.Fields.IssuerEmail, GetSubject(3), 0, 1, false, 0, '', false, '', false, false);
+};
+
+
+function IsFormValid() {
+
+	scope.ValidMessage = Translate("Msg_IsValid");
+
+	
+	if (scope.isDirtyAccountsDataRow() && !AccountsDataValidateRow()) return false;
+
+	var v = new Validators();
+	switch (scope.Message.CurrentRoute) {
+		case 0:
+			// CheckIf(function, cond, field, msg, lang, focus)
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentCompany', Translate("Val_Company"), scope.CurrentLanguage, 'RecipientOfPaymentCompany')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentName', Translate("Val_Name"), scope.CurrentLanguage, 'RecipientOfPaymentName')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentCity', Translate("Val_City"), scope.CurrentLanguage, 'RecipientOfPaymentCity')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentEmplNo', Translate("Val_EmplNo_Empty"), scope.CurrentLanguage, 'RecipientOfPaymentEmplNo')) return false;
+			if (!v.CheckIf(v.IsPattern, null, 'RecipientOfPaymentEmplNo', Translate("Val_EmplNo_Min"), scope.CurrentLanguage, 'RecipientOfPaymentEmplNo', /^\d{5,}$/g)) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentEmail', Translate("Val_Email"), scope.CurrentLanguage, 'RecipientOfPaymentEmail')) return false;
+			if (!v.CheckIf(v.IsDynamicTableRowsMin, null, 'AccountsData', "", scope.CurrentLanguage, 'AccountsButton2', 1)) return false;
+			if (!v.CheckIf(v.IsDynamicTableRowsMax, null, 'AccountsData', Translate("Val_MaxRows"), scope.CurrentLanguage, 'AccountsButton2', 7)) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'AttestCbo', "", scope.CurrentLanguage, 'AttestCbo')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'AttestName', "", scope.CurrentLanguage, 'AttestName')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'AttestEmail', "", scope.CurrentLanguage, 'AttestEmail')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'ExplanationComment', Translate("Val_Explanation"), scope.CurrentLanguage, 'ExplanationComment')) return false;
+
+			break;
+		case 1:
+			// CheckIf(function, cond, field, msg, lang, focus)
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentCompany', "", scope.CurrentLanguage, 'RecipientOfPaymentCompany')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentName', "", scope.CurrentLanguage, 'RecipientOfPaymentName')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentCity', "", scope.CurrentLanguage, 'RecipientOfPaymentCity')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentEmplNo', "", scope.CurrentLanguage, 'RecipientOfPaymentEmplNo')) return false;
+			if (!v.CheckIf(v.IsEmpty, null, 'RecipientOfPaymentEmail', "", scope.CurrentLanguage, 'RecipientOfPaymentEmail')) return false;
+
+			break;
+		}
+		return true;
+}
+function AccountsDataValidateRow() {
+
+	var scope = GetScope();
+	var v = new Validators();
+
+		if (!v.CheckIf(v.IsDynamicTableRowsMax, null, 'AccountsData', Translate("Val_MaxRows"), scope.CurrentLanguage, 'AccountsCostCenter', 6)) return false;
+		if (!v.CheckIf(v.IsEmpty, null, 'AccountsCbo', Translate("Val_Account"), scope.CurrentLanguage, 'AccountsCbo')) return false;
+		if (!v.CheckIf(v.IsEmpty, scope.VLD4, 'AccountsCostCenter', Translate("Val_CostCenter_Empty"), scope.CurrentLanguage, 'AccountsCostCenter')) return false;
+		if (!v.CheckIf(v.IsNumeric, scope.VLD4, 'AccountsCostCenter', Translate("Val_CostCenter_Numeric"), scope.CurrentLanguage, 'AccountsCostCenter')) return false;
+		if (!v.CheckIf(v.IsNumeric, scope.VLD1, 'AccountsCostCenter', Translate("Val_CostCenter_Numeric"), scope.CurrentLanguage, 'AccountsCostCenter')) return false;
+		if (!v.CheckIf(v.IsEmpty, null, 'AccountsExcl', Translate("Val_Excl"), scope.CurrentLanguage, 'AccountsExcl')) return false;
+		if (!v.CheckIf(v.IsNumeric, null, 'AccountsExcl', "", scope.CurrentLanguage, 'AccountsExcl')) return false;
+		if (!v.CheckIf(v.IsInteger, null, 'AccountsExcl', "", scope.CurrentLanguage, 'AccountsExcl')) return false;
+		if (!v.CheckIf(v.IsEmpty, null, 'AccountsVat', Translate("Val_VAT"), scope.CurrentLanguage, 'AccountsVat')) return false;
+		if (!v.CheckIf(v.IsNumeric, null, 'AccountsVat', "", scope.CurrentLanguage, 'AccountsVat')) return false;
+		if (!v.CheckIf(v.IsInteger, null, 'AccountsVat', "", scope.CurrentLanguage, 'AccountsVat')) return false;
+	return true;
+}

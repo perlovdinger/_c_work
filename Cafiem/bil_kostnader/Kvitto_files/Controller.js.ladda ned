@@ -1,0 +1,328 @@
+var scope;
+
+function SetupController() {
+	scope = GetScope();
+	var Fields = scope.Fields;
+	// Variables
+
+	scope.About =
+	{
+		Title: "Kvitto",
+		Version: "17.0",
+		Description: "",
+		Owners: [
+			{
+				Name: "Anna Jarnving",
+				Email: "anna.jarnving@volvo.com"
+			},
+		]
+	};
+
+	scope.Dates = ['SignatureDate',''];
+	scope.DynamicTables = ['AccountsData'];
+	scope.Fields['AccountsData'] = [];
+	scope.DateFormat = 'yyyy-MM-dd';
+	scope.WeekFormat = 'yyyyww';
+	scope.DatetimeFormat = 'yyyy-MM-dd HH:mm:ss';
+	scope.DatePickerOptions = { startingDay: 1 }
+	scope.SaveAndCopyMessage = '';
+
+	SetupTranslations();
+
+	// ComboBoxes
+
+	scope.ComboBoxes['AccountsCbo'] = new ComboDefinition("AccountsCbo");
+	scope.ComboBoxes['AccountsCbo'].type = ComboDefinition.Types.ArrayOfObjects;
+	scope.ComboBoxes['AccountsCbo'].valueField = "Account";
+	scope.ComboBoxes['AccountsCbo'].textField = "AccountsCboText";
+
+	scope.ComboBoxes['AttestCbo'] = new ComboDefinition("AttestCbo");
+	scope.ComboBoxes['AttestCbo'].type = ComboDefinition.Types.ArrayOfObjects;
+	scope.ComboBoxes['AttestCbo'].valueField = "UserID";
+	scope.ComboBoxes['AttestCbo'].textField = "DisplayInfo";
+
+	// MRU lists
+
+	// Conditions
+
+	scope.PRS1 = function () {
+		return (scope.Fields.RecipientOfPaymentEmail != scope.Fields.IssuerEmail);
+	};
+    
+	scope.SE83 = function () {
+		return (scope.Fields.RecipientOfPaymentCode == 'SE83');
+	};
+    
+	scope.VLD1 = function () {
+		return (scope.Fields.RecipientOfPaymentCode == 'SE83') && (!(scope.Fields.AccountsCostCenter == ''));
+	};
+    
+	scope.VLD2 = function () {
+		return (scope.Fields.RecipientOfPaymentCode == 'SE83') && (scope.Fields.AccountsCostCenter == '');
+	};
+    
+	scope.VLD3 = function () {
+		return (scope.Fields.RecipientOfPaymentCode == 'SE83') && (!(scope.Fields.AccountsOrdernumber == ''));
+	};
+    
+	scope.VLD4 = function () {
+		return (scope.Fields.RecipientOfPaymentCode != 'SE83');
+	};
+    
+	// Events
+	scope.IsDirtyAccountsDataRowOverride = function () {
+		IsDirtyAccountsDataRowOverride();
+	};
+    
+	scope.INIT = function () {
+		INIT_VCOM();
+	};
+    
+	scope.INIT_Recipient = function () {
+		EVT_RecipientInit();
+	};
+    
+	scope.CHNG_Recipient = function () {
+		EVT_RecipientSelect();
+	};
+    
+	scope.CHNG_Attest = function () {
+		EVT_AttestSelect();
+	};
+    
+	scope.TravelAdmin = function () {
+		Info_Address_Code();
+	};
+    
+	scope.AccountsDataUpdateSummaries = function () {
+		AccountsDataUpdateSummaries();
+	};
+    
+	scope.SendFormHandler = function () {
+		SendFormCust();
+	};
+    
+	scope.AddToAccountsHandler = function () {
+		AddToAccounts();
+	};
+    
+	scope.AccountsSpecialVAT_AddHandler = function () {
+		AccountsSpecialVAT_Add();
+	};
+    
+	scope.PrintToFile = function () {
+		PrintToFile();
+	};
+    
+
+	// Buttons
+
+	scope.SetRecipientOfPaymentButton1ADProperties = function(user) {
+		scope.Fields.RecipientOfPaymentCompany = user != null ? user.Company : '';
+		scope.Fields.RecipientOfPaymentName = user != null ? user.DisplayName : '';
+		scope.Fields.RecipientOfPaymentCity = user != null ? user.City : '';
+		scope.Fields.RecipientOfPaymentEmplNo = user != null ? user.EmployeeId : '';
+		scope.Fields.RecipientOfPaymentEmail = user != null ? user.Mail : '';
+		scope.Fields.RecipientOfPaymentDepartment = user != null ? user.Department : '';
+		scope.Fields.RecipientOfPaymentLocation = user != null ? user.Location : '';
+		scope.Fields.RecipientOfPaymentID = user != null ? user.Id : '';
+		scope.Fields.AccountsCostCenter = user != null ? user.CostCentre : '';
+
+		scope.CHNG_Recipient();
+	};
+
+	scope.RecipientOfPaymentButton1Click = function () {
+		scope.openPeoplePicker('VCN', false, scope.SetRecipientOfPaymentButton1ADProperties, null, ['VCN', 'VCD']);
+	};
+
+	scope.SetRecipientOfPaymentButton2ADProperties = function(user) {
+		scope.Fields.RecipientOfPaymentCompany = user != null ? user.Company : '';
+		scope.Fields.RecipientOfPaymentName = user != null ? user.DisplayName : '';
+		scope.Fields.RecipientOfPaymentCity = user != null ? user.City : '';
+		scope.Fields.RecipientOfPaymentEmplNo = user != null ? user.EmployeeId : '';
+		scope.Fields.RecipientOfPaymentEmail = user != null ? user.Mail : '';
+		scope.Fields.RecipientOfPaymentDepartment = user != null ? user.Department : '';
+		scope.Fields.RecipientOfPaymentLocation = user != null ? user.Location : '';
+		scope.Fields.RecipientOfPaymentID = user != null ? user.Id : '';
+		scope.Fields.AccountsCostCenter = user != null ? user.CostCentre : '';
+	};
+
+	scope.RecipientOfPaymentButton2Click = function () {
+		scope.openPeoplePicker('VCD', false, scope.SetRecipientOfPaymentButton2ADProperties, null, null);
+	};
+
+
+	scope.AccountsButton1Click = function() { scope.openAccountsEntryListEntryList(); }
+
+	scope.printForm = function () {
+		scope._printForm();
+	}
+	scope.validateForm = function () {
+		scope._validateForm();
+	}
+	scope.saveForm = function () {
+		scope._saveForm();
+	}
+	scope.cancelForm = function () {
+		scope._cancelForm();
+	}
+	scope.closeForm = function () {
+		scope._closeForm();
+	}
+	scope.openAbout = function () {
+		scope._openAbout();
+	}
+	scope.openAbout = function () {
+		scope._openAbout();
+	}
+
+	scope.createAccountsDataRow = function(id) {
+		var row = 
+		{
+			AccountsCbo: scope.Fields.AccountsCbo,
+			AccountsCboText: GetScopeObject("AccountsCbo").options[GetScopeObject("AccountsCbo").selectedIndex].innerText,
+			AccountsCostCenter: scope.Fields.AccountsCostCenter,
+			AccountsOrdernumber: scope.Fields.AccountsOrdernumber,
+			AccountsWBS: scope.Fields.AccountsWBS,
+			AccountsExcl: scope.Fields.AccountsExcl,
+			AccountsVat: scope.Fields.AccountsVat,
+			Id: id
+		};
+		return row;
+	};
+
+	scope.setAccountsDataRow = function(entry) {
+		
+			scope.Fields.AccountsCbo = entry.AccountsCbo;
+			scope.Fields.AccountsCostCenter = entry.AccountsCostCenter;
+			scope.Fields.AccountsOrdernumber = entry.AccountsOrdernumber;
+			scope.Fields.AccountsWBS = entry.AccountsWBS;
+			scope.Fields.AccountsExcl = entry.AccountsExcl;
+			scope.Fields.AccountsVat = entry.AccountsVat;
+		};
+
+	scope.cleanAccountsDataRow = function() {
+		scope.Fields.AccountsCbo = "";
+		scope.Fields.AccountsExcl = "";
+		scope.Fields.AccountsVat = "";
+		
+	};
+
+	scope.isDirtyAccountsDataRow = function() {
+		return isDirty(scope.Fields.AccountsCbo, "")
+			|| isDirty(scope.Fields.AccountsCostCenter, '')
+			|| isDirty(scope.Fields.AccountsOrdernumber, '')
+			|| isDirty(scope.Fields.AccountsWBS, '')
+			|| isDirty(scope.Fields.AccountsExcl, "")
+			|| isDirty(scope.Fields.AccountsVat, "");
+	};
+
+	scope.AccountsButton2Click = function() {
+		
+		if (!AccountsSpecialVAT_Add()) return false;
+		scope.dynTabAddClick('AccountsData', AccountsDataValidateRow, scope.createAccountsDataRow, scope.cleanAccountsDataRow);
+		AccountsDataUpdateSummaries();
+
+	};
+
+
+
+	scope.openAccountsEntryListEntryList = function() {
+		var scope = GetScope();
+		var statement = "SELECT AccountNumber as Account, LongDesc as Description from [open].[dict_ViewAccountChart_117_v2] where CompanyCode = '" + scope.Fields.RecipientOfPaymentCode + "'";
+		scope.openEntryList(statement, function(value) { AddToAccounts(value); });
+	}
+
+	scope.SetupUser = function(user) {
+		switch(scope.Message.CurrentRoute) {
+			case 0:
+				scope.Fields.IssuerName = user != null ? user.DisplayName : '';
+				scope.Fields.IssuerEmplNo = user != null ? user.EmployeeId : '';
+				scope.Fields.IssuerPhone = user != null ? user.Phone : '';
+				scope.Fields.IssuerEmail = user != null ? user.Mail : '';
+				scope.Fields.RecipientOfPaymentCompany = user != null ? user.Company : '';
+				scope.Fields.RecipientOfPaymentName = user != null ? user.DisplayName : '';
+				scope.Fields.RecipientOfPaymentCity = user != null ? user.City : '';
+				scope.Fields.RecipientOfPaymentEmplNo = user != null ? user.EmployeeId : '';
+				scope.Fields.RecipientOfPaymentEmail = user != null ? user.Mail : '';
+				scope.Fields.RecipientOfPaymentDepartment = user != null ? user.Department : '';
+				scope.Fields.RecipientOfPaymentLocation = user != null ? user.Location : '';
+				scope.Fields.RecipientOfPaymentID = user != null ? user.Id : '';
+				scope.Fields.AccountsCostCenter = user != null ? user.CostCentre : '';
+				break;
+		}
+		scope.$apply();
+		FormInitValues();
+	};
+
+	function FormAttachments() {
+		Attachments.Count(function (files){
+			scope.AttachmentCount = files.length;
+			scope.$apply();
+			FormInitValues();
+		});
+	}
+
+
+	scope.FormInit = function(message) {
+		if (scope.Message.WriteAccess) {
+			scope.rsMax++; 
+			LdapClient.FindById(scope.Message.UserName, scope.SetupUser);
+		} else {
+			FormInitValues();
+		}
+	}
+
+	function FormInitValues() {
+		scope.rsMax = 0;
+
+		// initialize
+		switch(scope.Message.CurrentRoute){
+			case 0:
+
+				if ((scope.Message.Command !== "OPEN" || !scope.Message.IsDraft()) && scope.Message.WriteAccess) {
+				scope.Fields.RecipientOfPaymentCode = "";
+				scope.Fields.RecipientOfPaymentRegNbr = "";
+				}
+				scope.$apply(function() {
+					scope.InitDoneIfAllComboBoxFilled();
+				});
+				break;
+			case 1:
+				scope.rsMax += 2;
+
+
+				if ((scope.Message.Command !== "OPEN" || !scope.Message.IsDraft()) && scope.Message.WriteAccess) {
+				scope.Fields.SignatureDate = new Date();
+				}
+				scope.ComboBoxes['AccountsCbo'].fillSelectedValue(scope.InitComboBoxDone);
+				scope.ComboBoxes['AttestCbo'].fillSelectedValue(scope.InitComboBoxDone);
+				break;
+		}
+	};
+
+	scope.FormInitDone = function() {
+
+		// call registered event handlers
+		IsDirtyAccountsDataRowOverride();
+		INIT_VCOM();
+		EVT_RecipientInit();
+		Info_Address_Code();
+		AddToAccounts();
+
+		scope.applyLanguage();
+		scope.Ready = true;
+
+		scope.$apply();
+		// adjust textareas
+		AdjustTextArea(GetScopeObject('ExplanationComment'), 24)
+
+		// set initial focus
+		window.load.RemoveLoadingProgress();
+		window.focus();
+
+	};
+
+	scope.start();
+    
+};

@@ -1,0 +1,393 @@
+﻿// ReSharper disable InconsistentNaming
+
+var SAPHRClient = function () {
+    var client = new WsClient(MessageHelper.GetSapHRService());
+    var xmlns = "http://volvo.com/Mailforms/SAPHR";
+    var soap, method, tempCallback;
+
+    // Private methods
+
+    var processResponse = function (response) {
+        if (response.status !== 200) {
+            console.error(response.statusText);
+            tempCallback();
+        } else {
+            response = WsClient.parseResponse(response.responseText, method);
+            var object = angular.fromJson(response);
+            if (!object.status) {
+                MsgBox.Error(object["errorMessage"]);
+                console.error(object["errorMessage"]);
+                tempCallback();
+            } else {
+                var data, results, i;
+                switch (method) {
+                    case "FindPersonBy":
+                        tempCallback(new PersonBrowser.Person(object["data"]));
+                        break;
+                    case "FindAllPersons":
+                        data = object["data"];
+                        results = [];
+                        if (data) {
+                            for (i = 0; i < data.length; i++) {
+                                var person = new PersonBrowser.Person(data[i]);
+                                results.push(person);
+                            }
+                        }
+                        tempCallback(results);
+                        break;
+                    case "FindPositionById":
+                        tempCallback(new OrganizationBrowser.Position(object["data"]));
+                        break;
+                    case "FindPositionByPerson":
+                        tempCallback(new OrganizationBrowser.Position(object["data"]));
+                        break;
+                    case "FindAllPositions":
+                        data = object["data"];
+                        results = [];
+                        if (data) {
+                            for (i = 0; i < data.length; i++) {
+                                var position = new OrganizationBrowser.Position(data[i]);
+                                results.push(position);
+                            }
+                        }
+                        tempCallback(results);
+                        break;
+                    case "FindAllOrganizations":
+                        data = object["data"];
+                        results = [];
+                        if (data) {
+                            for (i = 0; i < data.length; i++) {
+                                var unit = new OrganizationBrowser.Organization(data[i]);
+                                results.push(unit);
+                            }
+                        }
+                        tempCallback(results);
+                        break;
+                    case "FindOrganizationById":
+                        tempCallback(new OrganizationBrowser.Organization(object["data"]));
+                        break;
+                }
+            }
+        }
+    }
+
+    // Public methods
+
+    SAPHRClient.prototype.FindPersonBy = function (property, value, callback, terminated) {
+        method = "FindPersonBy";
+        tempCallback = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("property", property);
+        soap.add("value", value);
+        soap.add("terminated", terminated ? "true" : "false");
+
+        client.Call(soap, processResponse);
+    }
+
+    SAPHRClient.prototype.FindPersonByUserId = function (userId, callback, terminated) {
+        this.FindPersonBy("UserId", userId, callback, terminated);
+    }
+
+    SAPHRClient.prototype.FindPersonBySapId = function (sapId, callback, terminated) {
+        this.FindPersonBy("SapId", sapId, callback, terminated);
+    }
+
+    SAPHRClient.prototype.FindPersonByPersonnelNo = function (personnelNo, callback, terminated) {
+        this.FindPersonBy("PersonnelNo", personnelNo, callback, terminated);
+    }
+
+    SAPHRClient.prototype.FindPersons = function (filters, limit, callback) {
+        method = "FindAllPersons";
+        tempCallback = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("sapId", filters["sapId"]);
+        soap.add("userId", filters["userId"]);
+        soap.add("firstName", filters["firstName"]);
+        soap.add("lastName", filters["lastName"]);
+        soap.add("country", filters["countryCode"]);
+        soap.add("companyCode", filters["companyCode"]);
+        soap.add("departmentCode", filters["departmentCode"]);
+        soap.add("limit", limit || 20);
+
+        client.Call(soap, processResponse);
+    }
+
+    SAPHRClient.prototype.FindOrganizations = function(filters, limit, callback) {
+        method = "FindAllOrganizations";
+        tempCallback = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("managerFirstName", filters["managerFirstName"]);
+        soap.add("managerLastName", filters["managerLastName"]);
+        soap.add("managerSapId", filters["managerSapId"]);
+        soap.add("managerUserId", filters["managerUserId"]);
+        soap.add("departmentCode", filters["departmentCode"]);
+        soap.add("organizationId", filters["organizationId"]);
+        soap.add("reportTo", filters["reportTo"]);
+        soap.add("effectiveDate", filters["effectiveDate"].toISOString());
+        soap.add("limit", limit || 20);
+
+        client.Call(soap, processResponse);
+    }
+
+    SAPHRClient.prototype.FindOrganizationById = function(departmentId, effectiveDate, callback) {
+        method = "FindOrganizationById";
+        tempCallback = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("effectiveDate", effectiveDate.toISOString());
+        soap.add("departmentId", departmentId);
+
+        client.Call(soap, processResponse);
+    }
+
+    SAPHRClient.prototype.FindPositions = function(filters, callback) {
+        method = "FindAllPositions";
+        tempCallback = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("effectiveDate", filters["effectiveDate"].toISOString());
+        soap.add("organizationId", filters["organizationId"]);
+        soap.add("vacant", filters["vacant"] || false);
+        
+
+        client.Call(soap, processResponse);
+    }
+
+    SAPHRClient.prototype.FindPositionById = function(positionId, effectiveDate, callback) {
+        method = "FindPositionById";
+        tempCallback = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("effectiveDate", effectiveDate.toISOString());
+        soap.add("positionId", positionId);
+
+
+        client.Call(soap, processResponse);
+    }
+
+    SAPHRClient.prototype.FindPositionByPerson = function(filters, callback) {
+        method = "FindPositionByPerson";
+        tempCallback = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("effectiveDate", filters["effectiveDate"].toISOString());
+        soap.add("personnelNo", filters["personnelNo"]);
+
+        client.Call(soap, processResponse);
+    }
+
+};
+
+SAPHRClient.FindPersonByPersonnelNo = function (personnelNo, callback, terminated) {
+    var valid = true;
+    if (!personnelNo) {
+        console.error("SAPHRClient:FindPersonByPersonnelNo - personnelNo is required!");
+        valid = false;
+    }
+    if (!callback || typeof (callback) !== "function") {
+        console.error("SAPHRClient:FindPersonByPersonnelNo - callback function is required!");
+        valid = false;
+    }
+
+    if (valid) {
+        var client = new SAPHRClient();
+        client.FindPersonByPersonnelNo(personnelNo, callback, terminated);
+    }
+};
+
+SAPHRClient.FindPersonByUserId = function (userId, callback, terminated) {
+    var valid = true;
+    if (!userId) {
+        console.error("SAPHRClient:FindPersonByUserId - userId is required!");
+        valid = false;
+    }
+    if (!callback || typeof (callback) !== "function") {
+        console.error("SAPHRClient:FindPersonByUserId - callback function is required!");
+        valid = false;
+    }
+
+    if (valid) {
+        var client = new SAPHRClient();
+        client.FindPersonByUserId(userId, callback, terminated);
+    }
+};
+
+SAPHRClient.FindPersonBySapId = function (sapId, callback, terminated) {
+    var valid = true;
+    if (!sapId) {
+        console.error("SAPHRClient:FindPersonBySapId - sapId is required!");
+        valid = false;
+    }
+    if (!callback || typeof (callback) !== "function") {
+        console.error("SAPHRClient:FindPersonBySapId - callback function is required!");
+        valid = false;
+    }
+
+    if (valid) {
+        var client = new SAPHRClient();
+        client.FindPersonBySapId(sapId, callback, terminated);
+    }
+};
+
+SAPHRClient.FindPersons = function (filters, callback, limit) {
+    var valid = true;
+    if (!filters || typeof (filters) !== "object") {
+        console.error("SAPHRClient:FindPersons - filters object is required!");
+        valid = false;
+    }
+    if (!callback || typeof (callback) !== "function") {
+        console.error("SAPHRClient:FindPersons - callback function is required!");
+        valid = false;
+    }
+
+    if (valid) {
+        var client = new SAPHRClient();
+        client.FindPersons(filters, limit, callback);
+    }
+}
+
+SAPHRClient.FindOrganizations = function (filters, callback, limit) {
+    var valid = true;
+    if (!filters || typeof (filters) !== "object") {
+        console.error("SAPHRClient:FindOrganizations - filters object is required!");
+        valid = false;
+    }
+    if (!filters["effectiveDate"] || typeof (filters["effectiveDate"]) !== "object") {
+        console.error("SAPHRClient:FindOrganizations - effectiveDate in filters object is required!");
+        valid = false;
+    }
+    if (!callback || typeof (callback) !== "function") {
+        console.error("SAPHRClient:FindOrganizations - callback function is required!");
+        valid = false;
+    }
+
+
+    if (valid) {
+        var client = new SAPHRClient();
+        client.FindOrganizations(filters, limit, callback);
+    }
+}
+
+SAPHRClient.FindOrganizationById = function(departmentId, effectiveDate, callback) {
+    var valid = true;
+    if (!departmentId || typeof (departmentId) !== "string") {
+        console.error("SAPHRClient:FindOrganizations - departmentId is required!");
+        valid = false;
+    }
+    if (!effectiveDate || typeof (effectiveDate) !== "object") {
+        console.error("SAPHRClient:FindOrganizations - effectiveDate is required!");
+        valid = false;
+    }
+    if (!callback || typeof (callback) !== "function") {
+        console.error("SAPHRClient:FindOrganizations - callback function is required!");
+        valid = false;
+    }
+    if (valid) {
+        var client = new SAPHRClient();
+        client.FindOrganizationById(departmentId, effectiveDate, callback);
+    }
+}
+
+SAPHRClient.FindPositions = function (departmentId, effectiveDate, vacant, callback) {
+    var valid = true;
+    if (!departmentId) {
+        console.error("SAPHRClient:FindPositions - departmentId is required!");
+        valid = false;
+    }
+    if (!callback || typeof (callback) !== "function") {
+        console.error("SAPHRClient:FindPositions - callback function is required!");
+        valid = false;
+    }
+
+    if (valid) {
+        var client = new SAPHRClient();
+        client.FindPositions({
+                organizationId: departmentId,
+                effectiveDate: effectiveDate,
+                vacant: vacant
+            },
+            callback);
+    } else if (callback) {
+        callback([]);
+    }
+}
+
+SAPHRClient.FindPositionById = function (positionId, effectiveDate, callback) {
+    var valid = true;
+    if (!callback || typeof (callback) !== "function") {
+        console.error("SAPHRClient:FindPositionById = callback function is required!");
+        valid = false;
+    }
+    if (!positionId) {
+        console.error("SAPHRClient:FindPositionById - positionId is required!");
+        valid = false;
+    }
+    if (!effectiveDate) {
+        console.error("SAPHRClient:FindPositionById - effectiveDate is required!");
+        valid = false;
+    }
+    
+    if (valid) {
+        var client = new SAPHRClient();
+        client.FindPositionById(effectiveDate, positionId, callback);
+    }
+}
+
+SAPHRClient.FindPositionByPerson = function (personnelNo, effectiveDate, callback) {
+    var valid = true;
+    if (!personnelNo) {
+        console.error("SAPHRClient:FindPositionByPerson - personnelNo is required!");
+        valid = false;
+    }
+    if (!effectiveDate) {
+        console.error("SAPHRClient:FindPositionByPerson - effectiveDate is required!");
+        valid = false;
+    }
+    if (!callback || typeof (callback) !== "function") {
+        console.error("SAPHRClient:FindPositionByPerson = callback function is required!");
+        valid = false;
+    }
+
+    if (valid) {
+        var client = new SAPHRClient();
+        client.FindPositionByPerson({
+            effectiveDate: effectiveDate,
+            personnelNo: personnelNo
+        }, callback);
+    }   
+}
+
+
+
+var Sap = function () { };
+
+Sap.GetEmployeeByPersonnelNo = function (personnelNo, callback, terminated) {
+    SAPHRClient.FindPersonByPersonnelNo(personnelNo, callback, terminated);
+}
+
+Sap.GetEmployeeBySapId = function (sapId, callback, terminated) {
+    SAPHRClient.FindPersonBySapId(sapId, callback, terminated);
+}
+
+Sap.GetEmployeeByUserId = function (userId, callback, terminated) {
+    SAPHRClient.FindPersonByUserId(userId, callback, terminated);
+}
+
+Sap.GetPositionById = function(effectiveDate, positionId, callback) {
+    SAPHRClient.FindPositionById(positionId, effectiveDate, callback);
+}
+
+Sap.GetPositionByPerson = function(effectiveDate, personnelNo, callback) {
+    SAPHRClient.FindPositionByPerson(personnelNo, effectiveDate, callback);
+}
+// ReSharper restore InconsistentNaming

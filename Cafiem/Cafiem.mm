@@ -168,8 +168,68 @@
 <icon BUILTIN="button_ok"/>
 </node>
 </node>
+<node CREATED="1518032590483" ID="ID_197095017" MODIFIED="1519467555538" POSITION="right" TEXT="Begrepp">
+<node CREATED="1518032793230" ID="ID_1998879424" MODIFIED="1518032794330" TEXT="x">
+<node CREATED="1518032612944" ID="ID_1897404303" MODIFIED="1518032886700" TEXT="Prelimin&#xe4;r inkomstdeklaration 2">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1518032691687" ID="ID_432260720" MODIFIED="1518032691687" TEXT="Underlag f&#xf6;r inkomstskatt m.m."/>
+<node CREATED="1518032635392" ID="ID_1646002570" MODIFIED="1518032636190" TEXT="&#xd6;verskott av n&#xe4;ringsverksamhet"/>
+</node>
+<node CREATED="1518032714710" ID="ID_1338910270" MODIFIED="1518032888228" TEXT="Debiterad prelimin&#xe4;rskatt">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1518032728158" ID="ID_228676642" MODIFIED="1518032728158" TEXT="Debiterad prelimin&#xe4;rskatt ska betalas med 0 kr"/>
+<node CREATED="1518032728163" ID="ID_1186791458" MODIFIED="1518032728163" TEXT="Beslutet grundas p&#xe5; de uppgifter ni l&#xe4;mnat i prelimin&#xe4;r inkomstdeklaration."/>
+</node>
+</node>
+<node CREATED="1518032809715" ID="ID_361436129" MODIFIED="1518032889908" TEXT="Moms Deklaration">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+</node>
+<node CREATED="1518032850980" ID="ID_71891559" MODIFIED="1518032892233" TEXT="arbetsgivare deklaration">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1516133112098" ID="ID_1974365907" MODIFIED="1516133137368">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Arbetsgivaravgifter och skatteavdrag ska redovisas i en <b>arbetsgivardeklaration</b>.
+    </p>
+  </body>
+</html></richcontent>
+<font NAME="SansSerif" SIZE="12"/>
+<node CREATED="1516133298251" ID="ID_1211769917" MODIFIED="1516133307935">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      <font color="rgb(18, 18, 18)" face="Open Sans Regular, arial, sans-serif" size="14px">Deklarationen f&#246;r en m&#229;nad l&#228;mnar du vanligtvis den 12:e i den <b>efterf&#246;ljande</b>&#160; m&#229;naden. Du l&#228;mnar allts&#229; in deklarationen f&#246;r m&#229;naden maj den 12:e juni.</font>
+    </p>
+  </body>
+</html></richcontent>
+</node>
+</node>
+</node>
+</node>
 <node CREATED="1516132755690" ID="ID_1958098110" MODIFIED="1516132759986" POSITION="right" TEXT="skatteverket">
 <node CREATED="1516132761700" ID="ID_1026222741" LINK="https://www.skatteverket.se/foretagochorganisationer/arbetsgivare/arbetsgivarregistrering/dittansvarsomarbetsgivare.4.361dc8c15312eff6fd16ec2.html" MODIFIED="1516132775497" TEXT="Ditt ansvar som arbetsgivare">
+<node CREATED="1518033220820" ID="ID_235323257" MODIFIED="1518035074229" TEXT="registrera sig som arbetsgivare">
+<icon BUILTIN="button_ok"/>
+<node CREATED="1518033223085" ID="ID_133890682" MODIFIED="1518033223085" TEXT="datum f&#xf6;r f&#xf6;rsta l&#xf6;neutbetalning">
+<node COLOR="#006699" CREATED="1518033247858" ID="ID_163118499" MODIFIED="1518034374364" TEXT="2018-03-27"/>
+</node>
+<node CREATED="1518033223088" ID="ID_325773680" MODIFIED="1518033223088" TEXT="antal m&#xe5;nader per &#xe5;r som l&#xf6;n ska betalas">
+<node COLOR="#006699" CREATED="1518033276583" ID="ID_778866249" MODIFIED="1518033281680" TEXT="12"/>
+</node>
+<node CREATED="1518033223088" ID="ID_1468597078" MODIFIED="1518033223088" TEXT="ber&#xe4;knat antal anst&#xe4;llda du kommer att ha under &#xe5;ret">
+<node COLOR="#006699" CREATED="1518033285498" ID="ID_19940666" MODIFIED="1518033298305" TEXT="1"/>
+</node>
+<node CREATED="1518033223088" ID="ID_380767182" MODIFIED="1518033223088" TEXT="ber&#xe4;knad l&#xf6;nesumma f&#xf6;r ett &#xe5;r (12 m&#xe5;nader).">
+<node COLOR="#006699" CREATED="1518033335743" ID="ID_944750510" MODIFIED="1518034357619" TEXT="600000"/>
+</node>
+</node>
 <node CREATED="1516132868562" ID="ID_1610021066" MODIFIED="1516132869829" TEXT="skyldighet">
 <node CREATED="1516132883406" ID="ID_1389102438" MODIFIED="1516132883406" TEXT="g&#xf6;ra skatteavdrag n&#xe4;r du betalar ut l&#xf6;n och annan ers&#xe4;ttning f&#xf6;r arbete"/>
 <node CREATED="1516132883406" ID="ID_234044880" MODIFIED="1516132883406" TEXT="betala arbetsgivaravgifter"/>
@@ -237,7 +297,6 @@
 </node>
 </node>
 </node>
-<node CREATED="1516130881390" ID="ID_1136894411" MODIFIED="1516134725675" TEXT="prelimin&#xe4;r inkomstdeklaration."/>
 </node>
 <node CREATED="1516130575950" ID="ID_669989634" MODIFIED="1516130578191" POSITION="right" TEXT="2018">
 <node CREATED="1516130679007" ID="ID_1812095276" MODIFIED="1516130681515" TEXT="Jan"/>
@@ -263,9 +322,9 @@
 <icon BUILTIN="button_ok"/>
 </node>
 </node>
+<node CREATED="1516132469045" ID="ID_1442669349" MODIFIED="1516132469045" TEXT="12 feb        Du ska ha skickat in Momsdeklaration"/>
 <node CREATED="1516132469029" ID="ID_671898460" MODIFIED="1516132469029" TEXT="12 feb        Du ska ha betalat in Moms"/>
 <node CREATED="1516132469029" ID="ID_1620540321" MODIFIED="1516132469029" TEXT="12 feb        Du ska ha betalat in Debiterad prelimin&#xe4;rskatt"/>
-<node CREATED="1516132469045" ID="ID_1442669349" MODIFIED="1516132469045" TEXT="12 feb        Du ska ha skickat in Momsdeklaration"/>
 <node CREATED="1516132842613" ID="ID_1662247570" MODIFIED="1516132858208" TEXT="19 Feb Registrera dig som arbetsgivare">
 <node CREATED="1516132954490" ID="ID_708183561" MODIFIED="1516132954490" TEXT="Uppr&#xe4;tta ett anst&#xe4;llningsavtal."/>
 <node CREATED="1516132972214" ID="ID_973743359" MODIFIED="1516132972871" TEXT="Ta reda p&#xe5; vilken skattetabell "/>

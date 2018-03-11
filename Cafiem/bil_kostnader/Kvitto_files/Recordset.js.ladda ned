@@ -1,0 +1,229 @@
+var FORMPLUS_ServerFunctionsURLDB = "http://volvo.com/Mailforms/Recordset";
+
+var FORMPLUS_VERSION = "ver4";
+var FORMPLUS_CORPNAME = "Volvo";
+var FORMPLUS_FRAMEWORK = "Mailforms4";
+var FORMPLUS_DSN_FORMSServer = document.domain;
+var FORMPLUS_HTTP = location.protocol;
+
+function NewRecordSet() {
+    return new Recordset();
+}
+
+// Recordset class.
+function Recordset() {
+
+    var self = this;
+    var isOpen = false;
+
+    Recordset.prototype.Profile = '';
+    Recordset.prototype.SQL = null;
+    Recordset.prototype.BOF = true;
+    Recordset.prototype.EOF = true;
+    Recordset.prototype.Fields = {};
+    Recordset.prototype.Records = [];
+    Recordset.prototype.Removed = [];
+
+    Recordset.prototype.Count = function() {
+        return self.Records.length;
+    }    
+
+    // Create RSField.
+    // If name not exists => Value is null;
+    this.Create = function(sClass, sName) {
+        var oField = null;
+
+        switch (sClass.toLowerCase()) {
+        case "field":
+            var obj = doc.createElement(sName);
+            obj.nodeTypedValue = 'NULL';
+            oField = new RSField();
+            oField.Node = obj;
+            oField.Name = sName;
+            addToFields(self.Fields, oField);
+            break;
+        }
+        return oField;
+    };
+
+    // Add new record
+    this.AddNew = function() {
+        if (self.Provider == PROVIDER_MSSQL && bOpen) {
+            var oTemp = dataset.firstChild;
+
+            var record = doc.createElement('Table');
+            record.setAttribute("diffgr:id", 'Table' + (++lastId));
+            record.setAttribute("diffgr:hasChanges", "inserted");
+
+            oTemp.appendChild(record);
+            self.Count = count();
+            self.MoveLast();
+        }
+    };
+
+    // clean nodes with 'NULL'
+    function cleanNulls() {
+        var records = dataset.selectNodes("*/*/*");
+
+        if (records != null) {
+            var pattern = /<[\w]*>NULL<\/[\w]*>/g;
+
+            for (var i = 0; i < records.length; i++) {
+                var record = records[i];
+                if (pattern.test(record.xml)) {
+                    var parent = record.parentNode;
+                    parent.removeChild(record);
+                }
+            }
+        }
+    };
+
+    // Check if exists dirty node. 
+    // Dirty node -> Removed and added record with the same primary key
+    function checkDirtyDeletes() {
+        var records = dataset.selectSingleNode("//Fields");
+        var before = dataset.selectSingleNode('//diffgr:before');
+
+        if (before != null) {
+            for (var i = 0; i < before.childNodes.length; i++) {
+                var bRow = before.childNodes[i];
+                for (var j = 0; j < records.childNodes.length; j++) {
+                    var record = records.childNodes[j];
+                    if (getPrimaryKey(bRow) == getPrimaryKey(record)) {
+                        record.setAttribute("diffgr:hasChanges", "modified");
+                        record.setAttribute("diffgr:id", bRow.attributes[0].value);
+                        break;
+                    }
+                }
+            }
+        }
+    };
+
+    // getPrimary Keys
+    function getPrimaryKey(node) {
+        var value = "";
+
+        for (var i = 0; i < primarykeys.childNodes.length; i++) {
+            var col = node.selectSingleNode(primarykeys.childNodes[i].nodeTypedValue);
+            value += col == null ? "" : col.nodeTypedValue;
+        }
+
+        return value;
+    };
+
+    // Remove msdata:rowOrder attribute
+    function cleanRowOrderAttributes() {
+        var nodes = dataset.getElementsByTagName('Table');
+        for (var i = 0; i < nodes.length; i++) {
+            nodes[i].removeAttribute('msdata:rowOrder');
+        }
+    };
+
+    // Check duplicate primary key
+    function detectDuplicateKey() {
+        var records = dataset.selectNodes("//Fields/*");
+
+        for (var i = 0; i < records.length; i++) {
+            for (var j = i + 1; j < records.length; j++) {
+                if (getPrimaryKey(records[i]) == getPrimaryKey(records[j])) {
+                    alert("Duplicate Primary key!");
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    // Add field to array
+    function addToFields(fields, field) {
+        var length = fields.length;
+        fields[length] = field;
+    }
+
+    // Find field in array
+    function findField(fields, name) {
+        for (i = 0; i < fields.length; i++) {
+            if (fields[i].Name == name)
+                return fields[i];
+        }
+        return null;
+    };
+
+    // Create Xml Request
+    function createXmlRequest(recordset) {
+        var xml = Xml.getXml('<database><Fields/><diffgram/></database>');
+        var node = xml.getNode("database");
+        xml.setNode(node, "where", recordset.Where);
+        xml.setNode(node, "orderby", recordset.OrderBy);
+        xml.setNode(node, "sql", recordset.SQL);
+        xml.setNode(node, "profile", recordset.Profile);
+
+        node = xml.getNode('diffgram');
+        if (self.dataset != null) {
+            node.appendChild(self.dataset);
+        }
+        
+        node = xml.getNode("Fields");
+        for (var i = 0; i < recordset.Fields.length; i++) {
+            xml.setNode(node, "Field", recordset.Fields[i].Name);
+        }
+
+        return xml;
+    };   
+}
+
+// RSField class.
+function RSField() {
+    RSField.prototype.Name = '';
+    RSField.prototype.Value = '';
+    
+    this.Name = "";         // Name of record field.
+    this.Value = 'NULL';    // Value of record field.
+    this.Silent = 0;        // Mode
+    this.Node = null;       // XML Node
+
+    var self = this;
+
+    // Setter for Value
+    this.setValue = function (val) {
+        if (val != self.Value) {
+            var parentNode = self.Node.parentNode;
+            var changes = parentNode.getAttribute('diffgr:hasChanges');
+            switch (changes) {
+                case null:
+                    var root = parentNode.ownerDocument;
+                    var diffgram = root.lastChild;
+                    var before = null;
+
+                    if (diffgram.childNodes.length === 1) {
+                        before = root.createElement('diffgr:before');
+                        diffgram.appendChild(before);
+                    } else {
+                        before = diffgram.lastChild;
+                    }
+
+                    var row = parentNode.cloneNode(true);
+
+                    before.appendChild(row);
+                    parentNode.setAttribute("diffgr:hasChanges", "modified");
+                    break;
+            }
+            switch(typeof val) {
+                case 'boolean':
+                    self.Value = val.toString();
+                    self.Node.nodeTypedValue = val.toString();
+                    break;
+                case 'object':
+                    if (val == null) {
+                        self.Value = 'NULL';
+                        self.Node.nodeTypedValue = 'NULL';
+                    }
+                    break;
+                default:
+                    self.Value = val;
+                    self.Node.nodeTypedValue = val;
+                    
+            }
+        }
+    }
+}

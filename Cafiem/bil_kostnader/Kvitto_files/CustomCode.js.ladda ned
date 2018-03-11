@@ -1,0 +1,471 @@
+
+function INIT_VCOM() {
+	// True - TestPartner, False - ProductionPartner
+	scope.Fields.TEST_VCOM = false;
+	//True-PrintToFile, False - SendVCOM
+	scope.Fields.TEST_ROUTE = false;
+}
+function FILL_CboAccounts() {
+	var statement = "SELECT Account, AccountDescription_" + scope.CurrentLanguage + " FROM [open].[dict_ViewAccountsReceipt_117_v2]"
+	+ " WHERE CompanyCode = '" + scope.Fields.RecipientOfPaymentCode + "'";
+	RecordsetClient.GetSqlData("MailformsPublic", statement, FILL_CboAccountsCallback );
+}
+function FILL_CboAccountsCallback() {
+	var status = arguments[0];
+	var values = arguments[1];
+	
+	var scope = GetScope();
+	if (values && values.length > 0) {
+	scope.ComboBoxes['AccountsCbo'].values = [];
+	for (var i = 0 ; i < values.length ; i++) {
+	values[i].AccountsCboText = values[i]["Account"] + ": " + values[i]["AccountDescription_" + scope.CurrentLanguage];
+	scope.ComboBoxes['AccountsCbo'].values.push( values[i] );
+	}
+	    //scope.ComboBoxes['AccountsCbo'].fillAllValues(scope.InitComboBoxDone);
+	    scope.ComboBoxes['AccountsCbo'].fillAllValues();
+	}
+	Attest_Route(); 
+}
+function GetCompanyCode() {
+	var statement = "SELECT CompanyCode FROM [open].[dict_ViewCompanyCodes_114_v1]"
+	+ " WHERE Company = '" + scope.Fields.RecipientOfPaymentCompany + "'";
+	RecordsetClient.GetSqlData("MailformsPublic", statement, GetCompanyCodeCallback );
+}
+function GetCompanyCodeCallback() {
+	var status = arguments[0];
+	var values = arguments[1];
+	
+	var fields = GetScopeFields();
+	var scope = GetScope();
+	if (values && values.length > 0) {
+	fields.RecipientOfPaymentCode = values[0].CompanyCode;
+	}
+	else {
+	fields.RecipientOfPaymentCode = "";
+	}
+	FILL_CboAccounts();
+	AccountsSpecialVAT();
+}
+function UpdateCompany() {
+	var fields = GetScopeFields();
+	var sCompany = (fields.RecipientOfPaymentCompany).toUpperCase();
+	var sCity = (fields.RecipientOfPaymentCity).toUpperCase();
+	if (sCompany == "VOLVO PARTS AB" && sCity == "ESKILSTUNA") {
+	sCompany = "VOLVO PARTS ESKILSTUNA";
+	}
+	else if (sCompany == "VOLVO POWERTRAIN AB" && sCity == "KÖPING") {
+	sCompany = "VOLVO POWERTRAIN KÖPING";
+	}
+	else if (sCompany == "VOLVO POWERTRAIN AB" && sCity == "SKÖVDE") {
+	sCompany = "VOLVO POWERTRAIN SKÖVDE";
+	}
+	fields.RecipientOfPaymentCompany = sCompany;
+}
+function EVT_RecipientInit() {
+	if (scope.Message.CurrentRoute == 0) {
+	RecipientHandler();
+	}
+}
+function EVT_RecipientSelect() {
+	var fields = GetScopeFields();
+	if (fields.RecipientOfPaymentEmail == '') {
+	fields.RecipientOfPaymentEmail = "NO OUTLOOK ID!!!";
+	}
+	RecipientHandler();
+	CleanAttestFields();
+}
+function RecipientHandler() {
+	AdjustEmployeeNo();
+	UpdateCompany();
+	GetCompanyCode();
+}
+function AdjustEmployeeNo() {
+	var fields = GetScopeFields();
+	if (fields.RecipientOfPaymentEmplNo && fields.IssuerEmplNo) {
+	fields.RecipientOfPaymentEmplNo = (fields.RecipientOfPaymentEmplNo).slice(-5);
+	fields.IssuerEmplNo = (fields.IssuerEmplNo).slice(-5);
+	}
+}
+function Subject() {
+	var fields = GetScopeFields();
+	var emplNo = fields.RecipientOfPaymentEmplNo || "";
+	emplNo = (emplNo.trim()).slice(-5);
+	var date = new Date();
+	var months = ("0" + (date.getMonth() + 1)).slice(-2);
+	var days = ("0" + date.getDate()).slice(-2);
+	var hours = ("0" + date.getHours()).slice(-2);
+	var minutes = ("0" + date.getMinutes()).slice(-2);
+	var seconds = (date.getSeconds()).toString();
+	var seconds = (seconds.length == 1) ? "0" : seconds.substring(0, 1);
+	return "K " + emplNo + " " + months + days + " " + hours + minutes + seconds;
+}
+function SetSubject() {
+	var fields = GetScopeFields();
+	fields.RecipientOfPaymentRegNbr = Subject();
+}
+function SendFormCust() {
+	var scope = GetScope();
+	if (IsFormValid() && scope.form.$valid) {
+	SetSubject();
+	SendVCOM();
+	}
+}
+function SendVCOM() {
+	var vcomMsg = CreateTextBody();
+	var fields = GetScopeFields();
+	if (fields.TEST_ROUTE) {
+	PrintToFile(vcomMsg);
+	}
+	var tmpCompanyCode = fields.RecipientOfPaymentCode;
+	if (tmpCompanyCode != "SE53") {
+	var recordLen = 100;
+	var partnerID = null;
+	if (fields.TEST_VCOM) {
+	partnerID = "MFVBSTST"; // TestID
+	}
+	else {
+	partnerID = "MFVBSPRD"; // ProdID
+	}
+	var initCode = "INIT10";
+	var timeoutSec = -1;
+	var serverNode = "VCOMSRV";
+	//Send to RAS only if company different than SE69
+	if (tmpCompanyCode != "SE69")
+	{
+	//alert("Not SE69 - Sending to RAS");
+	VCOM.Send(vcomMsg, recordLen, partnerID, initCode, timeoutSec, serverNode, SendVCOMCallback);
+	}
+	else
+	{
+	//alert("SE69 - Message not sent to RAS!");
+	scope.sendForm();
+	}
+	}
+	else {
+	scope.sendForm();
+	}
+}
+function SendVCOMCallback() {
+	var status = arguments[0];
+	if (status == "ok") {
+	scope.sendForm();
+	//scope.closeForm();
+	}
+	else {
+	scope.saveForm();
+	MsgBox.Error('Message has not been sent! Please contact your Mailforms Support! The mailform will be saved.');
+	}
+}
+function PrintToFile() {
+	var strBody = arguments[0];
+	var uri = 'data:text/csv;charset=utf-8,' + strBody;
+	var downloadLink = document.createElement("a");
+	downloadLink.href = uri;
+	downloadLink.download = "VCOMtestFile.txt";
+	document.body.appendChild(downloadLink);
+	downloadLink.click();
+	document.body.removeChild(downloadLink);
+}
+function ReplacePrefix212() {
+	var strText = arguments[0];
+	var tmpCompanyCode = arguments[1];
+	
+	strText = strText || "";
+	strText = strText.trim();
+	tmpCompanyCode = tmpCompanyCode || "";
+	tmpCompanyCode.trim();
+	if (strText == "") {
+	return "";
+	}
+	else {
+	if (strText.substr(0, 3) == "212" && tmpCompanyCode == "SE83") {
+	return "V" + strText.substr(3, 9);
+	}
+	else if (strText.substr(0, 3) == "209" || strText.substr(0, 3) == "104" || strText.substr(0, 3) == "157") {
+	return "+" + strText.substr(3, 9);
+	}
+	else {
+	return strText.substr(0, 9);
+	}
+	}
+}
+function CreateTextBody() {
+	var fields = GetScopeFields();
+	var table = fields.AccountsData;
+	var tmpCompanyCode = fields.RecipientOfPaymentCode;
+	var tmpBody = VCOM.AddSpace("KV/REGN/" + fields.RecipientOfPaymentRegNbr.replace(/\s+/g, '') + "/", 100)
+	+ VCOM.AddSpace("KV/PERS/" + fields.RecipientOfPaymentEmplNo + "/" + fields.RecipientOfPaymentEmail + "/", 100)
+	+ VCOM.AddSpace("KV/BELO/" + fields.AmountsTotal + "///" + fields.AmountsTotal + "//", 100);
+	tmpBody += VCOM.AddSpace("KV/KTO1/" + tmpCompanyCode + "//" + "264101" + "/" + fields.AmountsVAT + "//", 100);
+	for (var i = 0 ; i < table.length ; i++) {
+	if ( isDirty( table[i].AccountsWBS, '' ) ) {
+	tmpBody += VCOM.AddSpace("KV/KTO" + (i + 2) + "/" + tmpCompanyCode + "/" + table[i].AccountsCostCenter
+	+ "/" + AccountsGetNumber(table[i].AccountsCbo) + "/" + table[i].AccountsExcl
+	+ "/" + table[i].AccountsWBS.replace(/[-]/g, '').substr(3, 9) + "/", 100);
+	}
+	else {
+	tmpBody += VCOM.AddSpace("KV/KTO" + (i + 2) + "/" + tmpCompanyCode + "/" + table[i].AccountsCostCenter
+	+ "/" + AccountsGetNumber(table[i].AccountsCbo) + "/" + table[i].AccountsExcl
+	+ "/" + ReplacePrefix212(table[i].AccountsOrdernumber, tmpCompanyCode) + "/", 100);
+	}
+	}
+	tmpBody += VCOM.AddSpace("KV/STOP/", 100);
+	return tmpBody;
+}
+function AccountsGetNumber() {
+	var sAccount = arguments[0];
+	
+	if (sAccount && sAccount.AccountsCboText != undefined) {
+	    var position = sAccount.AccountsCboText.indexOf(": ");
+	    return sAccount.AccountsCboText.substr(0, position);
+	}
+	return;
+}
+function AccountsDataUpdateSummaries() {
+	var iVat = 0;
+	var iExcl = 0;
+	var iValue = 0;
+	var fields = GetScopeFields();
+	var table = fields.AccountsData;
+	for (var i = 0 ; i < table.length ; i++) {
+	var pos = table[i].AccountsVat.indexOf("(");
+	if (pos > -1) {
+	iValue = Number ( table[i].AccountsVat.substr(0, pos).trim() );
+	}
+	else {
+	iValue = Number( table[i].AccountsVat );
+	}
+	iVat += iValue;
+	iValue = Number(table[i].AccountsExcl);
+	iExcl += iValue;
+	}
+	fields.AmountsExcl = iExcl;
+	fields.AmountsVAT = iVat;
+	fields.AmountsTotal = iExcl + iVat;
+	if (fields.RecipientOfPaymentEmail != "NO OUTLOOK ID!!!") {
+	Attest_Route();
+	}
+	AccountsLockUnlockRecipient();
+}
+function AccountsSpecialVAT() {
+	var statement = "SELECT Vat, Account FROM [open].[dict_ViewSpecVAT_117_v1]"
+	+ " WHERE CompanyCode = '" + scope.Fields.RecipientOfPaymentCode + "'";
+	RecordsetClient.GetSqlData("MailformsPublic", statement, AccountsSpecialVATCallback);
+}
+function AccountsSpecialVATCallback() {
+	var status = arguments[0];
+	var values = arguments[1];
+	if (status) {
+	scope.Fields.SpecialVATList = values;
+	}
+}
+function getVat() {
+	var account = arguments[0];
+	var array = scope.Fields.SpecialVATList || [];
+	for (var i = 0 ; i < array.length ; i++) {
+	if (array[i].Account == account)
+	return Number ( array[i].Vat );
+	}
+	return undefined;
+}
+function AccountsSpecialVAT_Add() {
+	var fields = scope.Fields;
+	var vat = getVat( fields.AccountsCbo );
+	if (vat != undefined) {
+	if (vat == 0) {
+	fields.AccountsExcl = Math.floor(Number(fields.AccountsExcl) + Number(fields.AccountsVat));
+	fields.AccountsVat = "0" + " " + scope.Translations[scope.CurrentLanguage].Vat_0;
+	}
+	else {
+	fields.AccountsExcl = Math.round(Number(fields.AccountsExcl) + Number(fields.AccountsVat) / 2);
+	fields.AccountsVat = Math.round(Number(fields.AccountsVat) - Math.round(Number(fields.AccountsVat) / 2))
+	+ " " + scope.Translations[scope.CurrentLanguage].Vat_12;
+	}
+	}
+	return true;
+}
+function AccountsLockUnlockRecipient() {
+	if (scope.Fields.AccountsData.length > 0) {
+	document.getElementById('RecipientOfPaymentButton1').disabled = true;
+	}
+	else {
+	document.getElementById('RecipientOfPaymentButton1').disabled = false;
+	}
+}
+function Attest_Route() {
+	var fields = GetScopeFields();
+	if (fields.RecipientOfPaymentEmail == "NO OUTLOOK ID!!!") {
+	GlobalAR.FindById(fields.RecipientOfPaymentID, Attest_RouteCallback, GAR.VCD)
+	}
+	else {
+	GlobalAR.FindById(fields.RecipientOfPaymentID, Attest_RouteCallback, GAR.VCN)
+	}
+}
+function Attest_RouteCallback() {
+	var oGAR = arguments[0];
+	var scope = GetScope();
+	var fields = GetScopeFields();
+	if (scope.Message.CurrentRoute == 0) {
+	var total = fields.AmountsTotal || 0;
+	if (total < 50000) {
+	SelectManagers(oGAR, 'B6');
+	}
+	else if (total < 200000) {
+	SelectManagers(oGAR, 'B5');
+	}
+	else if (total < 500000) {
+	SelectManagers(oGAR, 'B4');
+	}
+	else if (total < 1000000) {
+	SelectManagers(oGAR, 'B3');
+	}
+	else if (total < 10000000) {
+	SelectManagers(oGAR, 'B2');
+	}
+	else if (total < 25000000) {
+	SelectManagers(oGAR, 'B1');
+	}
+	else {
+	SelectManagers(oGAR, 'B0');
+	}
+	}
+	scope.$apply();
+}
+function SelectManagers() {
+	var oGAR = arguments[0];
+	var level = arguments[1];
+	var oMan = oGAR.GetMinAuthLevelManager(level);
+	var oMan2 = null;
+	var levelNumber = Number(oMan.AuthLevel.slice(1)) - 1;
+	if (levelNumber > -1) {
+	oMan2 = oGAR.GetMinAuthLevelManager('B' + levelNumber);
+	}
+	
+	if (scope.Fields.RecipientOfPaymentEmail == 'martin.lundstedt@volvo.com') {
+	  var JanGuranderId = 'A081779';
+	  GlobalAR.FindById(JanGuranderId, B1_Callback, GAR.VCD)
+	}
+	else {
+	  AddToCboAttest(oMan, oMan2, true);
+	}
+	
+	if (scope.Fields.RecipientOfPaymentEmail == 'elisabeth.rocke@volvo.com') {
+	  var TinaHultkvist = 'YA07410';
+	  GlobalAR.FindById(TinaHultkvist, B2_Callback, GAR.VCD);
+	}
+}
+function B1_Callback() {
+	var oGAR = arguments[0];
+	if (oGAR) {
+	    var man = oGAR['B1'];
+	    AddToCboAttest(man, null, true);
+	}
+}
+function B2_Callback() {
+	var oGAR = arguments[0];
+	if (oGAR) {
+	    var man = oGAR['B2'];
+	    AddToCboAttest(man, null, false);
+	}
+}
+function AddToCboAttest() {
+	oMan = arguments[0];
+	oMan2 = arguments[1];
+	let clearComboBox = arguments[2];
+	var scope = GetScope();
+	if (clearComboBox)
+	  scope.ComboBoxes['AttestCbo'].values = [];
+	if (oMan) {
+	oMan.DisplayInfo = oMan.Name;
+	scope.ComboBoxes['AttestCbo'].values.push(oMan);
+	}
+	CreateAttestOptionDeputy(oMan);
+	if (oMan2 && oMan != oMan2) {
+	    oMan2.DisplayInfo = oMan2.Name;
+	    scope.ComboBoxes['AttestCbo'].values.push(oMan2);
+	    CreateAttestOptionDeputy(oMan2);
+	}
+	scope.$apply();
+}
+function CreateAttestOptionDeputy(oMan) {
+	if (oMan && oMan.Deputy) {
+	 LdapClient.FindById(oMan.Deputy, function(user) {
+	  if (user) {
+	   scope.$apply(function() {
+	    scope.ComboBoxes['AttestCbo'].values.push({
+	     UserID: user.Id,
+	     Name: user.DisplayName,
+	     Email: user.Email.Address,
+	     Department: user.Department,
+	     DisplayInfo: user.DisplayName + " (Deputy of: " + oMan.Name + ")"
+	    });
+	   });
+	  }
+	 });
+	}
+}
+function EVT_AttestSelect() {
+	var scope = GetScope();
+	var fields = GetScopeFields();
+	if (fields.AttestCbo) {
+	    fields.AttestName = fields.AttestCbo.Name;
+	    fields.AttestEmail = fields.AttestCbo.Email;
+	    fields.AttestID = fields.AttestCbo.UserID;
+	    fields.AttestDepartment = fields.AttestCbo.Department;
+	
+	}
+}
+function SetAttestant() {
+	var attestant = arguments[0];
+	var status = arguments[1];
+	if (attestant) {
+	var scope = GetScope();
+	var fields = GetScopeFields();
+	fields.AttestName = attestant.DisplayName;
+	fields.AttestEmail = attestant.Email.Address;
+	fields.AttestID = attestant.Id;
+	fields.AttestDepartment = attestant.Department;
+	scope.$apply();
+	}
+}
+function AddToAccounts() {
+	var value = arguments[0];
+	if (value && value != 'Cancel' ) {
+	var scope = GetScope();
+	if (value.Account && value.Description) {
+	value.AccountsCboText = value.Account + ": " + value.Description;
+	scope.ComboBoxes['AccountsCbo'].values.push(value);
+	scope.Fields.AccountsCbo = value;
+	}
+	}
+}
+function SelectAccount() {
+	var statement = "SELECT AccountNumber as Account, LongDesc as Description FROM [open].[dict_ViewAccountChart_117_v2]" 
+	+ " WHERE CompanyCode = '" + scope.Fields.RecipientOfPaymentCode + "'";
+	scope.openEntryList(statement, AddToAccounts);
+}
+function Info_Address_Code() {
+	var scope = GetScope();
+	if (scope.Message.CurrentRoute == 1) {
+	var languages = scope.Languages;
+	for (var i in languages) {
+	
+	scope.Translations[languages[i]].Note_AttestedForm_3 = scope.Translations[languages[i]].Note_AttestedForm_1;
+	
+	scope.Translations[languages[i]].Note_AttestedForm_3 += scope.Fields.RecipientOfPaymentCode;
+	scope.Translations[languages[i]].Note_AttestedForm_3 += scope.Translations[languages[i]].Note_AttestedForm_2;
+	}
+	}
+}
+function IsDirtyAccountsDataRowOverride() {
+	scope.isDirtyAccountsDataRow = function () {
+	return isDirty(scope.Fields.AccountsCbo, "")
+	|| isDirty(scope.Fields.AccountsExcl, "")
+	|| isDirty(scope.Fields.AccountsVat, "");
+	};
+}
+function CleanAttestFields() {
+	scope.Fields.AttestID = undefined;
+	scope.Fields.AttestDepartment = undefined;
+}
+

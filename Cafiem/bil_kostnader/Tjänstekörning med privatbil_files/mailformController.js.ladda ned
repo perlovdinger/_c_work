@@ -1,0 +1,726 @@
+//console.info(angular.version.full);
+
+angular.module("ui.mask", []);
+
+angular.module("mailform-app", ["ui.mask", "ui.bootstrap"]);
+
+angular.module("mailform-app").controller("mailformController", function($scope, $modal, $window, $timeout, $http) {
+
+    Extentions.supportValidationMarkup($scope);
+    Extentions.supportDatePickers($scope);
+    Extentions.supportMsgBoxes($scope, $modal);
+    Extentions.supportDynamicControls($scope);
+    Extentions.supportMultilanguage($scope, true);
+
+    $scope.rsCounter = 0;
+    $scope.sendCounter = 0;
+    $scope.rsMax = 0;
+    $scope.Ready = false;
+    $scope.ErrorMessage = "";
+    $scope.ValidMessage = "Form is valid!";
+    $scope.$watch($scope.ErrorMessage, function(nVal) {
+        if (isDirty(nVal, "")) {
+            console.log(nVal);
+        }
+    });
+
+    $scope.Fields = {};
+    $scope.Languages = [];
+    $scope.FormTitle = undefined;
+    $scope.ComboBoxes = {};
+    $scope.MruLists = {};
+    $scope.Dates = [];
+    $scope.AttachmentCount = 0;
+
+
+    var waitHandler = null;
+
+    var updateMessage = function () {
+        $scope.Message.Language = $scope.CurrentLanguage;
+        $scope.Message.Fields = $scope.Fields;
+    }
+
+    /* Modal dialog windows */
+
+    $scope.openWait = function(message) {
+
+        waitHandler = $modal.open({
+            templateUrl: "/VolvoForms/Framework/templates/wait.html",
+            controller: "popMsgCtrl",
+            windowClass: "modal-vertical-centered",
+            size: "",
+            backdrop: "static",
+            keyboard: false,
+            resolve: {
+                message: function() { return message; },
+                showCancel: function() { return false; }
+            }
+        });
+    };
+
+    $scope.closeWait = function() {
+        if (waitHandler != null) {
+            waitHandler.dismiss();
+            waitHandler = null;
+        }
+    };
+
+    $scope._openAbout = function() {
+
+        $modal.open({
+            templateUrl: "/VolvoForms/Framework/templates/about.html",
+            controller: "aboutCtrl",
+            windowClass: "modal-vertical-centered",
+            size: "",
+            backdrop: "static",
+            keyboard: false,
+            resolve: {
+                aboutInfo: function () { return $scope.About; }
+            }
+        });
+    };
+
+    $scope.openParmaBrowser = function(onOk, title, criteria) {
+
+        var modalInstance = $modal.open({
+            templateUrl: "/VolvoForms/Framework/templates/parma.html",
+            controller: "popParmaCtrl",
+            size: "lg",
+            backdrop: "static",
+            keyboard: false,
+            resolve: {
+                title: function() { return title; },
+                criteria: function() { return criteria; }
+            }
+        });
+
+        modalInstance.result.then(function(result) {
+            if (result != null && onOk != null) {
+                onOk(result);
+            }
+        });
+    };
+
+    $scope.openPeoplePicker = function(source, multiperson, onOk, criteria, domains) {
+        var modalInstance = $modal.open({
+            templateUrl: "/VolvoForms/Framework/templates/peoplepicker.html",
+            controller: "peoplePickerCtrl",
+            size: "lg",
+            backdrop: "static",
+            keyboard: false,
+            resolve: {
+                domains: function() { return domains; },
+                multi: function() { return multiperson; },
+                source: function() { return source; },
+                criteria: function() { return criteria; }
+            }
+        });
+
+        modalInstance.result.then(function(result) {
+            if ((result == null || result !== "Cancel") && onOk != null) {
+                onOk(result);
+            }
+        });
+    };
+
+    $scope.openEntryList = function(statement, callback) {
+        var modalInstance = $modal.open({
+            templateUrl: "/VolvoForms/Framework/templates/entrylist.html",
+            controller: "entryListCtrl",
+            size: "lg",
+            backdrop: "static",
+            keyboard: false,
+            resolve: {
+                statement: function() { return statement; },
+            }
+        });
+
+        modalInstance.result.then(function(result) {
+            if (result != null && callback != null) {
+                callback(result);
+            }
+        });
+    };
+
+    $scope._openAttach = function(viewState, callback) {
+
+        var modalInstance = $modal.open({
+            templateUrl: "/VolvoForms/Framework/templates/attach.html",
+            controller: "popAttachCtrl",
+            windowClass: "modal-vertical-centered",
+            size: "",
+            backdrop: "static",
+            keyboard: false,
+            resolve: {
+                readOnly: function() { return $scope.Message.IsReadOnly() || viewState; }
+            }
+        });
+
+        modalInstance.result.then(function(list) {
+            $scope.AttachmentCount = list.length;
+            if (typeof (callback) === "function") {
+                callback(list);
+            };
+        });
+
+    };
+
+    window.onbeforeunload = function(e) {
+        $scope.Message.Delete(null);
+    };
+
+    $scope.afterSendPopup = function(canBeCopied, tid) {
+
+        var modalInstance = $modal.open({
+            templateUrl: $scope.Message.CurrentRoute === 0 ? "/VolvoForms/Framework/templates/newinstance.html" : "/VolvoForms/Framework/templates/finish.html",
+            controller: "popFinish",
+            windowClass: "modal-vertical-centered",
+            size: "lg",
+            backdrop: "static",
+            keyboard: false,
+            resolve: {
+                CanBeCopied: function() { return canBeCopied; },
+                CopyMessage: function() {
+                    if (!canBeCopied) {
+                        return "";
+                    } else if ($scope.SaveAndCopyMessage === "") {
+                        return "Copy form and start new instance";
+                    } else {
+                        if ($scope.CurrentLanguage !== "") {
+                            return $scope.Labels[$scope.SaveAndCopyMessage];
+                        } else {
+                            return $scope.SaveAndCopyMessage;
+                        }
+
+                    }
+                }
+            }
+        });
+
+        modalInstance.result.then(function(result) {
+            $scope.AttachmentCount = 0;
+            $scope.Fields = [];
+            switch (result) {
+            case "Yes":
+                document.location.href = MessageHelper.GetWebApiHost() + "Logon.aspx?class=" + $scope.Message.MessageFullClass + "&command=new";
+                break;
+            case "No":
+                document.location.href = MessageHelper.GetWebApiHost() + "Logon.aspx?tid=" + tid + "&command=copy";
+                break;
+            default:
+                closeWindow();
+                break;
+            }
+        });
+    };
+
+    var closeWindow = function() {
+        window.open("", "_self").close();
+        window.location.href = "/EFormsLibrary/Library.aspx";
+    };
+
+
+    /* Mailform core actions*/
+
+    $scope._saveForm = function() {
+        $scope.openWait();
+        $scope.ErrorMessage = "";
+        $scope.Message.Subject = GetSavedSubject();
+        $scope.Message.Save($scope);
+        $scope.SaveMrus();
+    };
+
+    $scope.forward = function (recipient, subject) {
+        $scope.openWait();
+        $scope.ErrorMessage = "";
+        $scope.Message.Forward(recipient, subject, $scope);
+    };
+
+    $scope.sendNote = function (note) {
+		if ($scope.sendCounter === 0) {
+			$scope.openWait();
+		}
+		$scope.sendCounter++;
+		$scope.Message.Send("note", $scope.AfterSend, note);
+	};
+
+
+    /* function supports 2 types of sending:
+       -    group async sends, which each with scope.AfterSend callback (increment sendCounter)
+       -    chain of sends - simulation of FM4 sync sends (add routes to queue)
+    */
+    $scope.sendForm = function () {
+        $scope.Validated = undefined;
+        if (IsFormValid() && $scope.form.$valid) {
+            $scope.Message.SendSequence = 1;
+            $scope.ErrorMessage = "";
+            $scope.openWait();
+            SendForm();
+            if ($scope.Message.SendQueqe.length > 0) {
+                $scope.AfterSend(true);
+                /* AfterSend callback check if queue is empty, 
+                   -    if not -> send next route
+                   -    else show ErrorMessage (if raised) or AfterSend popup
+                */
+            }
+            $scope.SaveMrus();
+        }
+    };
+
+    $scope.send = function (media) {
+        if ($scope.sendCounter === 0) {
+            $scope.openWait();
+        }
+        $scope.sendCounter++;
+        $scope.Message.Send(media, $scope.AfterSend);
+    };
+
+    $scope._validateForm = function () {
+        $scope.Validated = undefined;
+        if (IsFormValid() && $scope.form.$valid) {
+            $scope.showMessage($scope.ValidMessage);
+            return true;
+        }
+        return false;
+    };
+
+    $scope._cancelForm = function() {
+
+        if ($scope.Message.IsReadOnly()) {
+            $scope._closeForm();
+            return;
+        }
+
+        var modalInstance = $modal.open({
+            templateUrl: "/VolvoForms/Framework/templates/cancel.html",
+            controller: "popFinish",
+            windowClass: "modal-vertical-centered",
+            size: "lg",
+            resolve: {
+                CanBeCopied: function() { return false; },
+                CopyMessage: function() { return ""; }
+            }
+        });
+
+        modalInstance.result.then(function(result) {
+            switch (result) {
+            case "Yes":
+                $scope.saveForm();
+                $scope._closeForm();
+                break;
+            case "No":
+                $scope._closeForm();
+                break;
+            };
+        });
+
+    };
+
+    $scope._closeForm = function() {
+        $scope.close(false);
+    };
+
+    $scope.close = function() {
+        $scope.Message.Delete(function() {
+            closeWindow();
+        });
+    };
+
+    $scope._printForm = function () {
+        window.print();
+    };
+
+    /* Callbacks*/
+
+    $scope.AfterSend = function (status, result) {
+        $scope.sendCounter--;
+        if ($scope.sendCounter <= 0) {
+            var r = angular.fromJson(result);
+            if (!status) {
+                $scope.ErrorMessage = result.Result;
+            }
+            if ($scope.Message.SendQueqe.length > 0) {
+                $scope.Message.SendNext($scope.AfterSend);
+            } else {
+                $scope.closeWait();
+                if (!isDirty($scope.ErrorMessage, "")) {
+                    $scope.afterSendPopup(r.CanBeCopied, r.Tid);
+                } else {
+                    $scope.Message.NextRoute = $scope.Message.CurrentRoute;
+                }
+            }
+        }
+    };
+
+    $scope.AfterSave = function(status, result) {
+        $scope.closeWait();
+        if (status) {
+            $scope.showMessage("Message has been saved");
+        } else {
+            $scope.ErrorMessage = result.Result;
+        }
+    };
+
+    $scope.AfterForward = function(status, result) {
+        $scope.closeWait();
+        if (status) {
+            $scope.showMessage("Message has been forwarded");
+        } else {
+            $scope.ErrorMessage = result.Result;
+        }
+    };
+
+
+    /* Init */
+
+    $scope.start = function () {
+        $scope.ErrorMessage = "";
+        $scope.Message = new Message(angular.toJson, angular.fromJson);
+        $scope.Message.UpdateFieldsHandler = updateMessage;
+        MessageHelper.ParseHttpRequest($scope.Message);
+        $scope.Message.Authorize(function() {
+            $scope.Message.Retrieve(function() {
+                if ($scope.Message.Fields) {
+                    for (var name in $scope.Message.Fields) {
+                        if ($scope.Message.Fields.hasOwnProperty(name)) {
+                            $scope.Fields[name] = $scope.Message.Fields[name];
+                        }
+                    }
+                }
+                $scope.FormInit();
+            });
+        });
+    };
+
+    /* ComboBox */
+
+    $scope.InitComboBoxDone = function() {
+        $scope.rsCounter++;
+        $scope.InitDoneIfAllComboBoxFilled();
+    }
+
+    $scope.InitDoneIfAllComboBoxFilled = function() {
+        if ($scope.rsCounter >= $scope.rsMax) {
+            $scope.GetMrus();
+            $scope.FormInitDone();
+        }
+    }
+
+    $scope.GetComboText = function (comboName) {
+        var el = document.getElementById(comboName);
+        if (!el) {
+            return "";
+        }
+        return el.options[el.selectedIndex].innerText;
+    };
+
+    /* MRU List*/
+
+    $scope.GetMrus = function () {
+        for (var i in $scope.MruLists) {
+            $scope.MruLists[i].init();
+        }
+    }
+
+    $scope.SaveMrus = function () {
+        for (var i in $scope.MruLists) {
+            $scope.MruLists[i].save();
+        }
+    }
+
+    /* Disable controls*/
+    $scope.isReadonlyControl = isReadonlyControl;
+
+    /* IE11 disabled fieldset workaround */
+    $scope.disabledFieldset = function(e) {
+        if (!e) {
+            e = window.event;
+        }
+
+        if (e.currentTarget.disabled) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            return false;
+        }
+    };
+
+    // Init additional modules
+
+    $scope.WorktimeTidInfoInit = function() {
+        if (typeof WorktimeTidInfoModule == "function") {
+            WorktimeTidInfoModule.init($scope, $modal, $timeout, $window);
+        }
+    };
+
+    $scope.SalaryCalcInit = function() {
+        if (typeof SalaryCalcModule == "function") {
+            SalaryCalcModule.init($scope, $modal);
+        }
+    }
+
+    $scope.SalaryBonusNewInit = function() {
+        if (typeof SalaryBonusNewModule == "function") {
+            SalaryBonusNewModule.init($scope, $modal);
+        }
+    }
+
+    $scope.SalaryBonusChangeInit = function () {
+        if (typeof SalaryBonusChangeModule == "function") {
+            SalaryBonusChangeModule.init($scope, $modal);
+        }
+    }
+
+    $scope.PersonBrowserInit = function() {
+        if (typeof PersonBrowser === "function") {
+            PersonBrowser.init($scope, $modal);
+        }
+    }
+
+    $scope.OrganizationBrowserInit = function () {
+        if (typeof OrganizationBrowser === "function") {
+            OrganizationBrowser.init($scope, $modal);
+        }
+    }
+
+    SetupController();
+});
+
+/* Controllers extentions */
+
+function Extentions() { };
+
+Extentions.supportValidationMarkup = function($scope) {
+    $scope.Validated = undefined;
+    $scope.$watch("Validated", function (id) {
+        var elements, i, el;
+        if (isDirty(id)) {
+            elements = document.querySelectorAll('*[name="' + id + '"]');
+            for ( i = 0; i < elements.length; i++) {
+                el = angular.element(elements[i]);
+                el.addClass("mf-validated");
+                el.on("blur", function(e) {
+                    $scope.$apply(function() {
+                        $scope.Validated = undefined;
+                    });
+                });
+            }
+        } else {
+            elements = document.querySelectorAll(".mf-validated");
+            for (i = 0; i < elements.length; i++) {
+                el = angular.element(elements[i]);
+                el.removeClass('mf-validated');
+            }
+        }
+    });
+}
+
+
+Extentions.supportDatePickers = function ($scope) {
+    $scope.Popups = [];
+    $scope.DateFormat = "yyyy-MM-dd";
+
+    $scope.openDatePicker = function ($event, opener) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        $scope.Popups[opener] = true;
+    };
+};
+
+Extentions.supportMsgBoxes = function($scope, $modal) {
+    $scope.showMessage = function (message, onOk) {
+
+        var modalInstance = $modal.open({
+            templateUrl: "/VolvoForms/Framework/templates/message.html",
+            controller: "popMsgCtrl",
+            windowClass: "modal-vertical-centered",
+            size: "sm",
+            backdrop: "static",
+            keyboard: false,
+            resolve: {
+                message: function () { return message; },
+                showCancel: function () { return null; }
+            }
+        });
+
+        modalInstance.result.then(function () {
+            if (onOk != null) {
+                onOk();
+            }
+        });
+
+    };
+
+    var askYNC = function (message, onYes, onNo, onCancel, showCancel) {
+
+        var modalInstance = $modal.open({
+            templateUrl: "/VolvoForms/Framework/templates/yesnocan.html",
+            controller: "popMsgCtrl",
+            windowClass: "modal-vertical-centered",
+            size: "sm",
+            backdrop: "static",
+            keyboard: false,
+            resolve: {
+                message: function () { return message; },
+                showCancel: function () { return showCancel; }
+            }
+        });
+
+        modalInstance.result.then(function (result) {
+            switch (result) {
+                case "Yes":
+                    if (onYes != null) {
+                        onYes();
+                    }
+                    break;
+                case "No":
+                    if (onNo != null) {
+                        onNo();
+                    }
+                    break;
+                case "Cancel":
+                    if (onCancel != null) {
+                        onCancel();
+                    }
+                    break;
+            }
+        });
+    };
+
+    $scope.askYesNoCan = function (message, onYes, onNo, onCancel) {
+
+        askYNC(message, onYes, onNo, onCancel, true);
+    };
+
+    $scope.askYesNo = function (message, onYes, onNo) {
+
+        askYNC(message, onYes, onNo, null, false);
+    };
+};
+
+Extentions.supportDynamicControls = function ($scope) {
+    $scope.DynamicTables = [];
+
+    var removeEntry = function (table, id, afterRemove) {
+        var entry = null;
+        for (var i = 0; i < $scope.Fields[table].length; i++) {
+            if ($scope.Fields[table][i].Id === id) {
+                entry = $scope.Fields[table][i];
+                $scope.Fields[table].splice(i, 1);
+            }
+        }
+        for (var j = 0; j < $scope.Fields[table].length; j++) {
+            $scope.Fields[table][j].Id = j + 1;
+        }
+        if (afterRemove) {
+            afterRemove();
+        }
+        return entry;
+    };
+
+    $scope.dynTabAddClick = function (table, validFunction, addFunction, cleanFunction, maxRows, maxRowsValidMsg) {
+        if (maxRows && $scope.Fields[table].length === maxRows) {
+            MsgBox.ValidationError(maxRowsValidMsg, "IsDynamicSectionItemsMax", $scope.CurrentLanguage, null, [maxRows]);
+            return;
+        }
+        if (validFunction()) {
+            var m = $scope.Fields[table].length + 1;
+            var r = addFunction(m);
+            $scope.Fields[table].push(r);
+            cleanFunction();
+        };
+    };
+
+    $scope.remDynTabEntry = function (table, id, beforeRemove, afterRemove) {
+        if (beforeRemove) {
+            if (!beforeRemove()) {
+                return false;
+            }
+        }
+
+        $scope.askYesNo("Do you want to delete row?", function () { removeEntry(table, id, afterRemove); });
+    };
+
+    $scope.editDynTabEntry = function (table, id, setFunction, beforeRemove, afterRemove) {
+        if (beforeRemove) {
+            if (!beforeRemove()) {
+                return false;
+            }
+        }
+        var entry = removeEntry(table, id);
+        setFunction(entry);
+        if (afterRemove) {
+            afterRemove();
+        }
+    };
+
+    $scope.dynTabSum = function (table, column) {
+        var result = 0;
+        for (var i = 0; i < $scope.Fields[table].length; i++) {
+            var value = $scope.Fields[table][i][column] || 0;
+            result += Number(value);
+        }
+        return result;
+    }
+
+    $scope.dynTabCount = function (table) {
+        return $scope.Fields[table].length;
+    }
+
+    $scope.dynTabMin = function (table, column) {
+        if ($scope.Fields[table].length === 0) {
+            return 0;
+        }
+        var result = Number($scope.Fields[table][0][column]);
+        for (var i = 1; i < $scope.Fields[table].length; i++) {
+            var value = Number($scope.Fields[table][i][column]);
+            result = Math.min(result, value);
+        }
+        return result;
+    }
+
+    $scope.dynTabMax = function (table, column) {
+        if ($scope.Fields[table].length === 0) {
+            return 0;
+        }
+        var result = Number($scope.Fields[table][0][column]);
+        for (var i = 1; $scope.Fields[table].length; i++) {
+            var value = Number($scope.Fields[table][i][column]);
+            result = Math.max(result, value);
+        }
+        return result;
+    }
+
+    $scope.dynTabAverage = function (table, column) {
+        if ($scope.Fields[table].length === 0) {
+            return 0;
+        }
+        return $scope.dynTabSum(table, column) / $scope.dynTabCount(table);
+    }
+}
+
+Extentions.supportMultilanguage = function ($scope, root) {
+    $scope.CurrentLanguage = "";
+    $scope.applyLanguage = function () {
+        
+        $scope.Labels = $scope.Translations[$scope.CurrentLanguage];
+        for (var i in $scope.ComboBoxes) {
+            if ($scope.ComboBoxes.hasOwnProperty(i)) {
+                for (var j = 0; j < $scope.ComboBoxes[i].values.length; j++) {
+                    var tf = $scope.ComboBoxes[i].textField;
+                    var transValue = $scope.ComboBoxes[i].values[j][tf + "_" + $scope.CurrentLanguage];
+                    if (transValue != undefined) {
+                        $scope.ComboBoxes[i].values[j][tf] = transValue;
+                    }
+                }
+            }
+        }
+        
+        if (root) {
+            document.title = $scope.FormTitle ? $scope.Labels[$scope.FormTitle] : document.location.hostname;
+            $scope.$broadcast("CurrentLanguage", $scope.CurrentLanguage);
+        }
+
+    }
+}

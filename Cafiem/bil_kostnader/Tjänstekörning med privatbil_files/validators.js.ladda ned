@@ -1,0 +1,186 @@
+function Validators($scope) {
+
+    /// <summary>
+    /// Validatorses this instance.
+    /// Validation functions results:
+    /// true: valid, false: no-valid
+    /// </summary>
+    /// <returns></returns>
+    var action = null;
+    var scope = $scope || GetScope();
+
+    var setValidated = function(field, focus) {
+        switch (action) {
+        case "IsOptionSelected":
+            scope.Validated = field;
+            break;
+        default:
+            scope.Validated = focus;
+            break;
+        }
+    };
+
+    var setFocus = function (field, focus) {
+        return function () {
+            var o = document.getElementById(focus || field);
+            o.focus();
+            setValidated(field, focus);
+        }
+    };
+
+    Validators.prototype.CheckIf = function (func, cond, field, msg, lang, focus) {
+        action = undefined;
+        if (cond == null || cond()) {
+            var control = field != null ? scope.$eval('form.' + field) : null;
+            var value = field != null ? scope.$eval('Fields.' + field) : null;
+            var params = Array.prototype.slice.call(arguments).slice(6);
+
+            if (func(control, value, params)) {
+                MsgBox.ValidationError(msg, action, lang, setFocus(field, focus), params);
+                return false;
+            }
+        }
+        return true;
+    };
+
+    /* use custom required validation directives (without additional parameters)*/
+
+    Validators.prototype.IsEmpty = function (control, value) {
+        action = "IsEmpty";
+        if (control) {
+            return ('required' in control.$error) || !isDirty(value, '');
+        }
+        return !isDirty(value, '');
+    };
+
+    Validators.prototype.IsZero = function (control, value) {
+        action = "IsZero";
+        if (control) {
+            return ('mfZero' in control.$error) || !isDirty(value, 0);
+        }
+        return !isDirty(value, 0);
+    };
+
+    Validators.prototype.IsOptionSelected = function (control, value) {
+        action = "IsOptionSelected";
+        if (control) {
+            return ('required' in control.$error) || !isDirty(value, '');
+        }
+        return !isDirty(value, '');
+    };
+
+    Validators.prototype.IsCheckboxSelected = function (control, value) {
+        action = 'IsCheckboxSelected';
+        if (control) {
+            return ('required' in control.$error) || !isDirty(value, '');
+        }
+        return !isDirty(value, '');
+    };
+
+    /* use custom types validation directives */
+
+    Validators.prototype.IsNumeric = function (control) {
+        action = 'IsNumeric';
+        return ('mfNumeric' in control.$error);
+    };
+
+    Validators.prototype.IsInteger = function (control) {
+        action = 'IsInteger';
+        return ('mfInteger' in control.$error);
+    };
+
+    Validators.prototype.IsEmail = function (control) {
+        action = 'IsEmail';
+        return ('email' in control.$error);
+    }
+
+    Validators.prototype.IsDate = function (control) {
+        action = "IsDate";
+        return ('date' in control.$error) || ('mfDate' in control.$error);
+    };
+
+    Validators.prototype.IsDateCurrent = function (control) {
+        action = 'IsDateCurrent';
+        return ('mfDateCurrent' in control.$error);
+    };
+
+    Validators.prototype.IsWeekCurrent = function (control) {
+        action = 'IsWeekCurrent';
+        return ('mfWeekCurrent' in control.$error);
+    };
+
+
+    /* not use directives (with additional parameters */
+
+    Validators.prototype.IsDynamicTableRowsMin = function (control, value, params) {
+        action = 'IsDynamicTableRowsMin';
+        return value.length < params[0];
+    };
+
+    Validators.prototype.IsDynamicTableRowsMax = function (control, value, params) {
+        action = 'IsDynamicTableRowsMax';
+        return value.length > params[0];
+    };
+
+    Validators.prototype.IsDynamicSectionItemsMin = function (control, value, params) {
+        action = 'IsDynamicSectionItemsMin';
+        return value.length < params[0];
+    };
+
+    Validators.prototype.IsDynamicSectionItemsMax = function (control, value, params) {
+        action = 'IsDynamicSectionItemsMax';
+        return value.length > params[0];
+    };
+
+    Validators.prototype.IsPattern = function (control, value, params) {
+        action = 'IsPattern';
+        return !params[0].test(value);
+    };
+
+    Validators.prototype.IsDateBefore = function (control, value, params) {
+        action = 'IsDateBefore';
+        var max = new Date();
+        max.setMonth(max.getMonth() + params[0]);
+        return value > max;
+    };
+
+    Validators.prototype.CheckDateRange = function (control, value, params) {
+        action = 'IsDateRange';
+        var date1 = new Date(+value);
+        var date2 = new Date(+params[0]);
+        date1.setHours(0, 0, 0, 0);
+        date2.setHours(0, 0, 0, 0);
+        return date2 < date1;
+    };
+
+    Validators.prototype.CheckWeekRange = function (control, value, params) {
+        action = 'IsWeekRange';
+        var week1 = new Date(+value);
+        var week2 = new Date(+scope.$eval(params[0]));
+        return week2 < week1 && week2.getWeek() < week1.getWeek();
+    };
+
+    Validators.prototype.IsInRange = function (control, value, params) {
+        action = 'IsInRange';
+        return (params[0] != null && parseFloat(value) < params[0]) || (params[1] != null && parseFloat(value) > params[1]);
+    };
+
+    Validators.prototype.HasAttachment = function() {
+        action = "HasAttachment";
+        return scope.AttachmentCount === 0;
+    }
+
+
+    /* not implement (always valid) */
+
+    Validators.prototype.IsAlpha = function (control, value, params) {
+        action = 'IsAlpha';
+        return false;
+    };
+
+    Validators.prototype.IsPersonalNumber = function (control, value, params) {
+        action = 'IsPersonalNumber';
+        return false;
+    };
+
+};

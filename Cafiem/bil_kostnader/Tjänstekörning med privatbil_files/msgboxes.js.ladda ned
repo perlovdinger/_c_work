@@ -1,0 +1,259 @@
+﻿function MsgBox() {};
+
+MsgBox.Info = function (text) {
+    GetScope().showMessage(text);
+};
+
+MsgBox.Error = function (text, callback) {
+    GetScope().showMessage(text, callback);
+};
+
+MsgBox.Ask = function (text, yesCallback, noCallback) {
+    GetScope().askYesNo(text, yesCallback, noCallback);
+};
+
+MsgBox.ValidationError = function (msg, fun, lang, onOk, args) {
+    if (!isDirty(msg,"")) {
+        msg = ValidationMessage[fun][lang] || ValidationMessage[fun]["ENG"];
+    } 
+
+    for (var i = 0; i < args.length; i++) {
+        msg = msg.replace("%" + i, args[i]);
+    }
+
+    GetScope().showMessage(msg, onOk);
+};
+
+ValidationMessage =
+{
+    IsEmpty:
+    {
+        ENG: "Please type a value in the field!",
+        SWE: "Vänligen ange ett värde i fältet!",
+        FRA: "Mettre une valeur dans ce champ SVP!",
+        JPN: "Please type a value in the field!",
+        POR: "Please type a value in the field!",
+        POL: "To pole nie może być puste!",
+        RUS: "Пожалуйста внесите значение в поле"
+    },
+    IsZero:
+    {
+        ENG: "Please select an option!",
+        SWE: "Vänligen välj ett alternativ!",
+        FRA: "Sélectionnez une option SVP!",
+        JPN: "Please select an option!",
+        POR: "Please select an option!",
+        POL: "Proszę wybrać jedną z opcji",
+        RUS: "Пожалуйста выберите опцию"
+    },
+    IsNumeric:
+    {
+        ENG: "Please type in a numeric value!",
+        SWE: "Vänligen ange ett numeriskt värde!",
+        FRA: "Valeur numérique attendue!",
+        JPN: "Please type in a numeric value!",
+        POR: "Please type in a numeric value!",
+        POL: "Proszę wprowadzić wartość numeryczną",
+        RUS: "Пожалуйста введети числовое значение"
+    },
+    IsInteger:
+    {
+        ENG: "Please type in a integer value!",
+        SWE: "Vänligen ange ett heltal värde!",
+        FRA: "Valeur entière attendue !",
+        JPN: "Please type in a integer value!",
+        POR: "Please type in a integer value!",
+        POL: "Proszę wprowadzić liczbę całkowitą",
+        RUS: "Пожалуйста введети числовое значение"
+    },
+    IsOptionSelected:
+    {
+        ENG: "You must select one option!",
+        SWE: "Du måste välja ett alternativ!",
+        FRA: "Vous devez saisir une option!",
+        JPN: "You must select one option!",
+        POR: "You must select one option!",
+        POL: "Proszę wybrać jedną z opcji",
+        RUS: "Вы должны выбрать одну опцию"
+    },
+    IsCheckboxSelected:
+    {
+        ENG: "You must select at least one checkbox!",
+        SWE: "Du måste välja ĺtminstone en checkbox!",
+        FRA: "Vous devez en saisir au moins un dans la liste!",
+        JPN: "You must select at least one checkbox!",
+        POR: "You must select at least one checkbox!",
+        POL: "Przynajmniej jeden przycisk wyboru musi zostać zaznaczony",
+        RUS: "Вы должны выбрать один из флажков"
+    },
+    IsDynamicTableRowsMin:
+    {
+        ENG: "Minimum number of rows required: %0!",
+        SWE: "Minsta antal rader som krävs är: %0!",
+        FRA: "Nombre minimum de ligne requises : %0!",
+        JPN: "Minimum number of rows required: %0!",
+        POR: "Minimum number of rows required: %0!",
+        POL: "Minimalna ilość rzędów w tabeli: %0!",
+        RUS: "Минимальное количество строк: %0!"
+    },
+    IsDynamicTableRowsMax:
+    {
+        ENG: "Maximum number of rows allowed: %0!",
+        SWE: "Maximalt antal tillĺtna rader: %0!",
+        FRA: "Nombre maximum de ligne autorisées : %0!",
+        JPN: "Maximum number of rows allowed: %0!",
+        POR: "Maximum number of rows allowed: %0!",
+        POL: "Maksymalna ilość rzędów w tabeli: %0!",
+        RUS: "Максимальное количество строк: %0!"
+    },
+    IsDynamicSectionItemsMin:
+    {
+        ENG: "Minimum number of items required: %0!",
+        SWE: "Minsta antal poster som krävs är: %0!",
+        FRA: "Nombre minimum de points requis : %0!",
+        JPN: "Minimum number of items required: %0!",
+        POR: "Minimum number of items required: %0!",
+        POL: "Minimalna ilość wpisów w sekcji: %0!",
+        RUS: "Минимальное количество элементов: %0!"
+    },
+    IsDynamicSectionItemsMax:
+    {
+        ENG: "Maximum number of items allowed: %0!",
+        SWE: "Maximalt antal tillĺtna poster: %0!",
+        FRA: "Nombre maximum de points autorisées : %0!",
+        JPN: "Maximum number of items allowed: %0!",
+        POR: "Maximum number of items allowed: %0!",
+        POL: "Maksymalna ilość wpisów w sekcji: %0!",
+        RUS: "Максимальное количество элементов: %0!"
+    },
+    IsEmail:
+    {
+        ENG: "Please type a valid email address!",
+        SWE: "Förväntad e-postadress!",
+        FRA: "Adresse e-mail attendue!",
+        JPN: "Please type a valid email address!",
+        POR: "Please type a valid email address!",
+        POL: "Proszę wprowadzić poprawny adres email!",
+        RUS: "Пожалуйста, укажите действующий адрес электронной почты!"
+    },
+    IsPattern:
+    {
+        ENG: "Value does not match specified pattern!",
+        SWE: "Fältet matchar inte specificerat mönstrar!",
+        FRA: "La valeur ne correspond pas au modèle spécifié!",
+        JPN: "Value does not match specified pattern!",
+        POR: "Value does not match specified pattern!",
+        POL: "Podana wartość nie odpowiada zdefiniowanemu schematowi",
+        RUS: "Значение не соответствует указанному шаблону"
+    },
+    IsDate:
+    {
+        ENG: "Invalid date format. Enter YYYY-MM-DD!",
+        SWE: "Du måste ange ett datume enligt ÅÅÅÅ-MM-DD!",
+        FRA: "Format de date non valide. Entrer YYYY-MM-DD!",
+        JPN: "Invalid date format. Enter YYYY-MM-DD!",
+        POR: "Invalid date format. Enter YYYY-MM-DD!",
+        POL: "Niepoprawny format daty. Wprowadź RRRR-MM-DD!",
+        RUS: "Неверный формат даты. Введите ГГГГ-ММ-ДД!"
+    },
+    IsDateCurrent:
+    {
+        ENG: "Current or future date is required!",
+        SWE: "Datumet kan ej vara tidigare än idag!",
+        FRA: "Date actuelle ou future attendue!",
+        JPN: "Current or future date is required!",
+        POR: "Current or future date is required!",
+        POL: "Wymagana data obecna lub przyszła!",
+        RUS: "Необходимо указать текущую или будущую дату!"
+    },
+    IsDateRange:
+    {
+        ENG: "End date must be equal to or greater than start date!",
+        SWE: "Till-datum kan ej vara mindre än frĺn-datum!",
+        FRA: "La date de fin doit être postérieure à la date de début!",
+        JPN: "End date must be equal to or greater than start date!",
+        POR: "End date must be equal to or greater than start date!",
+        POL: "Data zakończenia musi być większa lub równa dacie rozpoczęcia",
+        RUS: "Дата окончания должна быть такая же или больше даты начала!"
+    },
+    IsDateBefore:
+    {
+        ENG: "The date must be earlier than %0 month(s) in advance!",
+        SWE: "The date must be earlier than %0 month(s) in advance!",
+        FRA: "The date must be earlier than %0 month(s) in advance!",
+        JPN: "The date must be earlier than %0 month(s) in advance!",
+        POR: "The date must be earlier than %0 month(s) in advance!",
+        POL: "Data musi być wcześniejsza niż %0 miesięcy!",
+        RUS: "Дата должна быть раньше X месяцам!"
+    },
+    IsWeek:
+    {
+        ENG: "Wrong date format (yyyy-ww expected)!",
+        SWE: "Wrong date format (yyyy-ww expected)!",
+        FRA: "Wrong date format (yyyy-ww expected)!",
+        JPN: "Wrong date format (yyyy-ww expected)!",
+        POR: "Wrong date format (yyyy-ww expected)!",
+        POL: "Niepoprawny format daty (oczekiwany rrrr-ww)!",
+        RUS: "Неправильный формат даты (гггг-мм необходимы)"
+    },
+    IsWeekCurrent:
+    {
+        ENG: "Current or future week is required!",
+        SWE: "Current or future week is required!",
+        FRA: "Current or future week is required!",
+        JPN: "Current or future week is required!",
+        POR: "Current or future week is required!",
+        POL: "Wymagany tydzień obecny lub przyszły",
+        RUS: "Требуется настоящая или будущая неделя!"
+    },
+    IsWeekRange:
+    {
+        ENG: "End week must be equal to or greater than start week!",
+        SWE: "End week must be equal to or greater than start week!",
+        FRA: "End week must be equal to or greater than start week!",
+        JPN: "End week must be equal to or greater than start week!",
+        POR: "End week must be equal to or greater than start week!",
+        POL: "Tydzień zakończenia musi być większy bądź równy tygodniowi rozpoczęcia",
+        RUS: "Конечная неделя должна быть равна или больше начальной недели!"
+    },
+    IsAlpha:
+    {
+        ENG: "You must enter an alphabetic value!",
+        SWE: "Du måste ange ett alfabetiskt värde!",
+        FRA: "Vous devez saisir une donnée alphabétique!",
+        JPN: "You must enter an alphabetic value!",
+        POR: "You must enter an alphabetic value!",
+        POL: "Musisz wprowadzić wartość alfanumeryczną!",
+        RUS: "Вы должны ввести буквенное значение!"
+    },
+    IsPersonalNumber:
+    {
+        ENG: "Enter a personal ID-number according to YYAAMMDD-XXXX!",
+        SWE: "Ange personnummer enligt ĹĹMMDD-XXXX!",
+        FRA: "Rentrer votre ID personal suivant YYMMDD-XXXX!",
+        JPN: "Enter a personal ID-number according to YYAAMMDD-XXXX!",
+        POR: "Enter a personal ID-number according to YYAAMMDD-XXXX!",
+        POL: "Wprowadź number zgodnie ze schematem: YYAAMMDD-XXXX!",
+        RUS: "Введите персональный идентификационный номер в соответствии с YYAAMMDD-XXXX!"
+    },
+    IsInRange:
+    {
+        ENG: "Please type in a value between %0 and %1!",
+        SWE: "Vänligen ange ett värde mellan %0 och %1!",
+        FRA: "Saisir une valeur entre %0 et %1 !",
+        JPN: "Please type in a value between %0 and %1!",
+        POR: "Please type in a value between %0 and %1!",
+        POL: "Wprowadź wartośc pomiędzy %0 i %1!",
+        RUS: "Введите значение между X и Y!"
+    },
+    HasAttachment:
+    {
+        ENG: "Please attach a file!",
+        SWE: "Please attach a file!",
+        FRA: "Please attach a file!",
+        JPN: "Please attach a file!",
+        POR: "Please attach a file!",
+        POL: "Proszę załączyć plik!",
+        RUS: "Пожалуйста, прикрепите файл!"
+    }
+};

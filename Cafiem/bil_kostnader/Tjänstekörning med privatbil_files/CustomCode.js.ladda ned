@@ -1,0 +1,734 @@
+
+function SetTableRowOverride() {
+	scope.setSpecOfTripTableRow = function(entry) {
+	scope.Fields.SpecOfTripDatePicker = entry.SpecOfTripDatePicker;
+	scope.Fields.SpecOfTripPlace = entry.SpecOfTripPlace;
+	scope.Fields.SpecOfTripAssignment = entry.SpecOfTripAssignment;
+	scope.Fields.SpecOfTripTollFee = entry.SpecOfTripTollFee;
+	scope.Fields.SpecOfTripBusinessType = (entry.SpecOfTripOvertime == 'X' ? 'Overtime' : 'Trip');
+	scope.Fields.SpecOfTripKM = entry.SpecOfTripKM;
+	};
+}
+function INIT_VCOM() {
+	var fields = GetScopeFields();
+	// True - TestPartner, False - ProductionPartner
+	fields.TEST_VCOM = true;
+	//True-PrintToFile, False - SendVCOM
+	fields.TEST_ROUTE = false;
+}
+function EVT_RecipientSelect() {
+	RecipientAD();
+	RecipientHandler();
+}
+function EVT_RecipientInit() {
+	var scope = GetScope();
+	if (scope.Message.CurrentRoute == 0 || scope.Message.CurrentRoute == 2) {
+	RecipientHandler();
+	}
+}
+function RecipientHandler() {
+	AdjustEmployeeNo();
+	UpdateRecipientCompany();
+	VALID_RecipientCompany();
+	//ShowHideOvertime(); // now in VALID_RecipientCompanyCallback
+	//DisableWBSSE83(); // // now in VALID_RecipientCompanyCallback
+	FillAttestants();
+}
+function RecipientAD() {
+	var fields = GetScopeFields();
+	if (fields.RecipientOfPaymentEmail == '') {
+	fields.RecipientOfPaymentEmail = "NO OUTLOOK ID!!!";
+	}
+}
+function UpdateRecipientCompany() {
+	var fields = GetScopeFields();
+	var sCompany = ( fields.RecipientOfPaymentCompany || "" ).toUpperCase();
+	var sCity = ( fields.RecipientOfPaymentCity || "" ).toUpperCase();
+	if (sCompany == "VOLVO PARTS AB" && sCity == "ESKILSTUNA") {
+	sCompany = "VOLVO PARTS ESKILSTUNA";
+	}
+	else if (sCompany == "VOLVO POWERTRAIN AB" && sCity == "KÖPING") {
+	sCompany = "VOLVO POWERTRAIN KÖPING";
+	}
+	else if (sCompany == "VOLVO POWERTRAIN AB" && sCity == "SKÖVDE") {
+	sCompany = "VOLVO POWERTRAIN SKÖVDE";
+	}
+	fields.RecipientOfPaymentCompany = sCompany;
+}
+function VALID_RecipientCompany() {
+	var sCompany = scope.Fields.RecipientOfPaymentCompany || "";
+	var statement = "SELECT Company FROM [open].[dict_ViewCompanyCodes_114_v1] WHERE Company = '" + sCompany + "'";
+	RecordsetClient.GetSqlData("MailformsPublic", statement, VALID_RecipientCompanyCallback);
+}
+function VALID_RecipientCompanyCheckField() {
+	var fields = GetScopeFields();
+	return ! fields.IsValidCompany;
+}
+function VALID_RecipientCompanyCallback(status, values) {
+	var fields = GetScopeFields();
+	var scope = GetScope();
+	if (!values || values.length == 0) {
+	fields.IsValidCompany = false;
+	}
+	else {
+	fields.IsValidCompany = true;
+	}
+	ShowHideOvertime(); // used to be in RecipientHandler();
+	DisableWBSSE83(); // used to be in RecipientHandler();
+}
+function AdjustEmployeeNo() {
+	var fields = GetScopeFields();
+	fields.IssuerEmplNo = ( fields.IssuerEmplNo || "" ) .toString().slice(-5);
+	fields.RecipientOfPaymentEmplNo = ( fields.RecipientOfPaymentEmplNo || "" ).toString().slice(-5);
+}
+function isInArray(value, array) {
+	return array.indexOf(value) > -1;
+}
+function hideTableColumn(tableId, columnNumber, show ) {
+	display = ( show && show == 'show' ) ? "" : 'none';
+	var table = document.getElementById(tableId);
+	if (table) {
+	var tableColumns = table.getElementsByTagName('td');
+	if (tableColumns && tableColumns.length > columnNumber) {
+	tableColumns[columnNumber].style.display = display;
+	}
+	}
+}
+function isCompanyOnList() {
+	var companyList = ["VOLVO WHEEL LOADERS AS"
+	, "VOLVO CONSTRUCTION EQUIPMENT CUSTOMER SUPPORT AB"
+	, "VOLVO CONSTRUCTION EQUIPMENT COMPONENTS AB"
+	, "VOLVO CONSTRUCTION EQUIPMENT CAB"
+	, "VOLVO CONSTRUCTION EQUIPMENT CABS AB"
+	, "VOLVO CONSTRUCTION EQUIPMENT INTERNATIONAL AB"
+	, "VOLVO CONSTRUCTION EQUIPMENT EUROPE AB"
+	, "VOLVO PARTS ESKILSTUNA"];
+	
+	var sCompany = (scope.Fields.RecipientOfPaymentCompany || "").toString().toUpperCase();
+	
+	return isInArray(sCompany, companyList);
+}
+function ShowHideOvertime() {
+	var scope = GetScope();
+	var fields = GetScopeFields();
+	
+	var radioTypeOvertime = document.getElementById('SpecOfTripBusinessTypeOvertime');
+	var radioTypeTrip = document.getElementById('SpecOfTripBusinessTypeTrip');
+	var dynamicTableId = 'tbl_SpecOfTrip4';
+	
+	if ( isCompanyOnList() ) {
+	    hideTableColumn( dynamicTableId, 4);
+	    if (scope.Message.CurrentRoute == 0 || scope.Message.CurrentRoute == 2) {
+	        radioTypeTrip.checked = false;
+	        radioTypeOvertime.checked = false;
+	        
+	        var table = fields.SpecOfTripTable;
+	        if ( table && table.length > 0) {
+	            table.forEach(function ( value ) { value.SpecOfTripOvertime = ""; value.SpecOfTripTrip = "X" });
+	        }
+	    }
+	}
+	else {
+	    hideTableColumn('tbl_SpecOfTrip4', 4, 'show');
+	    
+	    if (scope.Message.CurrentRoute == 0 || scope.Message.CurrentRoute == 2) {
+	        radioTypeTrip.checked = false;
+	        radioTypeOvertime.checked = false;
+	    }
+	}
+}
+function EVT_KmColored() {
+	var SpecOfTripKMOvertimeTotal = document.getElementById('SpecOfTripKMOvertimeTotal');
+	var SpecOfTripKMBusinessTotal = document.getElementById('SpecOfTripKMBusinessTotal');
+	
+	SpecOfTripKMBusinessTotal.style.color = "orangered";
+	SpecOfTripKMBusinessTotal.style.color = "blue";
+}
+function CalculateAmmountsBusinessTrip() {
+	var dtDate = FindMostRecentDate();
+	GetCompensationRates( dtDate );
+}
+function FindMostRecentDate() {
+	var fields = GetScopeFields();
+	var table = fields.SpecOfTripTable;
+	
+	var tmpDate1 = tmpDate2 = null;
+	
+	tmpDate1 = new Date('0000-01-01');
+	
+	if (table && table.length > 0) {
+	    for (var rowIndex = 0 ; rowIndex < table.length ; rowIndex++) {
+	        tmpDate2 = new Date(table[rowIndex].SpecOfTripDatePicker);
+	        if (tmpDate2 > tmpDate1) {
+	            tmpDate1 = tmpDate2
+	        }
+	    }
+	}
+	return tmpDate1;
+}
+function GetCompensationRates(dtDate) {
+	var fields = GetScopeFields();
+	var compensationPeriodsList = fields.CompensationPeriodsList;
+	
+	var value = null;
+	var status = false;
+	
+	if ( compensationPeriodsList && compensationPeriodsList.length > 0 ){
+	    for (var i = 0 ; i < compensationPeriodsList.length ; i++) {
+	        var dateFrom = new Date(compensationPeriodsList[i].DateFrom);
+	        var dateTo = new Date(compensationPeriodsList[i].DateTo);
+	        if ( ( dateFrom < dtDate ) && ( dtDate < dateTo ) ){
+	            value = [ { Compensation: compensationPeriodsList[i].Compensation,
+	                    TaxfreeBT: compensationPeriodsList[i].TaxfreeBT,
+	                    TaxfreeOT: compensationPeriodsList[i].TaxfreeOT } ] ;
+	            status = true;
+	        }
+	    }
+	}
+	GetCompensationRatesCallback(true, value );
+}
+function GetCompensationRatesCallback(status, value) {
+	var scope = GetScope();
+	var fields = GetScopeFields();
+	
+	if (value && value.length > 0) {
+	// condition in CreateTextBody
+	    fields.GetCompensationRatesResult = true;
+	    var dCompensation = value[0].Compensation;
+	    var dTaxFreeBT = value[0].TaxfreeBT;
+	    var dTaxFreeOT = value[0].TaxfreeOT;
+	    //dCompensation = Dbl(Replace(oRS.GetItem("field","Compensation").Value,".",","))
+	    //dTaxfreeBT = Dbl(Replace(oRS.GetItem("field","TaxfreeBT").Value,".",","))
+	    //dTaxfreeOT = Dbl(Replace(oRS.GetItem("field","TaxfreeOT").Value,".",","))
+	    var dKmOT = fields.SpecOfTripKMOvertimeTotal;
+	    var dKmBT = fields.SpecOfTripKMBusinessTotal;
+	    var dKmTotal = fields.SpecOfTripKMTotal;
+	    //var dtDate = FindMostRecentDate();
+	    var dTaxFree = Number ( (dKmOT * dTaxFreeOT / 10 + dKmBT * dTaxFreeBT / 10).toFixed(1) ); // format number? ( num, 1, -1, 0, 0 )
+	    var dTaxable = Number ( (dKmOT * (dCompensation - dTaxFreeOT) / 10 + dKmBT * (dCompensation - dTaxFreeBT) / 10).toFixed(1) ); // format number ( num, 1, -1, 0, 0 ) 
+	    //dblTaxFree = FormatNumber(dblKmOT * dblTaxFreeOvertime/10.0 + dblKMBT * dblTaxFreeBusinessTrip/10.0, 1, -1, 0, 0)
+	    //dblTaxable = FormatNumber(dblKMOT * (dblCompensation - dblTaxFreeOvertime)/10.0 + dblKmBT * (dblCompensation -     dblTaxFreeBusinessTrip)/10.0, 1,-1,0,0)
+	
+	    if (((dTaxFree - Math.floor(dTaxFree)) == 0.5) && ((dTaxable - Math.floor(dTaxable)) == 0.5)) {
+	        dTaxFree += 0.5;
+	        dTaxable -= 0.5;
+	    }
+	    //add toll fee to tax exemption amount
+	    dTaxFree += fields.SpecOfTripTollFeeTotal;
+	    fields.SpecOfTripAmmountTaxFree = Math.round( dTaxFree );
+	    fields.SpecOfTripAmmountTaxable = Math.round ( dTaxable );
+	    fields.SpecOfTripTotalSum = Math.round( dTaxFree ) + Math.round( dTaxable );
+	    }
+	    else {
+	        // condition in CreateTextBody
+	        fields.GetCompensationRatesResult = false;
+	        fields.SpecOfTripAmmountTaxFree = "";
+	        fields.SpecOfTripAmmountTaxable = "";
+	        fields.SpecOfTripTotalSum = "";
+	}
+}
+function GetCompensationPeriods() {
+	var statement = "SELECT RowNum, DateFrom, DateTo, Compensation, TaxfreeBT, TaxfreeOT FROM [open].[dict_ViewCompensationRates_114_v1]";
+	RecordsetClient.GetSqlData("MailformsPublic", statement, GetCompensationPeriodsCallback);
+}
+function GetCompensationPeriodsCallback(status, value) {
+	var compensationPeriodsList = [];
+	
+	if (value && value.length > 0) {
+	    for (var i = 0 ; i < value.length ; i++) {
+	        compensationPeriodsList.push(value[i]);
+	    }
+	}
+	var fields = GetScopeFields();
+	fields.CompensationPeriodsList = compensationPeriodsList;
+}
+function GetCompensationPeriodNo(dtDate) {
+	var fields = GetScopeFields();
+	var compensationList = fields.CompensationPeriodsList;
+	
+	if (dtDate) {
+	    for (var i = 0 ; i < compensationList.length ; i++) {
+	        var dateFrom = new Date(compensationList[i].DateFrom);
+	        var dateTo = new Date(compensationList[i].DateTo);
+	        if ( ( dateFrom < dtDate) && ( dtDate < dateTo ) ) {
+	            return compensationList[i].RowNum;
+	        }
+	    }
+	}
+	return -1;
+}
+function GetCompanyCode() {
+	var fields = GetScopeFields();
+	
+	var statement = "SELECT TOP 1 CompanyCode FROM [open].[dict_ViewCompanyCodes_114_v1] WHERE Company = "
+	+ "'" + fields.RecipientOfPaymentCompany + "'";
+	
+	RecordsetClient.GetSqlData("MailformsPublic", statement, GetCompanyCodeCallback );
+}
+function GetCompanyCodeCallback(status, value) {
+	if (value && value.length > 0) {
+	    var companyCode = value[0].CompanyCode;
+	    var fields = GetScopeFields();
+	    fields.CompanyCode = companyCode;
+	
+	    if (fields.CompanyCode != '' && fields.CompanyCode != undefined) {
+	        FillPSAcbCombo(fields.CompanyCode);
+	    }
+	
+	    try {
+	        var specOfTripChangeWBS = document.getElementById('SpecOfTripChargeWBS');
+	        var specOfTripChangeWBSLabel = document.getElementById('tbl_SpecOfTrip7').getElementsByClassName('row')[0].children[2];
+	        if (companyCode == "SE83") {
+	            specOfTripChangeWBS.disabled = true;
+	            specOfTripChangeWBSLabel.style.color = 'lightgrey';
+	        }
+	        else {
+	            specOfTripChangeWBS.disabled = false;
+	            specOfTripChangeWBSLabel.style.color = '';
+	        }
+	        // Info_Address_Code()
+	        var scope = GetScope();
+	        if (scope.Message.CurrentRoute == 3) {
+	            var infoAddressCode = document.getElementById('Info_Address_Code');
+	            infoAddressCode.innerHTML = companyCode;
+	        }
+	    } catch (e) {
+	}
+	}
+}
+function DisableWBSSE83() {
+	GetCompanyCode();
+}
+function VALID_EmplNo() {
+	var fields = GetScopeFields();
+	return fields.RecipientOfPaymentEmplNo.length < 5;
+}
+function VALID_CompensationPeriod() {
+	var fields = GetScopeFields();
+	var table = fields.SpecOfTripTable;
+	
+	if (table && table.length > 0) {
+	    var a = new Date(table[0].SpecOfTripDatePicker);
+	    var b = a.getFullYear();
+	
+	    var period1 = GetCompensationPeriodNo(table[0].SpecOfTripDatePicker); 
+	
+	    for (var i = 0 ; i < table.length ; i++) {
+	        var period2 = GetCompensationPeriodNo(table[i].SpecOfTripDatePicker);
+	        if (period1 != period2) {
+	            return true;
+	        }
+	    }
+	}
+	return false;
+}
+function VALID_OrderNumberAndCostCenter() {
+	var fields = GetScopeFields();
+	var order = fields.SpecOfTripChargeOrderNo;
+	
+	//var cost = fields.SpecOfTripChargeCostCenter;
+	
+	var sCode = fields.CompanyCode;
+	
+	if (sCode == "SE83") {
+	    if (order.trim() != "" && order.slice(-3) != "212") {
+	        return true;
+	    }
+	}
+	return false;
+}
+function VALID_OrderNumberAndCostCenter1() {
+	var fields = GetScopeFields();
+	var order = fields.SpecOfTripChargeOrderNo;
+	var cost = fields.SpecOfTripChargeCostCenter;
+	var sCode = fields.CompanyCode;
+	
+	if (sCode == "SE83") {
+	    if (order.trim() != "" && cost.trim() != "") {
+	        return true;
+	    }
+	}
+	return false;
+}
+function VALID_OrderNumberAndCostCenterSE83NaN() {
+	var fields = GetScopeFields();
+	var cost = fields.SpecOfTripChargeCostCenter;
+	var sCode = fields.CompanyCode;
+	
+	if (sCode == "SE83") {
+	    if (cost.trim() != "") {
+	        return isNaN(cost);
+	    }
+	}
+	return false;
+}
+function Subject() {
+	var fields = GetScopeFields();
+	
+	var emplNo = fields.RecipientOfPaymentEmplNo || "";
+	emplNo = ( emplNo.trim() ).slice( - 5 );
+	
+	var recentDate = FindMostRecentDate();
+	var months = ("0" + (recentDate.getMonth() + 1)).slice(-2);
+	var days = ("0" + recentDate.getDate()).slice(-2);
+	
+	var date = new Date();
+	var hours = ("0" + date.getHours()).slice(-2);
+	var minutes = ("0" + date.getMinutes()).slice(-2);
+	var seconds = (date.getSeconds()).toString();
+	var seconds = (seconds.length == 1) ? "0" : seconds.substring(0, 1);
+	
+	return "T " + emplNo + " " + months + days + " " + hours + minutes + seconds;
+}
+function SetSubject() {
+	var scope = GetScope();
+	
+	if (scope.Message.CurrentRoute == 0) {
+	    scope.Fields.RecipientOfPaymentRegNbr = Subject();
+	}
+}
+function EVT_AdjustSpecOfTrip() {
+	var scope = GetScope();
+	try {
+	    var paidInConnectionSalaryLabel = document.getElementById('tbl_SpecOfTrip8').getElementsByClassName('row')[0].children[0];
+	    if (scope.Message.CurrentRoute == 1) {
+	        paidInConnectionSalaryLabel.style.visibility = 'hidden';
+	    }
+	} catch (e) {
+	}
+}
+function PrintToFile() {
+	var downloadLink = document.createElement("a");
+	var file = new Blob([strBody], { type: 'text/plain' });
+	downloadLink.href = URL.createObjectURL(file);
+	downloadLink.name = "VCOMtestFile.txt";
+	
+	document.body.appendChild(downloadLink);
+	downloadLink.click();
+	document.body.removeChild(downloadLink);
+}
+function GetCompensationRatesTaxFreeBTOT(dtDate) {
+	var fields = GetScopeFields();
+	var compensationPeriodsList = fields.CompensationPeriodsList;
+	
+	if (compensationPeriodsList && compensationPeriodsList.length > 0) {
+	    for (var i = 0 ; i < compensationPeriodsList.length ; i++) {
+	        var dateFrom = new Date(compensationPeriodsList[i].DateFrom);
+	        var dateTo = new Date(compensationPeriodsList[i].DateTo);
+	        if ((dateFrom < dtDate) && (dtDate < dateTo)) {
+	            return {
+	                Compensation: compensationPeriodsList[i].Compensation,
+	                TaxfreeBT: compensationPeriodsList[i].TaxfreeBT,
+	                TaxfreeOT: compensationPeriodsList[i].TaxfreeOT
+	            };
+	        }
+	    }
+	}
+	return null;
+}
+function CreateTextBody() {
+	var fields = GetScopeFields();
+	
+	var tmpCompanyCode = fields.CompanyCode;
+	
+	var dblKmOT = fields.SpecOfTripKMOvertimeTotal;
+	var dblKmBT = fields.SpecOfTripKMBusinessTotal;
+	
+	var dblTollFee = fields.SpecOfTripTollFeeTotal;
+	var dtDate = FindMostRecentDate();
+	
+	var compensationTaxFreeBTOT = GetCompensationRatesTaxFreeBTOT(dtDate);
+	var tmpBody = null;
+	
+	if (compensationTaxFreeBTOT) {
+	    var dblCompensation = compensationTaxFreeBTOT.Compensation;
+	    var dblTaxFreeBT = compensationTaxFreeBTOT.TaxfreeBT;
+	    var dblTaxFreeOT = compensationTaxFreeBTOT.TaxfreeOT;
+	    var dblTotalAmountBT = Number((dblKmOT * dblCompensation / 10).toFixed(1));
+	    var dblTotalAmountOT = Number((dblKmBT * dblCompensation / 10).toFixed(1));
+	    tmpBody = VCOM.AddSpace("TP/REGN/" + fields.RecipientOfPaymentRegNbr.replace(/\s+/g, '') + "/", 100)
+	        + VCOM.AddSpace("TP/PERS/" + fields.RecipientOfPaymentEmplNo + "/" + fields.RecipientOfPaymentEmail + "/", 100)
+	        + VCOM.AddSpace("TP/BELO/" + dblTotalAmountBT + "///" + dblTotalAmountBT + "/" + dblTollFee + "/", 100);
+	    if ( isDirty(fields.SpecOfTripChargeWBS, "") && fields.SpecOfTripChargeWBS.trim() != "") {
+	        tmpBody += VCOM.AddSpace( "TP/KTO1/" + tmpCompanyCode + "/" + CorrectCC(fields.SpecOfTripChargeCostCenter) 
+	        + "/" + ( fields.SpecOfTripAccountTaxFree || 0 ) + "/" + ( fields.SpecOfTripAmmountTaxFree || 0 ) + "/"
+	        + (fields.SpecOfTripChargeWBS.replace(/[-]/g, '')).substr(3, 9) + "/", 100);
+	        tmpBody += VCOM.AddSpace("TP/KTO2/" + tmpCompanyCode + "/" + CorrectCC(fields.SpecOfTripChargeCostCenter)         + "/" 
+	        + ( fields.SpecOfTripAmmountTaxable || 0 ) + "/" + ( fields.SpecOfTripAmmountTaxable || 0 ) + "/" 
+	        + ( fields.SpecOfTripChargeWBS.replace( /[-]/g, '')).substr(3,9) + "/", 100); 
+	    }
+	    else {
+	        tmpBody += VCOM.AddSpace("TP/KTO1/" + tmpCompanyCode + "/" + CorrectCC(fields.SpecOfTripChargeCostCenter)         + "/"
+	        + ( fields.SpecOfTripAccountTaxFree || 0 ) + "/" + ( fields.SpecOfTripAmmountTaxFree || 0 ) + "/"
+	        + ReplacePrefix212(fields.SpecOfTripChargeOrderNo, tmpCompanyCode) + "/", 100);
+	        tmpBody += VCOM.AddSpace("TP/KTO2/" + tmpCompanyCode + "/" + CorrectCC(fields.SpecOfTripChargeCostCenter)         + "/"
+	        + ( fields.SpecOfTripAccountTaxable || 0 ) + "/" + ( fields.SpecOfTripAmmountTaxable || 0 ) + "/"
+	        + ReplacePrefix212(fields.SpecOfTripChargeOrderNo, tmpCompanyCode) + "/", 100);
+	    }
+	
+	tmpBody += VCOM.AddSpace("TP/KM00/" + ( fields.SpecOfTripKMOvertimeTotal || 0 ) + "/" + ( fields.SpecOfTripKMBusinessTotal || 0 ) + "/"
+	+ ( fields.SpecOfTripKMTotal || 0 ) + "/" + ( fields.SpecOfTripNumberOfPassengers || 0 ) + "/", 100)
+	+ VCOM.AddSpace("TP/STOP/", 100);
+	}
+	return tmpBody;
+}
+function CorrectCC(cc) {
+	var fields = GetScopeFields();
+	var companyCode = fields.CompanyCode;
+	
+	if ( companyCode == "SE83" && cc && cc.trim() == "" ){
+	    return fields.RecipientOfPaymentDepartment;
+	}
+	return cc;
+}
+function ReplacePrefix212(strText, tmpCompanyCode) {
+	strText = strText || "";
+	strText = strText.toString().trim();
+	tmpCompanyCode = tmpCompanyCode || "";
+	tmpCompanyCode.toString().trim();
+	
+	if ( strText == "" ){
+	    return "";
+	}
+	else{
+	    if ( strText.substr( 0, 3 ) == "212" && tmpCompanyCode == "SE83" ){
+	        return "V" + strText.substr( 3, 9 );
+	    }
+	    else if (strText.substr(0, 3) == "209" || strText.substr(0, 3) == "104" || strText.substr(0, 3) == "157"){
+	        return "+" + strText.substr(3, 9);
+	    }
+	    else {
+	        return strText.substr(0, 9);
+	    }
+	}
+}
+function SendVCOM() {
+	var scope = GetScope();
+	var fields = GetScopeFields();
+	var vcomMsg = CreateTextBody();
+	
+	if (fields.TEST_ROUTE) {
+	    PrintToFile(vcom_msg);
+	}
+	else {
+	    var companyCode = fields.CompanyCode;
+	    if (companyCode != "SE53") {
+	        var recordLen = 100;
+	        var partnerID = null;
+	        if (fields.TEST_VCOM) {
+	            partnerID = "MFVBSTST"; // TestID
+	        }
+	        else {
+	            partnerID = "MFVBSPRD"; // ProdID
+	        }
+	            var initCode = "INIT10";
+	            var timeoutSec = -1;
+	            var serverNode = "VCOMSRV";
+	            if (companyCode != "SE69") 
+	           {
+	              VCOM.Send(vcomMsg, recordLen, partnerID, initCode, timeoutSec, serverNode, SendVCOMCallback);
+	           }
+	    }
+	}
+}
+function SendVCOMCallback(status) {
+	var scope = GetScope();
+	var errorMessage = "VCOM Message has not been sent! Please contact your Mailforms Support! The mailform will be saved.";
+	
+	if (status != "ok") {
+	    MsgBox.Error(errorMessage);
+	}
+}
+function SendFormCust() {
+	var scope = GetScope();
+	
+	if (IsFormValid() && scope.form.$valid) {
+	    SetSubject();
+	    SendForm();
+	
+	    if (scope.Message.SendQueqe.length > 0) {
+	        scope.AfterSend(true);
+	        /* AfterSend callback check if queue is empty, 
+	            - if not -> send next route
+	            - else show ErrorMessage (if raised) or AfterSend popup
+	        */
+	    }
+	    scope.SaveMrus();
+	
+	    if (scope.Message.CurrentRoute == 1 && scope.Fields.AttestAttested == 'Yes' ) {
+	        SendVCOM();
+	    }
+	}
+}
+function FillAttestants() {
+	var scope = GetScope();
+	var fields = GetScopeFields();
+	
+	if (scope.Message.CurrentRoute == 0 || scope.Message.CurrentRoute == 2) {
+	    if (fields.RecipientOfPaymentEmail == "NO OUTLOOK ID!!!") {
+	        GlobalAR.FindById(fields.RecipientOfPaymentID, FillAttestantCallback, GAR.VCD)
+	    }
+	    else {
+	        GlobalAR.FindById(fields.RecipientOfPaymentID, FillAttestantCallback, GAR.VCN)
+	    }
+	}
+}
+function FillAttestantCallback(oGAR) {
+	if (oGAR) {
+	    var oMan = null;
+	    var oMan2 = null;
+	    var level = null;
+	    if (oGAR.AuthLevel == "N/A") {
+	        oMan = oGAR.GetMinAuthLevelManager("B6");
+	        level = oMan.AuthLevel.slice(-1);
+	        oMan2 = oGAR.GetMinAuthLevelManager("B" + (level - 1));
+	    }
+	    else if (oGAR.AuthLevel == "B0" || oGAR.AuthLevel == "B1") {
+	        oMan = oGAR.GetMinAuthLevelManager("B0");
+	    }
+	    else {
+	        level = oGAR.AuthLevel.slice(-1);
+	        oMan = oGAR.GetMinAuthLevelManager("B" + (level - 1));
+	        level = oMan.AuthLevel.slice(-1);
+	        oMan2 = oGAR.GetMinAuthLevelManager("B" + (level - 1));
+	    }
+	    FillAttestCbo(oMan, oMan2, true);
+	
+	    if (scope.Fields.RecipientOfPaymentEmail == 'elisabeth.rocke@volvo.com') {
+	        var TinaHultkvist = 'YA07410';
+	        GlobalAR.FindById(TinaHultkvist, B2_Callback, GAR.VCD);
+	    }
+	
+	    EVT_SelectAttest();
+	}
+}
+function FillAttestCbo(oMan, oMan2, clearComboBox) {
+	var scope = GetScope();
+	if (clearComboBox)
+	    scope.ComboBoxes['AttestCbo'].values = [];
+	
+	if (oMan) {
+	    scope.ComboBoxes['AttestCbo'].values.push(oMan);
+	}
+	
+	if (oMan && oMan2 && oMan != oMan2) {
+	    scope.ComboBoxes['AttestCbo'].values.push(oMan2);
+	}
+	
+	scope.ComboBoxes['AttestCbo'].fillAllValues();
+	//scope.$apply();
+}
+function B2_Callback() {
+	var oGAR = arguments[0];
+	if (oGAR) {
+	    var man = oGAR['B2'];
+	    FillAttestCbo(man, null, false);
+	}
+}
+function EVT_SelectAttest() {
+	var scope = GetScope();
+	var fields = GetScopeFields();
+	
+	if (fields.AttestCbo) {
+	    LdapClient.FindById(fields.AttestCbo.UserID, SetAttestant);
+	}
+}
+function SetAttestant(attestant, status) {
+	if (attestant) {
+	    scope.Fields.AttestEmail = attestant.Email.Address;
+	    scope.Fields.AttestID = attestant.Id;
+	    
+	    scope.$apply();
+	    
+	    //var i = document.getElementById('AttestCbo').selectedIndex;
+	    //scope.Fields.AttestName = scope.ComboBoxes['AttestCbo'][i].Name;
+	    scope.Fields.AttestName = scope.Fields.AttestCbo.Name;
+	}
+}
+function SpecOfTripTableAddRow() {
+	var table = scope.Fields.SpecOfTripTable;
+	
+	if (table && table.length > 0) {
+	    switch (scope.Fields.SpecOfTripBusinessType) {
+	        case 'Overtime':
+	            table[table.length - 1].SpecOfTripOvertime = "X";
+	            table[table.length - 1].SpecOfTripTrip = "";
+	        break;
+	        case 'Trip':
+	            table[table.length - 1].SpecOfTripOvertime = "";
+	            table[table.length - 1].SpecOfTripTrip = "X";
+	        break;
+	    }
+	    scope.Fields.SpecOfTripBusinessType = '';
+	
+	    SpecOfTripTableUpdateSummaries();
+	}
+}
+function SpecOfTripTableUpdateSummaries() {
+	var iValue = null;
+	var iKm = iBKm = iOKm = iTF = 0;
+	
+	var scope = GetScope();
+	var fields = GetScopeFields();
+	var table = fields.SpecOfTripTable;
+	
+	if ( table && table.length > 0) {
+	    for (var rowIndex = 0 ; rowIndex < table.length ; rowIndex++ ){
+	        iValue = ( table[rowIndex].SpecOfTripKM || "").trim();
+	        if (iValue != "") {
+	            iKm += Number(iValue);
+	            
+	            if (table[rowIndex].SpecOfTripOvertime == "X") {
+	                iOKm += Number(iValue);
+	            }
+	            else if (table[rowIndex].SpecOfTripTrip == "X") {
+	                iBKm += Number(iValue);
+	            }
+	        }
+	
+	        iValue = (table[rowIndex].SpecOfTripTollFee || "").trim(); //SpecOfTripTollFee "12"
+	
+	        if (iValue != "") {
+	            iTF += Number(iValue);
+	        }
+	    }
+	}
+	
+	fields.SpecOfTripTollFeeTotal = iTF;
+	fields.SpecOfTripKMOvertimeTotal = iOKm;
+	fields.SpecOfTripKMBusinessTotal = iBKm;
+	fields.SpecOfTripKMTotal = iKm;
+	CalculateAmmountsBusinessTrip();
+}
+function CopyTable() {
+	var scope = GetScope();
+	
+	if (scope.Message.CurrentRoute == 3) {
+	    scope.Translations[scope.CurrentLanguage].Sec_SpecOfTrips = scope.Translations[scope.CurrentLanguage].Sec_Accounts;
+	}
+}
+function Info_Address_Code() {
+	/*
+	If oFldCurrentRoute.Value = "3" Then
+	Dim el
+	Set el = document.getElementById("Info_Address_Code")
+	el.innerText = GetCompanyCode()
+	End If
+	*/
+}
+function VALID_RecipientCompanyCheckField() {
+}
+function FillPSAcbCombo(companyCode) {
+	var statement = "SELECT RowNum, Area from [open].[dict_ViewSubAreas_114_v1] WHERE CompanyCode = '" + companyCode + "'";
+	RecordsetClient.GetSqlData("MailformsPublic", statement, FillPSAcbComboCallback);
+}
+function FillPSAcbComboCallback(status, value) {
+	if ( status && value ){
+	    scope.ComboBoxes['RecipientOfPaymentPSAcb'].values = [];
+	    for( var i = 0 ; i < value.length ; i++ ){
+	        scope.ComboBoxes['RecipientOfPaymentPSAcb'].values.push(value[i]);
+	    }
+	    scope.ComboBoxes['RecipientOfPaymentPSAcb'].fillAllValues();
+	}
+}
+

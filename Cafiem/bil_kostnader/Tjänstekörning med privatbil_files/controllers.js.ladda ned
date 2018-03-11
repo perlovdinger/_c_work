@@ -1,0 +1,270 @@
+﻿angular.module("mailform-app").controller("aboutCtrl", function ($scope, $modalInstance, aboutInfo) {
+
+    $scope.Pending = "Pending...";
+
+    $scope.Version = aboutInfo.Version;
+
+    AboutClient.Info(MessageHelper.GetMessageClass(), function(data) {
+        $scope.Title = data.Title;
+        $scope.OwnerName = data.OwnerName;
+        $scope.OwnerEmail = data.OwnerEmail;
+        $scope.Description = data.Description;
+        $scope.$apply();
+    });
+
+    $scope.msgOk = function () {
+        $modalInstance.close("OK");
+    };
+
+});
+
+angular.module("mailform-app").controller("popMsgCtrl", function ($scope, $modalInstance, message, showCancel) {
+
+    $scope.MsgMessage = message;
+    $scope.ShowCancel = showCancel;
+
+    $scope.msgOk = function () {
+        $modalInstance.close("OK");
+    };
+
+    $scope.askYes = function () {
+        $modalInstance.close("Yes");
+    };
+
+    $scope.askNo = function () {
+        $modalInstance.close("No");
+    };
+
+    $scope.askCan = function () {
+        $modalInstance.close("Cancel");
+    };
+
+});
+
+angular.module("mailform-app").controller("popFinish", function ($scope, $modalInstance, CanBeCopied, CopyMessage) {
+
+    $scope.CanBeCopied = CanBeCopied;
+    $scope.CopyMessage = CopyMessage;
+
+    $scope.msgOk = function () {
+        $modalInstance.close("OK");
+    };
+
+    $scope.askYes = function () {
+        $modalInstance.close("Yes");
+    };
+
+    $scope.askNo = function () {
+        $modalInstance.close("No");
+    };
+
+    $scope.askCan = function () {
+        $modalInstance.close("Cancel");
+    };
+
+});
+
+angular.module("mailform-app").controller("peoplePickerCtrl", function ($scope, $modalInstance, source, domains, multi, criteria) {
+
+    $scope.Settings = {
+        Multi: multi,
+        Source: source || "VCN",
+        Limit: 50
+    };
+    $scope.Sources = domains || ["VCN", "VCD", "XDS"];
+    $scope.Pending = false;
+    $scope.SourceSelectable = $scope.Sources.length > 1;
+
+    $scope.cancel = function() {
+        $modalInstance.close("Cancel");
+    }
+
+    $scope.ok = function() {
+        if ($scope.Settings.Multi) {
+            $modalInstance.close(getEmails($scope.SelectedList));
+        } else {
+            $modalInstance.close($scope.SelectedList.length > 0 ? $scope.SelectedList[0] : null);
+        }
+
+    }
+
+    $scope.find = function () {
+        $scope.ErrorMessage = "";
+        $scope.Pending = true;
+        if (isAnyCriteria()) {
+            $scope.Selected = null;
+            $scope.showResultsCount = true;
+            LdapClient.Find($scope.Settings.Source, $scope.Settings.Limit, "", $scope.Criteria.FirstName,
+                $scope.Criteria.LastName, $scope.Criteria.Title, $scope.Criteria.Mail, $scope.Criteria.Company, $scope.Criteria.Department,
+                $scope.Criteria.Office, $scope.Criteria.City, $scope.Criteria.ID, $scope.Criteria.SapId, $scope.Criteria.All, $scope.fillResult);
+        }
+    }
+
+    $scope.fillResult = function (result, status) {
+        $scope.Pending = false;
+        $scope.ErrorMessage = "";
+        if (status) {
+            $scope.Result = result;
+            if ($scope.Result.length === 1) {
+                addToSelectedList($scope.Result[0]);
+            }
+        } else {
+            $scope.ErrorMessage = result;
+        }
+        $scope.$apply();
+    }
+
+    $scope.select = function() {
+        $scope.Selected = this.entry;
+        addToSelectedList($scope.Selected);
+    }
+
+    $scope.clear = function() {
+        $scope.SelectedList = [];
+        $scope.Result = [];
+        $scope.Selected = null;
+        $scope.Criteria = {
+            FirstName: "",
+            LastName: "",
+            DisplayName: "",
+            Title: "",
+            Mail: "",
+            SapId: "",
+            Company: "",
+            Department: "",
+            Office: "",
+            City: "",
+            ID: "",
+            All: ""
+        };
+    }
+
+    $scope.cleanAdvancedCriteria = function () {
+        if (!$scope.isAdvancedSearch) {
+            $scope.Criteria.Office = "";
+            $scope.Criteria.Department = "";
+            $scope.Criteria.Company = "";
+            $scope.Criteria.City = "";
+            $scope.Criteria.All = "";
+            $scope.Criteria.Title = "";
+        }
+    }
+
+    $scope.remove = function() {
+        var index = $scope.SelectedList.indexOf(this.person);
+        $scope.SelectedList.splice(index, 1);
+    }
+
+    $scope.selectSource = function() {
+        $scope.Result = [];
+    }
+
+    var isAnyCriteria = function() {
+        return $scope.Criteria.FirstName.length > 0 || $scope.Criteria.LastName.length > 0
+            || $scope.Criteria.ID.length > 0 || $scope.Criteria.Mail.length > 0 || $scope.Criteria.Office.length > 0
+            || $scope.Criteria.Title.length > 0 || $scope.Criteria.City.length > 0 || $scope.Criteria.Company.length > 0
+            || $scope.Criteria.All.length > 0 || $scope.Criteria.Department.length > 0 || $scope.Criteria.SapId.length > 0;
+    }
+
+    var isAnyAdvancedCriteria = function() {
+        return $scope.Criteria.Office.length > 0 || $scope.Criteria.Title.length > 0
+            || $scope.Criteria.Company.length > 0 || $scope.Criteria.City.length > 0
+            || $scope.Criteria.All.length > 0 || $scope.Criteria.Department.length > 0;
+    }
+
+    var addToSelectedList = function(user) {
+        if (!$scope.Settings.Multi) {
+            $scope.SelectedList.splice(0, 1);
+        }
+        if (!isExistsInSelectedList(user)) {
+            $scope.SelectedList.push(user);
+        }
+    }
+
+    var isExistsInSelectedList = function(user) {
+        for(var u in $scope.SelectedList)
+        {
+            if ($scope.SelectedList[u].Id == user.Id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    var getEmails = function(users) {
+        var emails = new Array(0);
+        for (var i in users) {
+            emails.push(users[i].Mail);
+        }
+        return emails;
+    }
+
+    $scope.clear();
+
+    $scope.Criteria = {
+        FirstName: criteria == null ? "" : criteria.FirstName || "",
+        LastName: criteria == null ? "" : criteria.LastName || "",
+        DisplayName: "",
+        Title: criteria == null ? "" : criteria.Title || "",
+        Mail: criteria == null ? "" : criteria.Mail || "",
+        Company: criteria == null ? "" : criteria.Company || "",
+        Department: criteria == null ? "" : criteria.Department || "",
+        Office: criteria == null ? "" : criteria.Office || "",
+        City: criteria == null ? "" : criteria.City || "",
+        ID: criteria == null ? "" : criteria.Id || "",
+        SapId: criteria == null ? "" :criteria.SapId || "",
+        All: ""
+    };
+
+    $scope.isAdvancedSearch = isAnyAdvancedCriteria();
+
+});
+
+
+angular.module("mailform-app").controller("entryListCtrl", function ($scope, $modalInstance, statement) {
+
+    $scope.Rows = [];
+    $scope.Cols = [];
+
+    $scope.cancel = function () {
+        $modalInstance.close("Cancel");
+    }
+
+    $scope.Selected = {};
+
+    $scope.ok = function () {
+        $modalInstance.close($scope.Selected);
+    }
+
+    $scope.getData = function () {
+        $scope.ErrorMessage = "";
+        $scope.Pending = true;
+        RecordsetClient.GetSqlData("MailformsPublic", statement, function(status, values) {
+            if (!status) {
+                $scope.ErrorMessage = values;
+            } else {
+                $scope.Rows = values;
+                for (var r in values) {
+                    for (var c in values[r]) {
+                        $scope.Cols.push(c);
+                    };
+                    break;
+                }
+                $scope.$apply();
+            }
+        });
+    }
+
+    $scope.select = function (row) {
+        $scope.Selected = row;
+    }
+
+    $scope.selectSource = function () {
+        $scope.Result = [];
+    }
+
+    $scope.getData();
+});
+
+
+

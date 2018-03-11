@@ -1,0 +1,1099 @@
+function MailformsApi() {
+
+    // Constructor
+
+    var client = new WsClient(MessageHelper.GetWebApiHost() + "MailformsApi.asmx");
+    var xmlns = "http://volvo.com/Mailforms/MailformsApi";
+    var callMethod, soap, method;
+
+    // Public methods
+
+    MailformsApi.prototype.Authorize = function (sessionId, className, fullClassName, tid, callback) {
+        method = "Authorize45";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", sessionId);
+        soap.add("className", className);
+        soap.add("fullClassName", fullClassName.replace(/\//g, "."));
+        soap.add("path", document.location.pathname);
+        soap.add("trackingId", tid);
+
+        client.Call(soap, processResponse);
+    };
+
+    MailformsApi.prototype.Login = function (callback) {
+        method = "Login";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        client.Call(soap, processResponse);
+    };
+
+    MailformsApi.prototype.Send = function (messageObject, messageXml, messageHtml, callback) {
+        method = "Send45";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", messageObject.SessionId);
+        soap.add("tid", messageObject.Tid);
+        soap.add("attachmentsPath", getAttachmentsPath(messageObject));
+        soap.add("xmlMessage", messageXml);
+        soap.add("html", messageHtml);
+
+        client.Call(soap, processResponse);
+    };
+
+    MailformsApi.prototype.Delete = function (sessionId, tid, callback) {
+        if (Value(tid) === "" || Value(sessionId) === "") {
+            if (callback != null) {
+                callback();
+            }
+            return;
+        }
+
+        method = "Delete";
+        callMethod = null;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", sessionId);
+        soap.add("trackingId", tid);
+
+        client.Call(soap, callback);
+    };
+
+    MailformsApi.prototype.Save = function (sessionId, message, callback) {
+        method = "Save45";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", sessionId);
+        soap.add("xmlMessage", message);
+
+        client.Call(soap, processResponse);
+    };
+
+    MailformsApi.prototype.SendPdfFromHtml = function (sessionId, message, callback, messageObject) {
+        method = "SendPdfFromHtml45";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        var html = document.documentElement.outerHTML;
+
+        html = html.replace(/&/g, "&amp;");
+        html = html.replace(/>/g, "&gt;");
+        html = html.replace(/</g, "&lt;");
+        html = html.replace(/&/g, "&amp;");
+
+        soap.add("sessionId", sessionId);
+        soap.add("attachmentsPath", getAttachmentsPath(messageObject));
+        soap.add("xmlMessage", message);
+        soap.add("html", html);
+
+        client.Call(soap, processResponse);
+    };
+
+    MailformsApi.prototype.SendPdf = function (sessionId, message, callback, messageObject) {
+        method = "SendPdfFromHtml45";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", sessionId);
+        soap.add("attachmentsPath", getAttachmentsPath(messageObject));
+        soap.add("xmlMessage", message);
+        soap.add("html", "");
+
+        client.Call(soap, processResponse);
+    }
+
+
+    MailformsApi.prototype.RetrieveByStep = function (sessionId, className, instanceId, stepNo, callback) {
+        method = "RetrieveByStep45";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", sessionId);
+        soap.add("className", className);
+        soap.add("instanceId", instanceId);
+        soap.add("nextRoute", stepNo);
+
+        client.Call(soap, processResponse);
+    };
+
+    MailformsApi.prototype.Retrieve = function (isDraft, sessionId, tid, callback) {
+        method = isDraft ? "RetrieveDraft45" : "Retrieve45";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", sessionId);
+        soap.add("trackingId", tid);
+
+        client.Call(soap, processResponse);
+    };
+
+    MailformsApi.prototype.RetrieveAsNew = function (sessionId, tid, fullClassName, callback) {
+        method = "RetrieveAsNew";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", sessionId);
+        soap.add("trackingId", tid);
+        soap.add("fullClassName", fullClassName);
+
+        client.Call(soap, processResponse);
+    };
+
+    MailformsApi.prototype.Resolve = function (sessionId, emails, callback) {
+        method = "Resolve45";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", sessionId);
+        soap.add("emails", emails);
+
+        client.Call(soap, processResponse);
+    };
+
+    MailformsApi.prototype.IsSent = function(sessionId, trackingId, callback) {
+        method = "IsSent";
+        callMethod = callback;
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", sessionId);
+        soap.add("trackingId", trackingId);
+
+        client.Call(soap, processResponse);
+    }
+
+    MailformsApi.prototype.Logout = function () {
+        var sessionId = MessageHelper.GetSessionId();
+        if (Value(sessionId) === "") {
+            GetScopeMessage().RedirectToLogout();
+            return;
+        }
+
+        method = "Logout";
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", sessionId);
+
+        client.Call(soap, function () {
+            MessageHelper.ClearSessionId();
+            GetScopeMessage().RedirectToLogout();
+        });
+    };
+
+    // Private methods
+    var processResponse = function (wsResponse) {
+        if (wsResponse.status !== 200) {
+            callMethod(false, wsResponse.status + " " + wsResponse.statusText);
+        } else {
+            callMethod(true, WsClient.parseResponse(wsResponse.responseText, method));
+        }
+    };
+
+    var getAttachmentsPath = function(message) {
+        if (message.AutoAttachDirectory !== "") {
+            var parts = document.location.href.split("?")[0].split("/");
+            return parts[parts.length - 3] + "\\" + parts[parts.length - 2] + "\\" + message.AutoAttachDirectory;
+        }
+        return "";
+    } 
+}
+
+// Public static methods
+MailformsApi.Login = function (callback) {
+    var mapi = new MailformsApi();
+    mapi.Login(callback);
+};
+
+MailformsApi.Authorize = function (sessionId, className, fullClassName, tid, callback) {
+    var mapi = new MailformsApi();
+    mapi.Authorize(sessionId, className, fullClassName, tid, callback);
+};
+
+MailformsApi.Resolve = function (sessionId, emails, callBack) {
+    var mapi = new MailformsApi();
+    mapi.Resolve(sessionId, emails, callBack);
+};
+
+MailformsApi.Logout = function() {
+    var mapi = new MailformsApi();
+    mapi.Logout();
+};
+
+MailformsApi.Send = function(messageObject, messageXml, messageHtml, callback) {
+    var mapi = new MailformsApi();
+    mapi.Send(messageObject, messageXml, messageHtml, callback);
+};
+
+MailformsApi.Save = function (sessionId, message, callback) {
+    var mapi = new MailformsApi();
+    mapi.Save(sessionId, message, callback);
+};
+
+MailformsApi.SendPdfFromHtml = function (sessionId, message, callback, messageObject) {
+    var mapi = new MailformsApi();
+    mapi.SendPdfFromHtml(sessionId, message, callback, messageObject);
+}
+
+MailformsApi.SendPdf = function (sessionId, message, callback, messageObject) {
+    var mapi = new MailformsApi();
+    mapi.SendPdf(sessionId, message, callback, messageObject);
+}
+
+MailformsApi.Retrieve = function (isDraft, sessionId, tid, callback) {
+    var mapi = new MailformsApi();
+    mapi.Retrieve(isDraft, sessionId, tid, callback);
+};
+
+MailformsApi.RetrieveByStep = function (sessionId, className, InstanceId, stepNo, callback) {
+    var mapi = new MailformsApi();
+    mapi.RetrieveByStep(sessionId, className, InstanceId, stepNo, callback);
+};
+
+MailformsApi.RetrieveAsNew = function (sessionId, tid, fullClassName, callback) {
+    var mapi = new MailformsApi();
+    mapi.RetrieveAsNew(sessionId, tid, fullClassName, callback);
+};
+
+MailformsApi.IsSent = function(sessionId, trackingId, callback) {
+    var mapi = new MailformsApi();
+    mapi.IsSent(sessionId, trackingId, callback);
+}
+
+MailformsApi.Delete = function (sessionId, tid, callback) {
+    var mapi = new MailformsApi();
+    mapi.Delete(sessionId, tid, callback);
+};
+
+
+
+
+function AutoIndex() {
+
+    // Constructor
+
+    var client = new WsClient(MessageHelper.GetWebApiHost() + "AutoIndexWebService.asmx");
+    var xmlns = "http://volvo.com/Mailforms/AutoIndex";
+    var method = "";
+    var callMethod;
+
+    // Public methods
+
+    AutoIndex.prototype.getAutoIndex = function (modulo, callback) {
+        method = "AutoIndex";
+        callMethod = callback;
+        var soap = createSoapMessageFor("modulo", modulo);
+        client.Call(soap, processResponse);
+    };
+
+    AutoIndex.prototype.getAutoIndexWithReset = function (reset, callback) {
+        method = "AutoIndexWithReset";
+        callMethod = callback;
+
+        var soap = createSoapMessageFor("toReset", reset);
+        client.Call(soap, processResponse);
+    };
+
+    AutoIndex.prototype.getAutoIndexWithResetToken = function (token, callback) {
+        method = "AutoIndexWithResetToken";
+        callMethod = callback;
+
+        var soap = createSoapMessageFor("token", token);
+        client.Call(soap, processResponse);
+    };
+
+    // Private methods
+
+    var createSoapMessageFor = function (paramName, paramValue) {
+        var soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("className", MessageHelper.GetMessageClass());
+        soap.add(paramName, paramValue);
+        
+        return soap;
+    };
+
+    var processResponse = function (wsResponse) {
+        if (wsResponse.status != 200) {
+            callMethod(false, wsResponse.statusText + ' ' + wsResponse.responseText);
+        } else {
+            callMethod(true, WsClient.parseResponse(wsResponse.responseText, method));
+        }
+    };
+
+}
+
+// Public static methods
+
+AutoIndex.getAutoIndex = function (modulo, callback) {
+    var ai = new AutoIndex();
+    ai.getAutoIndex(modulo, callback);
+}
+
+AutoIndex.getAutoIndexWithReset = function (reset, callback) {
+    var ai = new AutoIndex();
+    ai.getAutoIndexWithReset(reset, callback);
+}
+
+AutoIndex.getAutoIndexWithResetToken = function (token, callback) {
+    var ai = new AutoIndex();
+    ai.getAutoIndexWithResetToken(token, callback);
+}
+
+
+
+
+function GAR(uid, managers) {
+
+    var self = this;
+    var defaultManagerObject = function (level) {
+        return {
+            UserID: GAR.NOTFOUND,
+            Name: GAR.NOTFOUND,
+            Department: GAR.NOTFOUND,
+            Description: GAR.NOTFOUND,
+            Company: GAR.NOTFOUND,
+            ReportTo: GAR.NOTFOUND,
+            CostCenter: GAR.NOTFOUND,
+            Email: GAR.EMPTY,
+            Deputy: GAR.EMPTY,
+            AuthLevel: level
+        }
+    }
+    var getAuthLevel = function () {
+        for (var i in self.Managers) {
+            if (self.Managers[i].UserID == self.UserID) {
+                return self.Managers[i].AuthLevel;
+            }
+        }
+        return GAR.NA;
+    }
+
+    GAR.prototype.UserID = uid || GAR.EMPTY;
+    GAR.prototype.Managers = managers || [];
+
+    GAR.prototype.FirstManager = function (level) {
+        for (var i in self.Managers){
+            if (self.Managers[i].AuthLevel == level) {
+                return self.Managers[i];
+            }
+        }
+        return defaultManagerObject(level);
+    }
+
+    GAR.prototype.B0 = this.FirstManager('B0');
+    GAR.prototype.B1 = this.FirstManager('B1');
+    GAR.prototype.B2 = this.FirstManager('B2');
+    GAR.prototype.B3 = this.FirstManager('B3');
+    GAR.prototype.B4 = this.FirstManager('B4');
+    GAR.prototype.B5 = this.FirstManager('B5');
+    GAR.prototype.B6 = this.FirstManager('B6');
+
+    GAR.prototype.AuthLevel = getAuthLevel();
+    GAR.prototype.IsManager = this.AuthLevel != GAR.NA;
+
+    GAR.prototype.List = function (level) {
+        var result = [];
+        for (var i = 0; i < this.Managers.length; i++) {
+            if (this.Managers[i].AuthLevel == level) {
+                result.push(this.Managers[i]);
+            }
+        }
+        return result;
+    }
+
+    
+
+    GAR.prototype.GetMinAuthLevelManager = function(level) {
+        var userLevel = this.IsManager ? this.AuthLevel.substr(1, 1) : 7;
+        var minLevel = level.substr(1, 1);
+        var i = (minLevel < userLevel) ? minLevel : userLevel - 1;
+
+        for (; i >= 0 && i < 7; i--) {
+            var manager = this['B' + i];
+            if (manager.Name != GAR.NOTFOUND && manager.Name != GAR.OMMITED) {
+                return manager;
+            }
+        }
+        return this[level];
+    }
+
+}
+
+// GAR Constants
+GAR.VCN = 'VCN';
+GAR.VCD = 'VCD';
+
+GAR.NA = 'N/A';
+GAR.OMMITED = '[OMITTED]';
+GAR.EMPTY = '';
+GAR.NOTFOUND = '[NOT FOUND]';
+
+
+function GlobalAR() {
+
+    // Constructor
+
+    var callMethod = null;
+    var client = new WsClient(MessageHelper.GetWebApiHost() + "MailformsApi.asmx");
+    var method;
+
+    // Public methods
+
+    GlobalAR.prototype.Find = function(value, type, callback, source) {
+        callMethod = callback;
+        method = "GetGARHierarchy";
+        if (isDirty(value, "") && isDirty(value, 0)) {
+            client.Call(createSoapMessage(value, type, source), processResponse);
+        } else {
+            callMethod(new GAR());
+        }
+    }
+    
+    // Private methods
+
+    var createSoapMessage = function (value, type, source) {
+        var soap = new SoapEnvelope("GetGARHierarchy", "http://volvo.com/Mailforms/MailformsApi");
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("name", type);
+        soap.add("value", value);
+        soap.add("source", source || "VCN");
+
+        return soap;
+    }
+
+    var processResponse = function (wsResponse)
+    {
+        if (wsResponse.status !== 200) {
+            MsgBox.Error(wsResponse.responseText);
+            return;
+        };
+        
+        var r = WsClient.parseResponse(wsResponse.responseText,  method);
+        callMethod(getGAR(r));
+    }
+
+    var getGAR = function(response) {
+        if (response == null) {
+            return new GAR();
+        }
+
+        if (response.substring(0, 1) != '<') {
+            MsgBox.Error(response);
+            return new GAR();
+        }
+
+        var xml = Xml.getXml(response);
+        var nodes = xml.getNodes('Manager');
+        var managers = [];
+
+        for (var i = 0; i < nodes.length; i++) {
+            var manager = {
+                UserID: nodes[i].getElementsByTagName('ID')[0].textContent,
+                Name: nodes[i].getElementsByTagName('Name')[0].textContent,
+                Department: nodes[i].getElementsByTagName('Department')[0].textContent,
+                Description: nodes[i].getElementsByTagName('Description')[0].textContent,
+                Company: nodes[i].getElementsByTagName('Company')[0].textContent,
+                ReportTo: nodes[i].getElementsByTagName('ReportTo')[0].textContent,
+                CostCenter: nodes[i].getElementsByTagName('CostCenter')[0].textContent,
+                Email: nodes[i].getElementsByTagName('Email')[0].textContent,
+                Deputy: nodes[i].getElementsByTagName('Deputy')[0].textContent,
+                AuthLevel: nodes[i].getElementsByTagName('AuthLevel')[0].textContent
+            };
+            managers.push(manager);
+        }
+
+        return new GAR(xml.getTextContentByTag('UserID'), managers);
+    }
+}
+
+// Public static methods
+
+GlobalAR.FindById = function(value, callback, source) {
+    var gar = new GlobalAR();
+    return gar.Find(value, 'UID', callback, source);
+}
+
+GlobalAR.FindByEmail = function(value, callback, source) {
+    var gar = new GlobalAR();
+    return gar.Find(value, 'EMAIL', callback, source);
+}
+
+
+
+
+function VCOM() {
+
+    // Constructor
+
+    var client = new WsClient(MessageHelper.GetVCOMService());
+    var call = null;
+    var xmlns = "http://volvo.com/mailforms/mailformsvcom";
+    var soap, method;
+
+    // Public methods
+
+    VCOM.prototype.Send = function(message, recordLength, partner, initiator, timeout, server, callback) {
+        call = callback;
+        method = "VSend";
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("strKomunikat", message);
+        soap.add("intRecordLength", recordLength);
+        soap.add("strPartner", partner);
+        soap.add("strInitiator", initiator);
+        soap.add("intTimeout", timeout);
+        soap.add("strServer", server);
+
+        client.Call(soap, processResponse);
+    };
+
+    VCOM.prototype.File = function(message, className, callback) {
+        call = callback;
+        method = "VFile";
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("strRegNbr", className);
+        soap.add("strKomunikat", message);
+
+        client.Call(soap, processResponse);
+    }
+
+    VCOM.prototype.AddSpace = function(data, length) {
+        if (data.length > length) {
+            data = "FEL LÄNGD, MAX 100 - WRONG LENGTH, MAX 100";
+        }
+
+        while (data.length < length) {
+            data += ' ';
+        }
+        return data;
+    }
+
+    // Private methods
+
+    var processResponse = function(wsResponse) {
+        if (wsResponse.status !== 200) {
+            MsgBox.Error(wsResponse.responseText);
+            call("Failed");
+            return;
+        };
+
+        var response = WsClient.parseResponse(wsResponse.responseText, method);
+        call(response);
+    }
+}
+
+// Public static methods
+
+VCOM.Send = function(message, recordLength, partner, initiator, timeout, server, callback) {
+    var vcom = new VCOM();
+    vcom.Send(message, recordLength, partner, initiator, timeout, server, callback);
+}
+
+VCOM.File = function(message, className, callback) {
+    var vcom = new VCOM();
+    vcom.File(message, className, callback);
+}
+
+VCOM.AddSpace = function(data, length) {
+    var vcom = new VCOM();
+    return vcom.AddSpace(data, length);
+}
+
+
+
+
+function AdminToolClient() {
+	var client = new WsClient(MessageHelper.GetAdminToolService());
+	var xmlns = "http://volvo.com/Mailforms/AdminToolWebService";
+	var method, soap;
+	var tempCallback = null;
+
+	var isManager = function (authLevel) {
+	    return (authLevel === "B1" ||
+	            authLevel === "B2" ||
+	            authLevel === "B3" ||
+	            authLevel === "B4" ||
+	            authLevel === "B5" ||
+	            authLevel === "B6")
+	        ? "true"
+	        : "false";
+	}
+
+	var processResponse = function (wsResponse) {
+        if (wsResponse.status !== 200) {
+            tempCallback(false, wsResponse.status + " " + wsResponse.statusText);
+        } else {
+            tempCallback(true, WsClient.parseResponse(wsResponse.responseText, method, false));
+        }
+    };
+
+	AdminToolClient.prototype.AddUser = function(email, lastName, firstName, title, psAndDept, site, authLevel, authLevel2, viewer, dept, costCenter, userId, authInSite, authInDept, remark, lastChanged, changedBy, deleted, callback) {
+		tempCallback = callback;
+		method = "AddUser";
+		soap = new SoapEnvelope(method, xmlns);
+
+	    soap.add("sessionId", MessageHelper.GetSessionId());
+	    soap.add("isManager", isManager(authLevel));
+	    soap.add("data", 
+            angular.toJson({
+	            email: Value(email),
+	            lastName: Value(lastName),
+	            firstName: Value(firstName),
+	            title: Value(title),
+	            psAndDept: Value(psAndDept),
+	            site: Value(site),
+	            authLevel: Value(authLevel),
+	            authLevel2: Value(authLevel2),
+	            viewer: (viewer || false),
+	            dept: Value(dept),
+	            costCenter: Value(costCenter),
+	            userId: Value(userId),
+	            authInSite: Value(authInSite),
+	            authInDept: Value(authInDept),
+	            remark: Value(remark),
+	            lastChanged: lastChanged,
+	            changedBy: Value(changedBy),
+	            deleted: (deleted || false)
+	        }), true);
+
+        client.Call(soap, processResponse);
+    }
+}
+
+AdminToolClient.AddUser = function (email, lastName, firstName, title, psAndDept, site, authLevel, authLevel2, viewer, dept, costCenter, userId, authInSite, authInDept, remark, lastChanged, changedBy, deleted, callback) {
+    var client = new AdminToolClient();
+    client.AddUser(email, lastName, firstName, title, psAndDept, site, authLevel, authLevel2, viewer, dept, costCenter, userId, authInSite, authInDept, remark, lastChanged, changedBy, deleted, callback);
+}
+
+//AboutClient
+var AboutClient = function () {
+    var client = new WsClient(MessageHelper.GetAboutWebService());
+    var xmlns = "http://volvo.com/Mailforms/About";
+    var method, soap;
+    var tempCallback = null;
+
+    var processResponse = function (response) {
+        if (response.status !== 200) {
+            console.error(response.statusText);
+            tempCallback(null);
+        } else {
+            response = WsClient.parseResponse(response.responseText, method);
+            var object = angular.fromJson(response);
+            if (!object.status) {
+                MsgBox.Error(object["errorMessage"]);
+                console.error(object["errorMessage"]);
+                tempCallback();
+            } else {
+                switch (method) {
+                    case "Info":
+                        tempCallback(angular.fromJson(object["data"]));
+                        break;
+                }
+            }
+        }
+    };
+
+    AboutClient.prototype.Info = function(className, callback) {
+        method = "Info";
+        tempCallback = callback;
+
+        soap = new SoapEnvelope(method, xmlns);
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("className", className);
+
+        client.Call(soap, processResponse);
+    }
+
+}
+
+AboutClient.Info = function(className, callback) {
+    var client = new AboutClient();
+    client.Info(className, callback);
+}
+
+// MFAuthorizationManagementServiceClient
+
+function MFAuthorizationManagementServiceClient() {
+    var client = new WsClient(MessageHelper.GetMFAuthorizationManagementService());
+    var xmlns = "http://volvo.com/Mailforms/MFAuthorizationManagementService";
+    var method, soap;
+    var tempCallback = null;
+
+    var processResponse = function (wsResponse) {
+        if (wsResponse.status !== 200) {
+            tempCallback(false, wsResponse.status + " " + wsResponse.statusText);
+        } else {
+            tempCallback(true, WsClient.parseResponse(wsResponse.responseText, method, false));
+        }
+    };
+
+    MFAuthorizationManagementServiceClient.prototype.GetMailforms = function (callback) {
+        tempCallback = callback;
+        method = "GetMailforms";
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        
+        client.Call(soap, processResponse);
+    }
+
+    MFAuthorizationManagementServiceClient.prototype.GetUserRoles = function (formId, callback) {
+        tempCallback = callback;
+        method = "GetUserRoles";
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("formId", formId);
+
+        client.Call(soap, processResponse);
+    }
+
+    MFAuthorizationManagementServiceClient.prototype.GetSteps = function (formId, callback) {
+        tempCallback = callback;
+        method = "GetSteps";
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("formId", formId);
+
+        client.Call(soap, processResponse);
+    }
+
+    MFAuthorizationManagementServiceClient.prototype.InsertAclEntry = function (formId, role, token, tokenType, route, callback) {
+        tempCallback = callback;
+        method = "InsertAclEntry";
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("data",
+            angular.toJson({
+                formId: Value(formId),
+                role: Value(role),
+                token: Value(token),
+                tokenType: Value(tokenType),
+                route: Value(route)
+            }));
+
+        client.Call(soap, processResponse);
+    }
+
+    MFAuthorizationManagementServiceClient.prototype.RemoveAclEntry = function (formId, role, token, tokenType, route, callback) {
+        tempCallback = callback;
+        method = "RemoveAclEntry";
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("data",
+          angular.toJson({
+              formId: Value(formId),
+              role: Value(role),
+              token: Value(token),
+              tokenType: Value(tokenType),
+              route: Value(route)
+          }));
+
+        client.Call(soap, processResponse);
+    }
+}
+
+MFAuthorizationManagementServiceClient.GetMailforms = function (callback) {
+    var authorizationClient = new MFAuthorizationManagementServiceClient();
+    authorizationClient.GetMailforms(callback);
+}
+
+MFAuthorizationManagementServiceClient.GetUserRoles = function (formId, callback) {
+    var authorizationClient = new MFAuthorizationManagementServiceClient();
+    authorizationClient.GetUserRoles(formId, callback);
+}
+
+MFAuthorizationManagementServiceClient.GetSteps = function (formId, callback) {
+    var authorizationClient = new MFAuthorizationManagementServiceClient();
+    authorizationClient.GetSteps(formId, callback);
+}
+
+MFAuthorizationManagementServiceClient.InsertAclEntry = function (formId, role, token, tokenType, route, callback) {
+    var authorizationClient = new MFAuthorizationManagementServiceClient();
+    authorizationClient.InsertAclEntry(formId, role, token, tokenType, route, callback);
+}
+
+MFAuthorizationManagementServiceClient.RemoveAclEntry = function (formId, role, token, tokenType, route, callback) {
+    var authorizationClient = new MFAuthorizationManagementServiceClient();
+    authorizationClient.RemoveAclEntry(formId, role, token, tokenType, route, callback);
+}
+
+
+/*
+    SpListClient, Brings a SP list in a JSON format.
+    Uses internal ASPX service to bypass JS cross domian polices.
+    (ASPX serivce must be hosted within the same domain)
+    Example usege:
+
+    // oData (entire) URL:
+    var spListOdataURL =
+        "http://wwglbn10368/sites/mfpo/dict/_api/web/Lists/GetByTitle(\'Countries\')/items?$select=Id,Title,ShortCode";
+    
+    var spListClient1 = new SpListClient(spListOdataURL);
+    spListClient1.Call(function(wsResult){});
+
+    // a static call
+    SpListClient.GetSPListData(spListOdataURL, function(wsResult){});
+*/
+function SpListClient() {
+
+    var client = new WsClient(MessageHelper.GetSPClientService());
+    var xmlns = "http://volvo.com/Mailforms/SPClient";
+    var soap, method;
+
+    SpListClient.prototype.Call = function (serviceUrl, callback) {
+        method = "GetSpList";
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("spListOdataURL", serviceUrl);
+        
+        client.Call(soap, function (wsResult) {
+            processListJson(wsResult, callback);
+        });
+    };
+
+    var processListJson = function (wsResult, callback) {
+        if (callback !== null) {
+            var items = [];
+
+            if (wsResult.status !== 200) {
+                
+                var xml = new Xml();
+                xml.getXml(wsResult.responseText);
+                var json = xml.getByTag("GetSpListResult").textContent;
+
+                obj = JSON.parse(json);
+
+                for (var i = 0; i < obj.d.results.length; i++) {
+                    var listItem = {};
+                    for (var property in obj.d.results[i]) {
+                        var spListRecord = obj.d.results[i];
+                        if (property != "__metadata" && property != "ID"
+                            && spListRecord.hasOwnProperty(property)) {
+                            listItem[property] = spListRecord[property];
+                        }
+                    }
+                    items.push(listItem);
+                }
+            }
+            callback(items);
+        }
+    }
+};
+
+SpListClient.GetSPListData = function (spListOdataURL, callback) {
+    var client = new SpListClient(spListOdataURL);
+    client.Call(callback);
+}
+
+function WsClient(url) {
+
+    var serviceUrl = url;
+
+    WsClient.prototype.Call = function (soapXml, callback) {
+
+        var xmlhttp = null;
+        if (window.XMLHttpRequest) {
+            xmlhttp = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        if (xmlhttp) {
+
+            var self = this;
+            xmlhttp.onreadystatechange = function () { self.StateChange(xmlhttp, callback); };
+
+            xmlhttp.open("POST", serviceUrl, true);
+            xmlhttp.setRequestHeader("Content-Type", "text/xml; charset=UTF-8");
+            xmlhttp.send(soapXml);
+
+        } else {
+
+            if (callback !== null) {
+                callback(new WsResult(-1, "Cannot load XMLHTTP object", "Cannot load XMLHTTP object"));
+            }
+        }
+
+    };
+
+    WsClient.prototype.Upload = function (soapXml, onTransferProgress, onTransferComplete, onTransferFailed, onTransferCanceled) {
+
+        var xmlhttp = null;
+        if (window.XMLHttpRequest) {
+            xmlhttp = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        if (onTransferProgress != null) {
+            xmlhttp.addEventListener("progress", onTransferProgress, false);
+        };
+
+        if (onTransferComplete != null) {
+            xmlhttp.addEventListener("load", onTransferComplete, false);
+        };
+
+        if (onTransferFailed != null) {
+            xmlhttp.addEventListener("error", onTransferFailed, false);
+        };
+
+        if (onTransferCanceled != null) {
+            xmlhttp.addEventListener("abort", onTransferCanceled, false);
+        };
+
+        xmlhttp.open("POST", serviceUrl, true);
+        xmlhttp.setRequestHeader("Content-Type", "text/xml");
+        xmlhttp.send(soapXml);
+
+    };
+
+    WsClient.prototype.StateChange = function (xmlhttp, callback) {
+
+        if (xmlhttp.readyState === 4) {
+
+            if (callback !== null && xmlhttp.status > 0) {
+                callback(new WsResult(xmlhttp.status, xmlhttp.statusText, xmlhttp.responseText));
+            }
+
+        }
+    };
+};
+
+WsClient.parseResponse = function (response, method, isObject) {
+    var xmlDoc = Xml.getXml(response);
+    if (isObject == null || !isObject) {
+        return xmlDoc.getTextContentByTag(method + "Result");
+    } else {
+        return xmlDoc.getByTag(method + "Result");
+    }
+};
+
+WsClient.processReponse = function(response, callback) {
+    if (!response.status) {
+        MsgBox(response.message);
+    };
+    if (callback) {
+        callback(response.data);
+    };
+}
+
+var WsResponse = (function() {
+    var WsResponse = function(http) {
+        var error = null;
+        var data = null;
+        var status = false;
+
+        if (http.status === 200) {
+            var response = angular.fromJson(http.responseText);
+            error = response["Error"];
+            data = response["Data"];
+            status = (error !== null);
+        }
+        return {
+            status: status,
+            error: error,
+            data: data
+        };
+    };
+    return WsResponse;
+})();
+
+function WsResult(status, text, response) {
+
+    this.status = status;
+    this.statusText = text;
+    this.responseText = response;
+};
+
+var SoapEnvelope = (function() {
+    var header =
+        "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body>";
+    var footer = "</soap:Body></soap:Envelope>";
+    var action, namespace, params;
+
+    var SoapEnvelope = function (method, xmlns) {
+        params = {};
+        action = method;
+        namespace = xmlns;
+    }
+
+    SoapEnvelope.prototype.toString = function() {
+        var soap;
+        soap = header + "<" + action + " xmlns=\"" + namespace + "\">";
+        for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+                soap += "<" + key + ">" + params[key] + "</" + key + ">";
+            }
+        }
+        soap += "</" + action + ">" + footer;
+        return soap;
+    }
+
+    SoapEnvelope.prototype.add = function(key, value, cData) {
+        value = Value(value);
+        if (cData) {
+            value = "<![CDATA[" + value + "]]>";
+        }
+        params[key] = value;
+    }
+
+    return SoapEnvelope;
+})();
+
+function RestClient() {
+
+    var addRequestHeaders = function (xmlHttp, requestHeaders) {
+        if (requestHeaders != null && requestHeaders.constructor === Array) {
+            for (var i = 0; i < requestHeaders.length; i++) {
+                if (requestHeaders[i].key == null || requestHeaders[i].value == null) {
+                    continue;
+                }
+                xmlHttp.setRequestHeader(requestHeaders[i].key, requestHeaders[i].value);
+            }
+        }
+    }
+
+    var makeHttpRequest = function (requestType, url, successCallback, errorCallback, data, requestHeaders) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open(requestType, url, true);
+
+        addRequestHeaders(xmlHttp, requestHeaders);
+
+        xmlHttp.onreadystatechange = function () {
+            var jsonResult;
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                jsonResult = JSON.parse(xmlHttp.responseText);
+                successCallback(jsonResult);
+            } else if (xmlHttp.readyState == 4) {
+                jsonResult = JSON.parse(xmlHttp.responseText);
+                errorCallback(jsonResult);
+            }
+        }
+        var dataToSend = data != null ? JSON.stringify(data) : null;
+        xmlHttp.send(dataToSend);
+    }
+
+    var publicApi = {
+        get: function (url, successCallback, errorCallback) {
+            makeHttpRequest('GET', url, successCallback, errorCallback);
+        },
+        post: function (url, data, successCallback, errorCallback) {
+            makeHttpRequest('POST', url, successCallback, errorCallback,
+                data, [
+                {
+                    key: 'Content-type', value: 'application/json'
+                }]);
+        }
+    };
+
+    return publicApi;
+}

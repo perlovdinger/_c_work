@@ -1,0 +1,68 @@
+function Ldap() {}
+
+// properties
+
+Ldap.FirstName = "givenName";
+Ldap.Alias = "mailNickname";
+Ldap.Email = "mail";
+Ldap.LastName = "sn";
+Ldap.DisplayName = "displayName";
+Ldap.Title = "title";
+Ldap.Company = "Company";
+Ldap.PostalAddress = "streetAddress";
+Ldap.City = "l";
+Ldap.State = "st";
+Ldap.ZipCode = "postalCode";
+Ldap.Country = "co";
+Ldap.Department = "department";
+Ldap.Office = "physicalDeliveryOfficeName";
+Ldap.Assistant = "assistant";
+Ldap.Phone = "telephoneNumber";
+Ldap.PrimaryWindowsNTAccount = "objectSid";
+Ldap.BusinessPhone = Ldap.Phone;
+Ldap.FaxNumber = "facsimileTelephoneNumber";
+Ldap.AssistantsPhone = "telephoneAssistant";
+Ldap.HomePhone = "homephone";
+Ldap.Home2Phone = "otherHomePhone";
+Ldap.MobilePhone = "mobile";
+Ldap.PagerNumber = "pager";
+Ldap.Notes = "info";
+Ldap.ManagersName = "manager";
+Ldap.DirectReports = "directReports";
+Ldap.SimpleDisplayName = Ldap.DisplayName;
+Ldap.DirectoryName = "name";
+Ldap.AdministrativeNotes = "adminDescription";
+Ldap.EmployeeID = "employeeID";
+Ldap.CustomAttribute1 = "extensionAttribute1";
+Ldap.CustomAttribute2 = "extensionAttribute2";
+Ldap.CustomAttribute3 = "extensionAttribute3";
+Ldap.CustomAttribute4 = "extensionAttribute4";
+Ldap.CustomAttribute5 = "extensionAttribute5";
+Ldap.CustomAttribute6 = "extensionAttribute6";
+Ldap.CustomAttribute7 = "extensionAttribute7";
+Ldap.CustomAttribute8 = "extensionAttribute8";
+Ldap.CustomAttribute9 = "extensionAttribute9";
+Ldap.CustomAttribute10 = "extensionAttribute10";
+Ldap.EmailAddresses = "proxyAddresses";
+Ldap.SMTP = "mail";
+Ldap.X500 = "ADsPath";
+Ldap.EX = "ADsPath";
+Ldap.Mailbox = "organizationalPerson";
+Ldap.HomeServer = "homeMDB";
+ 
+// special props
+Ldap.Permissions = "Permissions";
+Ldap.objectClass = "objectClass";
+Ldap.OrgName = "organization";
+Ldap.SiteName = "site";
+Ldap.ServerName = "server";
+Ldap.Port = "port";
+ 
+// DL props
+Ldap.AcceptMessagesFrom = "Auth-Orig";
+Ldap.RejectMessagesFrom = "Unauth-Orig";
+Ldap.Owner = "owner";
+Ldap.Members = "members";
+Ldap.DistributionList = "groupOfNames";
+
+Ldap.CustomRecipient = "Remote-Address";

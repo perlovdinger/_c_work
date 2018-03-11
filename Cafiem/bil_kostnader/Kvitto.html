@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<!-- saved from url=(0178)https://forms.volvo.net/VolvoForms/IPM/NOTE/VOLVO/VIT/BA/BUILDER/VBSFORMS_KVITTO/VER17/VBSFORMS_KVITTO_0.htm?class=IPM/NOTE/VOLVO/VIT/BA/BUILDER/VBSFORMS_KVITTO/VER17&command=new -->
+<html xmlns:mf="http://volvo.com/mailforms/builder"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=100">
+
+<title>Kvitto</title>
+<link rel="stylesheet" type="text/css" href="./Kvitto_files/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="./Kvitto_files/bootstrap-theme.css">
+<link rel="stylesheet" type="text/css" href="./Kvitto_files/mf.css">
+<link rel="stylesheet" type="text/css" href="./Kvitto_files/angular-csp.css">
+<script type="text/javascript" src="./Kvitto_files/validators.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/angular.min.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/ui-bootstrap-tpls-0.12.1.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/ldapExchProps.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/mailformsapiwebservice.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/msgboxes.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/misc.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/message.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/mailformController.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/controllers.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/directives.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/Recordset.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/sap.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/aes.js.ladda ned"></script>
+
+
+<script type="text/javascript" src="./Kvitto_files/Controller.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/Translations.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/BusinessLogic.js.ladda ned"></script>
+<script type="text/javascript" src="./Kvitto_files/CustomCode.js.ladda ned"></script>
+
+</head>
+<body><div id="divProgress" class="cProgress" style="display: none;"><div id="divProgressLoadingText" class="cProgressLoadingText">Loading ...</div></div>
+<div class="container">
+<div class="row hidden-print" style="margin-top: 10px;">
+<div class="col-xs-9 cInfo" id="serverInfo"></div>
+<div class="col-xs-3">
+<a class="cLogoutLink" id="lnkLogout" style="float: right">Logout V016387</a>
+</div>
+</div>
+<div class="row">
+<div id="divMain" class="cMain col-xs-12 ng-scope" ng-app="mailform-app" ng-controller="mailformController">
+<form name="form" novalidate="" class="css-form ng-valid-mf-numeric ng-valid-mf-integer ng-invalid ng-invalid-required ng-valid-maxlength ng-dirty ng-valid-parse">
+<div>
+<div class="row">
+<div id="divHeader" class="cHeader col-xs-12 ng-binding">Kvitto</div>
+</div>
+<div class="row">
+<div class="col-xs-3 col-xs-offset-9 col-sm-2 col-sm-offset-10 col-md-1 col-md-offset-11 hidden-print">
+<select class="input-sm form-control ng-pristine ng-untouched ng-valid" style="width: 80%" ng-change="applyLanguage();" ng-model="CurrentLanguage">
+<!-- ngRepeat: item in Languages --><option ng-repeat="item in Languages" value="SWE" class="ng-binding ng-scope">SWE</option><!-- end ngRepeat: item in Languages --><option ng-repeat="item in Languages" value="ENG" class="ng-binding ng-scope">ENG</option><!-- end ngRepeat: item in Languages -->
+</select>
+</div>
+</div>
+<div class="row equal">
+<!--RecipientOfPayment section-->
+<div id="divRecipientOfPayment" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading ng-binding">Betalningsmottagare</div>
+<div class="panel-body">
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment1" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-9 cell">
+<div></div>
+</div>
+<div class="col-xs-12 col-sm-3 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="RecipientOfPaymentButton1" name="RecipientOfPaymentButton1" ng-click="RecipientOfPaymentButton1Click()" style="width: 100%">
+<span class="ng-binding">Hämta</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment3" mf-readonly="true" disabled="disabled">
+<div mf-readonly="true" disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-1 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Bolag</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-5 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentCompany" id="RecipientOfPaymentCompany" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.RecipientOfPaymentCompany" ng-model="Fields.RecipientOfPaymentCompany" mf-readonly="true" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" value="VOLVO INFORMATION TECHNOLOGY AB" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.RecipientOfPaymentCompany.$error.required)" disabled="disabled">*</span>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Namn</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentName" id="RecipientOfPaymentName" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.RecipientOfPaymentName" ng-model="Fields.RecipientOfPaymentName" mf-readonly="true" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" value="Lövdinger Per" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.RecipientOfPaymentName.$error.required)" disabled="disabled">*</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment4" mf-readonly="true" disabled="disabled">
+<div mf-readonly="true" disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-1 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Ort</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-5 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentCity" id="RecipientOfPaymentCity" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.RecipientOfPaymentCity" ng-model="Fields.RecipientOfPaymentCity" mf-readonly="true" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" value="Göteborg" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.RecipientOfPaymentCity.$error.required)" disabled="disabled">*</span>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Anst. Nr.</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentEmplNo" id="RecipientOfPaymentEmplNo" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid-required ng-valid ng-valid-maxlength" ng-value="Fields.RecipientOfPaymentEmplNo" ng-model="Fields.RecipientOfPaymentEmplNo" maxlength="5" mf-readonly="true" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" value="16387" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.RecipientOfPaymentEmplNo.$error.required)" disabled="disabled">*</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment5" mf-readonly="true" disabled="disabled">
+<div mf-readonly="true" disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-1 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Email</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-5 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentEmail" id="RecipientOfPaymentEmail" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.RecipientOfPaymentEmail" ng-model="Fields.RecipientOfPaymentEmail" mf-readonly="true" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" value="per.lovdinger@volvo.com" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.RecipientOfPaymentEmail.$error.required)" disabled="disabled">*</span>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Avdelning</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentDepartment" id="RecipientOfPaymentDepartment" type="text" class="input-sm form-control ng-pristine ng-valid ng-touched" ng-value="Fields.RecipientOfPaymentDepartment" ng-model="Fields.RecipientOfPaymentDepartment" mf-readonly="true" readonly="true" value="DE82750">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment6" mf-readonly="true" disabled="disabled">
+<div mf-readonly="true" disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Säkerhets ID</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentID" id="RecipientOfPaymentID" type="text" class="input-sm form-control cDataHidden ng-pristine ng-untouched ng-valid" ng-value="Fields.RecipientOfPaymentID" ng-model="Fields.RecipientOfPaymentID" mf-readonly="true" readonly="true" value="V016387">
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Geogr. placering</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentLocation" id="RecipientOfPaymentLocation" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.RecipientOfPaymentLocation" ng-model="Fields.RecipientOfPaymentLocation" mf-readonly="true" readonly="true" value="AB3N">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--Issuer section-->
+<div id="divIssuer" class="panel panel-info cSection col-xs-12 col-sm-12 ng-hide" mf-readonly="PRS1() || !Message.WriteAccess" ng-hide="!PRS1()">
+<div class="panel-heading ng-binding">Utfärdare</div>
+<div class="panel-body">
+<div class="cSubSection" id="divIssuer1">
+<div>
+<div class="row">
+<div class="col-xs-12 col-sm-2 col-lg-1 cell">
+<div class="ng-binding">Namn</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 cell">
+<div>
+<input name="IssuerName" id="IssuerName" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.IssuerName" ng-model="Fields.IssuerName" mf-readonly="true" readonly="true" value="Lövdinger Per">
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 cell">
+<div class="ng-binding">Anst. Nr.</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 cell">
+<div>
+<input name="IssuerEmplNo" id="IssuerEmplNo" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.IssuerEmplNo" ng-model="Fields.IssuerEmplNo" mf-readonly="true" readonly="true" value="16387">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divIssuer2">
+<div>
+<div class="row">
+<div class="col-xs-12 col-sm-2 col-lg-1 cell">
+<div class="ng-binding">Telefon</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 cell">
+<div>
+<input name="IssuerPhone" id="IssuerPhone" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.IssuerPhone" ng-model="Fields.IssuerPhone" mf-readonly="true" readonly="true" value="+46 31 3223436">
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 cell">
+<div class="ng-binding">Email</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 cell">
+<div>
+<input name="IssuerEmail" id="IssuerEmail" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.IssuerEmail" ng-model="Fields.IssuerEmail" mf-readonly="true" readonly="true" value="per.lovdinger@volvo.com">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--Accounts section-->
+<div id="divAccounts" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading ng-binding">Kontering</div>
+<div class="panel-body">
+<div class="cSubSection" id="divAccounts1" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 text-center cLabel_Red cell">
+<div style="text-align: Center" class="ng-binding">OBS! Upp till 7st rader med olika utlägg kan registreras pa detta underlag.Använd 'Lägg till' knappen.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSection" id="divAccounts2" mf-readonly="!Message.WriteAccess">
+<hr class="cSeparator">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 cell">
+<div class="ng-binding">Vanligaste kostnadskontona</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divAccounts3" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-6 cell">
+<div>
+<select class="input-sm form-control hidden-print ng-valid ng-valid-required ng-dirty ng-valid-parse ng-touched" name="AccountsCbo" id="AccountsCbo" ng-value="Fields.AccountsCbo" ng-model="Fields.AccountsCbo" ng-required="Message.WriteAccess &amp;&amp; isDirtyAccountsDataRow()" ng-hide="isReadonlyControl(&#39;AccountsCbo&#39;)" ng-options="obj as obj.AccountsCboText for obj in ComboBoxes.AccountsCbo.values track by obj.Account" value="[object Object]" required="required"><option value="" label="" class=""></option><option value="546001" label="546001: Förbrukn. Material">546001: Förbrukn. Material</option><option value="561101" label="561101: Bensin avd. Bilar">561101: Bensin avd. Bilar</option><option value="581001" label="581001: Biljetter">581001: Biljetter</option><option value="583001" label="583001: Hotell">583001: Hotell</option><option value="589101" label="589101: Övriga resekostn.">589101: Övriga resekostn.</option><option value="611001" label="611001: Kontorm.">611001: Kontorm.</option><option value="621105" label="621105: Telefon kost.">621105: Telefon kost.</option><option value="621201" label="621201: Samtalsavgift Mobil">621201: Samtalsavgift Mobil</option><option value="761001" label="761001: Utbildn. Intern/Kostn.">761001: Utbildn. Intern/Kostn.</option><option value="769790" label="769790: Övriga personkostn.">769790: Övriga personkostn.</option></select>
+<input class="input-sm form-control hidden-print ng-pristine ng-untouched ng-valid ng-hide" ng-model="Fields.AccountsCbo.AccountsCboText" mf-readonly="true" ng-hide="!isReadonlyControl(&#39;AccountsCbo&#39;)" readonly="true">
+<input class="input-sm form-control hidden-screen" ng-value="Fields.AccountsCbo.AccountsCboText" value="589101: Övriga resekostn.">
+<span class="form-control-feedback cRed ng-hide" style="margin-right:20px" ng-hide="!(form.AccountsCbo.$error.required)">*</span>
+</div>
+</div>
+<div class="col-xs-12 col-sm-3 cell">
+<div></div>
+</div>
+<div class="col-xs-12 col-sm-3 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="AccountsButton1" name="AccountsButton1" ng-click="AccountsButton1Click()" style="width: 100%">
+<span class="ng-binding">Hämta övriga kostnadskonton</span>
+<i class="glyphicon glyphicon-list-alt"></i>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSection" id="divAccounts4" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-2 text-left cell">
+<div style="text-align: Left" class="ng-binding">Belasta kostnadsställe</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell">
+<div>
+<input name="AccountsCostCenter" id="AccountsCostCenter" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-mf-numeric ng-valid-required" ng-value="Fields.AccountsCostCenter" ng-model="Fields.AccountsCostCenter" ng-required="Message.WriteAccess &amp;&amp; isDirtyAccountsDataRow() &amp;&amp; (VLD4())" mf-numeric="Message.WriteAccess &amp;&amp; isDirtyAccountsDataRow() &amp;&amp; (VLD4() || VLD1())" ng-model-options="{ allowInvalid: true }" value="3611">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.AccountsCostCenter.$error.required)">*</span>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 text-left cell">
+<div style="text-align: Left" class="ng-binding">Belopp exkl. moms</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell">
+<div>
+<input name="AccountsExcl" id="AccountsExcl" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid-mf-numeric ng-valid-mf-integer ng-invalid ng-invalid-required" ng-value="Fields.AccountsExcl" ng-model="Fields.AccountsExcl" ng-required="Message.WriteAccess &amp;&amp; isDirtyAccountsDataRow()" mf-numeric="Message.WriteAccess &amp;&amp; isDirtyAccountsDataRow()" ng-model-options="{ allowInvalid: true }" mf-integer="Message.WriteAccess &amp;&amp; isDirtyAccountsDataRow()" required="required">
+<span class="form-control-feedback cRed" ng-hide="!(form.AccountsExcl.$error.required)">*</span>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-12 col-sm-2 cell">
+<div class="ng-binding">Belasta ordernummer</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell">
+<div>
+<input name="AccountsOrdernumber" id="AccountsOrdernumber" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.AccountsOrdernumber" ng-model="Fields.AccountsOrdernumber">
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 cell">
+<div class="ng-binding">Svensk moms</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell">
+<div>
+<input name="AccountsVat" id="AccountsVat" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid-mf-numeric ng-valid-mf-integer ng-invalid ng-invalid-required" ng-value="Fields.AccountsVat" ng-model="Fields.AccountsVat" ng-required="Message.WriteAccess &amp;&amp; isDirtyAccountsDataRow()" mf-numeric="Message.WriteAccess &amp;&amp; isDirtyAccountsDataRow()" ng-model-options="{ allowInvalid: true }" mf-integer="Message.WriteAccess &amp;&amp; isDirtyAccountsDataRow()" required="required">
+<span class="form-control-feedback cRed" ng-hide="!(form.AccountsVat.$error.required)">*</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divAccounts5" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-2 cell" mf-readonly="SE83() || !Message.WriteAccess" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Belasta wbs-element</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell" mf-readonly="SE83() || !Message.WriteAccess" disabled="disabled">
+<div disabled="disabled">
+<input name="AccountsWBS" id="AccountsWBS" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.AccountsWBS" ng-model="Fields.AccountsWBS" readonly="true">
+</div>
+</div>
+<div class="col-xs-12 col-sm-3 cell" mf-readonly="!Message.WriteAccess">
+<div></div>
+</div>
+<div class="col-xs-12 col-sm-3 cell" mf-readonly="!Message.WriteAccess">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="AccountsButton2" name="AccountsButton2" ng-click="AccountsButton2Click()" style="width: 100%">
+<span class="ng-binding">Lägg</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSection" id="divAccounts6" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-print-12 cell">
+<div>
+<table class="dynTab table table-bordered table-striped table-condensed table-hover" id="AccountsData">
+<thead>
+<tr>
+<td class="ng-binding">Kostnadskontona</td>
+<td class="ng-binding">Belasta kostnadsställe</td>
+<td class="ng-binding">Belasta ordernummer</td>
+<td class="ng-binding">Belasta wbs-element</td>
+<td class="ng-binding">Belopp exkl. moms</td>
+<td class="ng-binding">Svensk moms</td>
+</tr>
+</thead>
+<tbody>
+<!-- ngRepeat: entry in Fields['AccountsData'] -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--Amounts section-->
+<div id="divAmounts" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="true" disabled="disabled">
+<div class="panel-heading ng-binding" disabled="disabled">Belopp</div>
+<div class="panel-body" disabled="disabled">
+<div class="cSubSection" id="divAmounts1" disabled="disabled">
+<div disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Belopp exkl. moms</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="AmountsExcl" id="AmountsExcl" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.AmountsExcl" ng-model="Fields.AmountsExcl" mf-readonly="true" readonly="true">
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Svensk moms</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="AmountsVAT" id="AmountsVAT" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.AmountsVAT" ng-model="Fields.AmountsVAT" mf-readonly="true" readonly="true">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSection" id="divAmounts2" disabled="disabled">
+<div disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Totalsumma att utfå KRONOR </div>
+</div>
+<div class="col-xs-12 col-sm-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="AmountsTotal" id="AmountsTotal" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.AmountsTotal" ng-model="Fields.AmountsTotal" mf-readonly="true" readonly="true">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--Signature section-->
+</div>
+<div class="row equal">
+<!--Attest section-->
+<div id="divAttest" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading ng-binding">Attest</div>
+<div class="panel-body">
+<div class="cSubSection" id="divAttest1" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-2 cell">
+<div class="ng-binding">Namn</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell">
+<div>
+<select class="input-sm form-control hidden-print ng-pristine ng-untouched ng-invalid ng-invalid-required" name="AttestCbo" id="AttestCbo" ng-value="Fields.AttestCbo" ng-model="Fields.AttestCbo" ng-required="Message.WriteAccess &amp;&amp; (true)" ng-change="CHNG_Attest();" ng-hide="isReadonlyControl(&#39;AttestCbo&#39;)" ng-options="obj as obj.DisplayInfo for obj in ComboBoxes.AttestCbo.values track by obj.UserID" required="required"><option value="?" selected="selected" label=""></option><option value="V035464" label="Maria Nilson">Maria Nilson</option><option value="A272396" label="Magnus Dahlgren">Magnus Dahlgren</option></select>
+<input class="input-sm form-control hidden-print ng-pristine ng-untouched ng-valid ng-hide" ng-model="Fields.AttestCbo.DisplayInfo" mf-readonly="true" ng-hide="!isReadonlyControl(&#39;AttestCbo&#39;)" readonly="true">
+<input class="input-sm form-control hidden-screen" ng-value="Fields.AttestCbo.DisplayInfo">
+<span class="form-control-feedback cRed" style="margin-right:20px" ng-hide="!(form.AttestCbo.$error.required)">*</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSection" id="divAttest4" mf-readonly="true" disabled="disabled">
+<div mf-readonly="true" disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Avdelning</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="AttestDepartment" id="AttestDepartment" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.AttestDepartment" ng-model="Fields.AttestDepartment" mf-readonly="true" readonly="true">
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Säkerhets ID</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="AttestID" id="AttestID" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.AttestID" ng-model="Fields.AttestID" mf-readonly="true" readonly="true">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSection" id="divAttest5" mf-readonly="true" disabled="disabled">
+<div mf-readonly="true" disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-12 col-print-12 cLabel_Bold cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">OBS! Ifyllt formulär sänds till din Outlook Inbox, öppna och skriv ut mottaget formulär!</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--Explanation section-->
+<div id="divExplanation" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading ng-binding">Anledning till utlägg/Förklarande text (Tryck Enter för ny rad!)</div>
+<div class="panel-body">
+<div class="cSubSectionNoMargin" id="divExplanation1">
+<div>
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-print-12 cell">
+<div>
+<textarea class="form-control hidden-print ng-pristine ng-untouched ng-invalid ng-invalid-required" name="ExplanationComment" id="ExplanationComment" ng-value="Fields.ExplanationComment" ng-model="Fields.ExplanationComment" style="height: 30px;" ng-required="Message.WriteAccess &amp;&amp; (true)" required="required"></textarea>
+<span class="form-control-feedback cRed" ng-hide="!(form.ExplanationComment.$error.required)">*</span>
+<p class="form-control cTextArea hidden-screen ng-binding"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--Navigation section-->
+<div id="divNavigation" class="panel panel-info cSection col-xs-12 col-sm-12 hidden-print" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading h10"></div>
+<div class="panel-body">
+<div class="cSubSectionNoMargin" id="divNavigation1" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-3 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="NavigationButton2" name="NavigationButton2" ng-click="validateForm();" style="width: 100%">
+<span class="ng-binding">Validera</span>
+</button>
+</div>
+</div>
+<div class="col-xs-12 col-sm-3 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="NavigationButton3" name="NavigationButton3" ng-click="SendFormHandler();" style="width: 100%">
+<span class="ng-binding">Sänd till din Outlook Inbox</span>
+</button>
+</div>
+</div>
+<div class="col-xs-12 col-sm-3 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="NavigationButton4" name="NavigationButton4" ng-click="saveForm();" style="width: 100%">
+<span class="ng-binding">Spara</span>
+</button>
+</div>
+</div>
+<div class="col-xs-12 col-sm-3 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="NavigationButton5" name="NavigationButton5" ng-click="cancelForm();" mf-enabled="" style="width: 100%">
+<span class="ng-binding">Avbryt</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--About section-->
+<div id="divAbout" class="panel panel-info cSection col-xs-12 col-sm-12 hidden-print" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading h10"></div>
+<div class="panel-body">
+<div class="cSubSection" id="divAbout1">
+<div>
+<div class="row">
+<div class="col-xs-12 col-sm-3 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="AboutButton1" name="AboutButton1" ng-click="openAbout();" mf-enabled="" style="width: 100%">
+<span class="ng-binding">Om formuläret</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row hidden-print ng-hide" ng-show="ErrorMessage">
+<div class="col-xs-12 cLabel_BoldRed ng-binding"></div>
+</div>
+</form>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+            var load = new Loading();
+            load.AddLoadingProgress();
+          </script>
+
+
+</body></html>

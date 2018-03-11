@@ -1,0 +1,463 @@
+/* format directives */
+
+angular.module('mailform-app').directive('mfDateFormat', ['$filter', function ($filter) {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function (scope, el, attrs, ctrl) {
+            var format = ctrl.$isEmpty(attrs.mfDateFormat) ? scope.DateFormat : attrs.mfDateFormat;
+            ctrl.$formatters.push(function (value) {
+                return $filter('date')(value, format);
+            });
+        }
+    };
+}]);
+
+angular.module('mailform-app').directive('mfWeekFormat', ['$filter', function ($filter) {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function (scope, el, attrs, ctrl) {
+            var format = ctrl.$isEmpty(attrs.mfWeekFormat) ? scope.WeekFormat : attrs.mfWeekFormat;
+            ctrl.$formatters.push(function (value) {
+                return $filter('date')(value, format);
+            });
+        }
+    };
+}]);
+
+angular.module("mailform-app").directive("mfDatetimeFormat", ["$filter", function ($filter) {
+    return {
+        require: "ngModel",
+        restrict: "A",
+        link: function (scope, el, attrs, ctrl) {
+            var format = ctrl.$isEmpty(attrs.mfDatetimeFormat) ? scope.DatetimeFormat : attrs.mfDatetimeFormat;
+            ctrl.$formatters.push(function (value) {
+                return $filter("date")(value, format);
+            });
+        }
+    };
+}]);
+
+
+/*
+ * @decimal separator: .
+ * @thousand separator: ,
+ */
+
+angular.module("mailform-app").filter("money", ["$filter", function ($filter) {
+        return function (value, symbol, order) {
+            if (isDirty(value) && angular.isNumber(value)) {
+                var output = $filter("number")(value, 2);
+                if (symbol) {
+                    if (symbol.indexOf("-") > -1) {
+                        symbol = symbol.substring(0, symbol.length - 1);
+                        return symbol + " " + output;
+                    }
+
+                    if (symbol.indexOf("+" > -1)) {
+                        symbol = symbol.substring(0, symbol.length - 1);
+                        return output + " " + symbol;
+                    }
+                }
+                return output;
+            }
+            return undefined;
+        }
+    }
+]);
+
+angular.module("mailform-app").directive("mfCurrency",["$filter",function($filter) {
+    return {
+        require: "ngModel",
+        restrict: "A",
+        link: function (scope, el, attrs, ctrl) {
+            var order = "+";
+            var symbol = attrs.mfCurrency;
+
+            if (symbol.indexOf("-") > -1) {
+                order = "-";
+                symbol = symbol.substring(0, symbol.length - 1);
+            }
+
+            if (symbol.indexOf("+") > -1) {
+                order = "+";
+                symbol = symbol.substring(0, symbol.length  -1);
+            }
+            
+            var pattern = "([1-9]\\d*|0\\d*)(,\\d{3})*(\\.\\d{0,2})?";
+            if (order === "-") {
+                pattern = "(" + (symbol === "$" ? "\\$" : symbol) + "\\s)?" + pattern;
+            } else {
+                pattern += "(\\s" + (symbol === "$" ? "\\$" : symbol) + ")?";
+            }
+            pattern = "^" + pattern + "$";
+            var regex = new RegExp(pattern);
+
+            var format = function() {
+                return $filter("money")(ctrl.$modelValue, attrs.mfCurrency);
+            }
+
+            ctrl.$parsers.push(function(input) {
+                if (regex.test(input)) {
+                    if (typeof(input) === "string") {
+                        input = input.replace(/,/g, "");
+                        input = input.replace(symbol, "");
+                    }
+                    return parseFloat(input);
+                } else {
+                    var value = $filter("number")(input || 0, 2);
+                    if (regex.test(value)) {
+                        value = value.replace(",", "");
+                        return parseFloat(value);
+                    } else {
+                        return undefined;
+                    }
+                }
+            });
+
+            ctrl.$formatters.push(function(model) {
+                if (isDirty(ctrl.$modelValue)) {
+                    return format();
+                }
+                return undefined;
+            });
+
+            el.on("focusin", function() {
+                ctrl.$setViewValue(ctrl.$modelValue);
+                ctrl.$render();
+                
+            });
+
+            el.on("blur", function () {
+                if (ctrl.$modelValue) {
+                    ctrl.$setViewValue(format());
+                }
+                ctrl.$render();
+            });
+        }
+    };
+}]);
+
+/* validation directives */
+
+angular.module('mailform-app').directive('mfZero', function () {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, el, attrs, ctrl) {
+            ctrl.$validators.mfZero = function(modelValue) {
+                if (scope.$eval(attrs.mfZero)) {
+                    return isDirty(modelValue, 0);
+                }
+                return true;
+            };
+            scope.$watch(attrs.mfZero, function(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    ctrl.$validate();
+                }
+            });
+        }
+    };
+});
+
+angular.module('mailform-app').directive('mfNumeric', function() {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function (scope, el, attrs, ctrl) {
+            ctrl.$validators.mfNumeric = function (modelValue, viewValue) {
+                if (isDirty(modelValue,"")) {
+                    if (scope.$eval(attrs.mfNumeric)) {
+                        return !isNaN(parseFloat(modelValue)) && isFinite(modelValue);
+                    }
+                }
+                return true;
+            };
+            scope.$watch(attrs.mfNumeric, function(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    ctrl.$validate();
+                }
+            });
+        }
+    };
+});
+
+angular.module('mailform-app').directive('mfInteger', function() {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, el, attrs, ctrl) {
+            ctrl.$validators.mfInteger = function(modelValue) {
+                if (isDirty(modelValue, "")) {
+                    if (scope.$eval(attrs.mfInteger)) {
+                        return parseInt(modelValue) == modelValue;
+                    }
+                }
+                return true;
+            };
+            scope.$watch(attrs.mfInteger, function (newValue, oldValue) {
+                if (newValue != oldValue) {
+                    ctrl.$validate();
+                }
+            });
+        }
+    };
+});
+
+angular.module('mailform-app').directive('mfDate', function() {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, el, attrs, ctrl) {
+            ctrl.$validators.mfDate = function(modelValue, viewValue) {
+                if (scope.$eval(attrs.mfDate)) {
+                    return angular.isDate(modelValue);
+                }
+                return true;
+            };
+            scope.$watch(attrs.mfDate, function(newValue, oldValue) {
+                if (newValue !== oldValue) {
+                    ctrl.$validate();
+                }
+            });
+        }
+    };
+});
+
+angular.module('mailform-app').directive('mfDateCurrent', function() {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, el, attrs, ctrl) {
+            ctrl.$validators.mfDateCurrent = function (modelValue) {
+                if (scope.$eval(attrs.mfDateCurrent)) {
+                    var today = new Date();
+                    var date = new Date(+modelValue);
+                    date.setHours(0, 0, 0, 0);
+                    today.setHours(0, 0, 0, 0);
+                    return date >= today;
+                }
+                return true;
+            };
+            scope.$watch(attrs.mfDateCurrent, function(newValue, oldValue) {
+                if (newValue !== oldValue) {
+                    ctrl.$validate();
+                }
+            });
+        }
+    }
+});
+
+angular.module('mailform-app').directive('mfWeek', function() {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, el, attrs, ctrl) {
+            ctrl.$validators.mfWeek = function (modelValue, viewValue) {
+                if (modelValue === viewValue) return true;
+                if (scope.$eval(attrs.mfDate)) {
+                    return angular.isDate(modelValue);
+                }
+                return true;
+            };
+            scope.$watch(attrs.mfWeek, function (newValue, oldValue) {
+                if (newValue != oldValue) {
+                    ctrl.$validate();
+                }
+            });
+        }
+    };
+});
+
+angular.module('mailform-app').directive('mfWeekCurrent', function() {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, el, attrs, ctrl) {
+            ctrl.$validators.mfWeekCurrent = function (model) {
+                if (angular.isDefined(model) && angular.isDate(model) && scope.$eval(attrs.mfWeekCurrent)) {
+                    var today = new Date();
+                    if (model.getFullYear() < today.getFullYear()) return false;
+                    if (model.getFullYear() == today.getFullYear() && model.getWeek() < today.getWeek()) return false;
+                }
+                return true;
+            };
+
+            scope.$watch(attrs.mfWeekCurrent, function(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    ctrl.$validate();
+                }
+            });
+        }
+    };
+});
+
+
+/* validation markup style 
+ *
+ * 2017-03-14: Depreacted
+ * 
+ */
+angular.module('mailform-app').directive('mfValidated', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, el, attrs) {
+            scope.$watch('Validated', function (newValue) {
+                el.removeClass('mf-validated');
+                if (newValue != undefined && newValue === attrs.name) {
+                    el.on('blur', function () {
+                        el.removeClass('mf-validated');
+                        scope.Validated = undefined;
+                        scope.$apply();
+                    });
+                    el.addClass('mf-validated');
+                }
+            });
+        }
+    }
+});
+
+
+/* Read-only control directive */
+angular.module('mailform-app').directive('mfReadonly', function () {
+    return {
+        restrict: 'A',
+        link: function (scope, el, attrs) {
+
+            var findParentReadonly = function (element) {
+                if (element == null) {
+                    return "";
+                }
+                if (element.hasAttribute("mf-readonly")) {
+                    return element.attributes["mf-readonly"].value;
+                } else {
+                    return findParentReadonly(element.parentNode);
+                }
+            }
+
+            var setControlDisabled = function (element, readOnly) {
+                if (readOnly)
+                    element.setAttribute("disabled", "disabled");
+                else
+                    element.removeAttribute("disabled");
+            }
+
+            var setControlReadonly = function (element, readOnly) {
+                if (readOnly)
+                    element.setAttribute("readonly", "true");
+                else
+                    element.removeAttribute("readonly");
+            }
+
+            var setReadOnly = function (element, readOnly, isRoot) {
+                if (element == undefined || element.nodeType !== 1) {
+                    return;
+                }
+
+                if (!scope.Message.WriteAccess) {
+                    readOnly = true;
+                }
+
+                if (element.hasAttribute("mf-enabled")) {
+                    readOnly = false;
+                }
+
+                if (readOnly == undefined) {
+                    readOnly = true;
+                }
+
+                if (!isRoot && element.hasAttribute("mf-readonly")) {
+                    return;
+                }
+                if (element.hasAttribute("ng-readonly") || element.hasAttribute("ng-disabled")) {
+                    if (element.tagName === "INPUT" && (element.type === "button" || element.type === "submit" || element.type === "radio")) {
+                        element.setAttribute("ng-readonly", null);
+                        element.setAttribute("ng-disabled", null);
+                    } else {
+                        return;
+                    }
+                }
+
+                switch (element.tagName) {
+                    case "INPUT":
+                        if (element.type === "checkbox" || element.type === "button" || element.type === "submit" || element.type === "radio") {
+                            setControlDisabled(element, readOnly);
+                        } else {
+                            setControlReadonly(element, readOnly);
+                        }
+                        break;
+                    case "TEXTAREA":
+                        setControlReadonly(element, readOnly);
+                        break;
+                    case "SELECT":
+                    case "LABEL":
+                    case "BUTTON":
+                        setControlDisabled(element, readOnly);
+                        break;
+                    case "DIV":
+                    case "TABLE":
+                    case "TBODY":
+                    case "TR":
+                    case "TD":
+                    case "P":
+                    case "SPAN":
+                        setControlDisabled(element, readOnly);
+                        if (element.children && element.children.length > 0) {
+                            for (var c in element.children) {
+                                setReadOnly(element.children[c], readOnly, false);
+                            }
+                        }
+                        break;
+                }
+            }
+
+            scope.$watch(attrs.mfReadonly, function () {
+                var expression = attrs.mfReadonly;
+                if (expression === "") {
+                    expression = findParentReadonly(el[0].parentNode);
+                }
+                var rw = scope.$eval(expression);
+                setReadOnly(el[0], rw, true);
+            });
+        }
+    }
+});
+
+
+
+/* Filter */
+angular.module("mailform-app").filter("numeric", function() {
+    return function(number, digits) {
+        if (isNaN(number) || number === "") {
+            return number;
+        } else {
+            var parts = number.toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            if (parts.length === 1) {
+                parts[1] = "";
+            }
+            while (parts[1].length < digits) {
+                parts[1]+="0";
+            }
+            parts[1] = parts[1].substr(0, digits).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            return digits > 0 ? parts.join(".") : parts[0];
+        }
+    }
+});
+
+angular.module('mailform-app').filter('unique', function() {
+    return function(collection, key) {
+        var unique = {};
+        var result = [];
+        if (collection) {
+            for (var i = 0; i < collection.length; i++) {
+                if (typeof unique[collection[i][key]] == "undefined") {
+                    unique[collection[i][key]] = "";
+                    result.push(collection[i]);
+                }
+            }
+        }
+        return result;
+    };
+});

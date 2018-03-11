@@ -1,0 +1,610 @@
+var Message = (function () {
+
+    var toJSON = null;
+    var fromJSON = null;
+
+    var self;
+    var Message = function (funToJSON, funFromJSON) {
+        
+        toJSON = funToJSON;
+        fromJSON = funFromJSON;
+    }
+    var tempAuthCallBack = null;
+    var tempScopeCallBack = null;
+    var tempSendCallBack = null;
+    var tempRetrieveCallBack = null;
+    var tempIsSentCallback = null;
+    var tempInstanceId = "";
+
+    var updateFields = function() {
+        if (typeof (self.UpdateFieldsHandler) === "function") {
+            self.UpdateFieldsHandler();
+        }
+    }
+
+    Message.prototype.SendConfirmationMode = ConfirmationMode.NoConfirmation;
+
+    Message.prototype.SendAsUser = false;
+    Message.prototype.AutoAttachDirectory = "";
+    Message.prototype.AttachFiles = false;
+    
+    Message.prototype.SaveConfirmationEmailEnabled = false;
+    Message.prototype.Command = "";
+    Message.prototype.IsTask = false;
+
+    Message.prototype.SendSequence = 1;
+    Message.prototype.SendQueqe = [];
+    Message.prototype.MessageFullClass = "";
+    Message.prototype.InstanceId = "";
+    Message.prototype.Tid = "";
+    Message.prototype.Store = "";
+    Message.prototype.To = "";
+    Message.prototype.Subject = "";
+    Message.prototype.CurrentRoute = 0;
+    Message.prototype.NextRoute = 0;
+    Message.prototype.TestRouting = false;
+    Message.prototype.Body = "";
+    Message.prototype.SQLFormID = 0;
+    Message.prototype.Class = "";
+    Message.prototype.Language = "";
+    Message.prototype.Fields = {};
+
+    Message.prototype.UpdateFieldsHandler = null;
+
+    Message.prototype.MessageClass = MessageHelper.GetMessageClass();
+    Message.prototype.SessionId = MessageHelper.GetSessionId();
+
+    Message.prototype.UserName = "";
+    Message.prototype.UserEmail = "";
+    Message.prototype.UserData = null;
+    Message.prototype.ReadAccess = false;
+    Message.prototype.WriteAccess = false;
+
+    Message.prototype.IsCopy = false;
+
+    Message.prototype.IsReadOnly = function() {
+        if (this.Command == null || this.Command === "COPY") {
+            return false;
+        }
+
+        if (this.Tid == null || this.Tid === "") {
+            return false;
+        };
+
+        var last = this.Tid.substr(this.Tid.length - 1, 1);
+        return last === "S";
+    };
+
+    Message.prototype.IsDraft = function () {
+        if (this.Tid == null || this.Tid === "") {
+            return false;
+        };
+
+        var last = this.Tid.substr(this.Tid.length - 1, 1);
+        return last === "T" || last === "R";
+    };
+
+    Message.prototype.AddRoute = function (condition, media, recipient, subject, currentRoute, nextRoute, sendAsUser, confirmationMode, autoAttachFolder, testRouting, notification, isTask, attachFiles) {
+        if (condition) {
+
+            if (attachFiles === undefined && media !== Media.PDF && media !== Media.PDFNOTE) {
+                attachFiles = true;
+            }
+
+            this.SendQueqe.push({
+                media: media,
+                recipient: recipient,
+                subject: subject,
+                currentRoute: currentRoute,
+                nextRoute: nextRoute,
+                sendAsUser: sendAsUser,
+                confirmationMode: confirmationMode,
+                autoAttachFolder: autoAttachFolder,
+                testRouting: testRouting,
+                notification: notification,
+                isTask: isTask || false,
+                attachFiles: attachFiles || false
+        });
+        }
+    }
+
+    Message.prototype.SendNext = function(callback) {
+        var cfg = this.SendQueqe.shift();
+        this.SetMessageParams(cfg.recipient, cfg.subject, cfg.currentRoute, cfg.nextRoute, cfg.sendAsUser, cfg.confirmationMode, cfg.autoAttachFolder, cfg.testRouting, cfg.isTask, cfg.attachFiles);
+        this.Send(cfg.media, callback, cfg.notification); 
+    }
+
+    Message.prototype.SetMessageParams = function (recipient, subject, currentRoute, nextRoute, sendAsUser, confirmationMode, autoAttachFolder, testRouting, isTask, attachFiles) {
+        this.To = recipient;
+        this.Subject = subject;
+        this.CurrentRoute = currentRoute;
+        this.NextRoute = nextRoute;
+        this.TestRouting = testRouting;
+        this.SendAsUser = sendAsUser;
+        this.AutoAttachDirectory = autoAttachFolder;
+        this.AttachFiles = attachFiles;
+        this.SendConfirmationMode = confirmationMode;
+        this.isTask = isTask;
+
+        if (this.InstanceId == null || this.InstanceId === "") {
+            this.InstanceId = Instance.getInstanceID(this.UserName);
+        };
+    };
+
+    Message.prototype.IsSent = function (callback) {
+        if (this.Tid === "") return callback(false);
+
+        tempIsSentCallback = callback;
+        MailformsApi.IsSent(this.SessionId, this.Tid, isSentCallback);
+    }
+
+    Message.prototype.Retrieve = function (callback) {
+        self = this;
+        switch (this.Command) {
+            case "OPEN":
+                tempRetrieveCallBack = callback;
+                MailformsApi.Retrieve(this.IsDraft(), this.SessionId, this.Tid, retrieveCallback);
+                break;
+            case "COPY":
+                tempRetrieveCallBack = callback;
+                this.IsCopy = true;
+                MailformsApi.RetrieveAsNew(this.SessionId, this.Tid, this.MessageFullClass, retrieveCallback);
+                break;
+            default:
+                callback();
+                break;
+        }
+    };
+
+    Message.prototype.Authorize = function(callback) {
+        self = this;
+        tempAuthCallBack = callback;
+        MailformsApi.Authorize(this.SessionId, this.MessageClass, this.MessageFullClass, this.Tid, authCallBack);
+    };
+
+    Message.prototype.RetrieveByStep = function (stepNo, callback) {
+        self = this;
+        tempScopeCallBack = callback;
+        MailformsApi.RetrieveByStep(this.SessionId, this.MessageClass, this.InstanceId, stepNo, retrieveByStepCallback);
+    }
+
+    Message.prototype.Save = function (scope) {
+        self = this;
+        updateFields();
+
+        tempSendCallBack = scope.AfterSave;
+        tempInstanceId = this.InstanceId;
+
+        if (this.CurrentRoute === 0) {
+            this.InstanceId = "";
+        };
+
+        if (this.To === "") {
+            this.To = this.UserEmail;
+        }
+        MailformsApi.Save(this.SessionId, prepareMessage(Media.HTML), saveCallBack);
+    }
+
+    Message.prototype.Send = function (media, callback, notification) {
+        self = this;
+        updateFields();
+
+        tempSendCallBack = callback;
+
+        switch (media) {
+            case Media.PDF:
+                MailformsApi.SendPdf(this.SessionId, prepareMessage(Media.PDF), sendCallBack, this);
+                break;
+            case Media.PDFNOTE:
+                MailformsApi.SendPdfFromHtml(this.SessionId, prepareMessage(Media.PDF), sendCallBack, this);
+                break;
+            default:
+                MailformsApi.Send(this, prepareMessage(media, notification), "", sendCallBack);
+        }
+        this.SendSequence++;
+    };
+
+    Message.prototype.Forward = function (recipient, subject, scope) {
+        self = this;
+        updateFields();
+
+        if (this.InstanceId == null || this.InstanceId === "") {
+            this.InstanceId = Instance.getInstanceID(this.UserName);
+        };
+
+
+        tempSendCallBack = scope.AfterForward;
+        tempInstanceId = this.InstanceId;
+
+        this.To = recipient;
+        this.Subject = subject;
+        this.AutoAttachDirectory = "";
+        MailformsApi.SendPdfFromHtml(this.SessionId, prepareMessage(Media.PDF), saveCallBack, this);
+        this.SendSequence++;
+    };
+
+    Message.prototype.Delete = function (callBack) {
+        MailformsApi.Delete(this.SessionId, this.Tid, callBack);
+    }
+
+    Message.prototype.GetLogonUrl = function () {
+        var href = MessageHelper.GetLogonHost() + "Logon.aspx?";
+        if (this.Tid != "") {
+            href += "tid=" + this.Tid;
+        } else {
+            href += "class=" + this.MessageFullClass;
+        }
+        return href;
+    };
+
+    Message.prototype.RedirectToLogout = function () {
+        if (MessageHelper.IsExternal()) {
+            document.location.replace(MessageHelper.GetLogoutUrl());
+        } else {
+            this.RedirectToLogon();
+        }
+    };
+
+    Message.prototype.RedirectToLogon = function () {
+        document.location.replace(this.GetLogonUrl());
+    };
+
+    Message.prototype.RedirectToWebLogon = function () {
+        document.location.replace(MessageHelper.GetLogonHost() + "Logon.aspx");
+    }
+
+
+
+    var prepareMessage = function (media, notification) {
+
+        var xml = "<?xml version='1.0'?>";
+        xml += "<d:propertyupdate xmlns:d=\"DAV:\" " +
+            "xmlns:i=\"urn:schemas:httpmail:\" xmlns:k=\"urn:schemas:mailheader:\" " +
+            "xmlns:e=\"http://schemas.microsoft.com/exchange/\" " +
+            "xmlns:n=\"http://schemas.microsoft.com/mapi/proptag/\" >";
+        xml += "<d:Set><d:prop>";
+
+        var to = self.To;
+        if (!MessageHelper.IsProduction() && self.TestRouting) {
+            to = self.UserEmail;
+        }
+
+        xml += "<k:To>" + to + "</k:To>";
+        xml += "<i:subject>" + self.Subject + "</i:subject>";
+        xml += "<n:x1000001f />";
+        xml += "<e:outlookmessageclass>" + self.MessageFullClass.replace(/\//g, ".") + "</e:outlookmessageclass>";
+
+        switch (media) {
+            case "":
+                media = Media.HTML;
+                break;
+            case Media.NOTE:
+                xml += "<i:htmldescription><![CDATA[<pre>" + notification + "</pre>]]></i:htmldescription>";
+                break;
+        }
+
+        for (var name in self.Fields) {
+            var val = self.Fields[name];
+            var stype = "";
+
+            if (val == undefined || val === "") {
+                continue;;
+            }
+
+            if (Object.prototype.toString.call(val) === "[object Date]") {
+                stype = " type=\"date\" ";
+                val = val.toISOString();
+            } else if (typeof val == "boolean") {
+                stype = " type=\"boolean\" ";
+            } else if (typeof val == "number") {
+                stype = " type=\"number\" ";
+            } else if (typeof val == "object") {
+                stype = " type=\"json\"";
+                val = "<![CDATA[" + toJSON(val) + "]]>";
+            } else {
+                val = "<![CDATA[" + val + "]]>";
+            }
+
+            xml += "<f" + name + " " + stype + ">" + val + "</f" + name + ">";
+        };
+
+
+
+        xml += "<tid>" + self.Tid + "</tid>";
+        xml += "<sendmethod>0</sendmethod>";
+        if (self.Language !== "") {
+            xml += "<language>" + self.Language + "</language>";
+        }
+        xml += "<framework>4.5.0</framework>";
+        xml += "<sendSequence>" + self.SendSequence + "</sendSequence>";
+        xml += "<CurrentRoute>" + self.CurrentRoute + "</CurrentRoute>";
+        xml += "<NextRoute>" + self.NextRoute + "</NextRoute>";
+        xml += "<InstanceId>" + self.InstanceId + "</InstanceId>";
+        xml += "<SendMedia>" + media + "</SendMedia>";
+
+        var confirmValue = "";
+        switch (self.SendConfirmationMode) {
+            case ConfirmationMode.NoConfirmation:
+                confirmValue = "0";
+                break;
+            case ConfirmationMode.SendOneConfirmation:
+                confirmValue = self.sendConfirmation;
+                self.sendConfirmation = 0;
+                break;
+            case ConfirmationMode.SendAllConfirmations:
+                confirmValue = "1";
+                break;
+        }
+        xml += "<SendConfirmationEnabled>" + confirmValue + "</SendConfirmationEnabled>";
+        xml += "<SendAsUser>" + (self.SendAsUser ? "1" : "0") + "</SendAsUser>";
+        xml += "<IsTask>" + (self.isTask ? "1" : "0") + "</IsTask>";
+        xml += "<AttachFiles>" + (self.AttachFiles ? "1" : "0") + "</AttachFiles>";
+
+        xml += "</d:prop>";
+        xml += "</d:Set>";
+        xml += "</d:propertyupdate>";
+
+        xml = xml.replace(/&/g, "&amp;");
+        xml = xml.replace(/>/g, "&gt;");
+        xml = xml.replace(/</g, "&lt;");
+        xml = xml.replace(/&/g, "&amp;");
+
+        return xml;
+    };
+
+    var authCallBack =  function (status, result) {
+        if (!status) {
+            MsgBox.Error(result, self.RedirectToLogon);
+        } else {
+            var data = fromJSON(result);
+            var hr = document.location.href;
+
+            if (data.UserName === "") {
+                self.RedirectToLogon();
+                return;
+            }
+            if (data.Redirect != "") {    
+                if (data.Redirect === "NoAccess") {
+                    MessageHelper.RedirectToNoAccess();
+                } else if (data.Redirect.substr(0, 8) === "IPM/NOTE") {
+                    hr = MessageHelper.GetLogonHost() + "Logon.aspx?class=" + data.Redirect;
+                } else {
+                    hr = MessageHelper.GetMailformsWebHost() + data.Redirect;
+                }
+                document.location.replace(hr);
+                return;
+            }
+
+            self.UserName = data.UserName;
+            self.UserEmail = data.UserEmail;
+            self.UserData = data.UserData;
+            var perm = data.Permission;
+            switch (perm) {
+                case "ReadOnly":
+                    self.ReadAccess = true;
+                    self.WriteAccess = false;
+                    break;
+                case "ReadWrite":
+                    self.ReadAccess = true;
+                    self.WriteAccess = true;
+                    break;
+                default:
+                    MessageHelper.RedirectToNoAccess();
+                    return;
+            }
+
+            if (self.Command === "NEW") {
+
+                if (self.Language !== "") {
+                    scope.CurrentLanguage = self.Language;
+                    scope.applyLanguage();
+                }  
+            }
+            tempAuthCallBack();
+        };
+    };
+
+    var saveCallBack = function (status, result) {
+        self.InstanceId = tempInstanceId;
+        if (!status) {
+            tempSendCallBack(false, result);
+        } else {
+            var r;
+            try {
+                r = fromJSON(result);
+            } catch (e) {
+                r = { Status: "Error", Result: result }
+                result = r;
+            }
+
+            if (r.Status === "OK") {
+                self.SendSequence++;
+                self.Tid = r.Tid;
+                tempSendCallBack(true, result);
+            } else {
+                tempSendCallBack(false, result);
+            }
+        }
+    };
+
+    var sendCallBack = function(status, result) {
+        if (!status) {
+            tempSendCallBack(false, result);
+        } else {
+            var r;
+            try {
+                r = fromJSON(result);
+            } catch (e) {
+                r = { Status: "Error", Result: result }
+                result = r;
+            } 
+            if (r.Status === "OK") {
+                tempSendCallBack(true, result);
+            } else {
+                tempSendCallBack(false, result);
+            }
+        }
+    };
+
+    var retrieveCallback = function (status, result) {
+        if (!status) {
+            tempAuthCallBack(false);
+        } else {
+            var r = fromJSON(result);
+            if (r.Status !== "OK") {
+                MsgBox.Error(r.Content);
+                tempAuthCallBack(false);
+                return;
+            }
+
+            var fields = {};
+
+            parseMessage(r.Content, fields, true);
+
+            if (self.Command === "COPY") {
+                self.WriteAccess = true;
+            }
+            self.SendQueqe = [];
+            self.Fields = fields;
+
+            tempRetrieveCallBack();
+        }
+    };
+
+    var retrieveByStepCallback = function (status, result) {
+        if (!status) {
+            tempScopeCallBack(null);
+        } else {
+            var r = fromJSON(result);
+            if (r != undefined) {
+                var data = [];
+                for (var row in r.Content) {
+                    var fields = {};
+                    parseMessage(r.Content[row], fields, false);
+                    data.push(fields);
+                }
+                tempScopeCallBack(data);
+            }
+        }
+    };
+
+    var isSentCallback = function(status, result) {
+        if (!status) {
+            MsgBox.Error(result);
+            tempIsSentCallback(false);
+        } else {
+            var response = fromJSON(result);
+            tempIsSentCallback(response.data);
+        }   
+    }
+
+    var parseMessage = function (result, fields, setMessage) {
+
+        var xml = Xml.getDocument(result);
+        var nodes = xml.documentElement.getElementsByTagName("d:prop"); // IE
+        if (nodes.length == 0) {
+            nodes = xml.documentElement.getElementsByTagName("prop"); // Chrome and Safari
+        }
+
+        var tid = "";
+        var node = nodes[0];
+
+        for (var i = 0; i < node.childNodes.length; i++) {
+
+            var name = node.childNodes[i].nodeName;
+            var value = node.childNodes[i].textContent;
+
+            if (name === 'tid') {
+                tid = value;
+            }
+
+            if (value == 'null') {
+                continue;
+            }
+            var atype = node.childNodes[i].attributes["type"];
+
+            if (name.substr(0, 1) === "f") {
+                name = name.substr(1);
+                if (atype != null) {
+                    switch (atype.value) {
+                        case "boolean":
+                            fields[name] = value === "true" ? true : false;
+                            break;
+                        case "number":
+                            fields[name] = parseFloat(value);
+                            break;
+                        case "date":
+                            fields[name] = new Date(value);
+                            break;
+                        case "json":
+							var obj = fromJSON(value);
+							for( var index = 0; index < scope.DynamicTables.length; index++){
+								if (scope.DynamicTables[index] === name && scope["parse"+name] !== undefined){
+									scope["parse"+name](obj);
+								}
+							}
+                            fields[name] = obj;
+                            break;
+                        default:
+                            fields[name] = value;
+                            break;
+                    };
+                } else {
+                    fields[name] = value;
+                };
+
+            } else {
+
+                if (setMessage) {
+
+                    switch (name) {
+                        case "e:outlookmessageclass":
+                            self.MessageFullClass = value;
+                            break;
+                        case "n:x1000001f":
+                            break;
+                        case "k:To":
+                            self.To = value;
+                            break;
+                        case "i:subject":
+                            self.Subject = value;
+                            break;
+                        case "NextRoute":
+                            self.CurrentRoute = self.NextRoute = parseInt(value);
+                            break;
+                        case "InstanceId":
+                            self.InstanceId = value;
+                            break;
+                        case "language":
+                            if (scope.CurrentLanguage !== value) {
+                                scope.CurrentLanguage = value;
+                                scope.applyLanguage();
+                            }
+                            break;
+                    };
+                }
+            };
+        };
+
+        if (setMessage) {
+			if (self.WriteAccess) {
+				self.WriteAccess = !self.IsReadOnly();
+			}
+            if (self.IsCopy) {
+                self.IsCopy = false;
+                /* the 'tid' here will be empty string or a 
+                new draft tid if attachments were meant to be copied*/
+                self.Tid = tid;
+            }
+        }
+    };
+
+    return Message;
+})();
+
+function Media() { }
+Media.PDF = "pdf";
+Media.HTML = "html";
+Media.NOTE = "note";
+Media.PDFNOTE = "pdfnote";
+Media.NOMAIL = "nomail";

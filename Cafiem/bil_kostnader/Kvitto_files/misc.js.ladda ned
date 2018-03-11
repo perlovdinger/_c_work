@@ -1,0 +1,1183 @@
+function Configuration() { };
+Configuration.MaxUploadSize = 10 * 1024 * 1024; // 10MB in bytes. 0 = no limit
+
+function MessageHelper() { };
+
+MessageHelper.ParseHttpRequest = function(message) {
+    if (message.Command != "" && message.Command != "undefined") {
+        return;
+    }
+
+    var request = document.location.href.toUpperCase().split("?")[1].split("&");
+
+    for (var i = 0; i < request.length; i++) {
+        var req = request[i].split("=");
+
+        switch (req[0]) {
+            case QueryParam.Command:
+                message.Command = req[1];
+                break;
+            case QueryParam.Class:
+                message.MessageFullClass = req[1];
+                break;
+            case QueryParam.Tid:
+                message.Tid = req[1];
+                break;
+            case QueryParam.Store:
+                message.Store = req[1];
+                break;
+            case QueryParam.Language:
+                message.Language = req[1];
+            default:
+                break;
+        }
+    }
+}
+
+MessageHelper.RedirectToNoAccess = function() {
+    document.location.replace(MessageHelper.GetLogonHost() + "NoAccess.aspx?class=" + MessageHelper.GetMessageClass());
+}
+
+MessageHelper.GetMessageClass = function() {
+    var url = document.location.href.toUpperCase();
+
+    var path = url.split("?")[0];
+    var parts = path.split("/");
+
+    var part = parts[parts.length - 1];
+    var pos = part.lastIndexOf("_");
+    var cls = part.substring(0, pos);
+
+    return cls;
+};
+
+MessageHelper.GetCurrentHost = function() {
+    return document.location.protocol + "//" + document.location.hostname + "/";
+};
+
+MessageHelper.IsProduction = function () {
+    var host = document.location.hostname.toLowerCase();
+    return host === "forms.volvo.net" || host === "securemobile.volvo.com";
+};
+
+MessageHelper.IsExternal = function () {
+    var host = document.location.hostname.toLowerCase();
+    return host.substr(0, 12) === "securemobile";
+};
+
+MessageHelper.GetLogoutUrl = function() {
+    if (MessageHelper.IsExternal()) {
+        if (MessageHelper.IsProduction()) {
+            return "https://federate.volvo.com/idp/startSLO.ping?TargetResource=https://securemobile.volvo.com/pa/oidc/logout";
+        } else {
+            return "https://federate-qa.volvo.com/idp/startSLO.ping?TargetResource=https://securemobile-qa.volvo.com/pa/oidc/logout";
+        }
+    }
+};
+
+MessageHelper.GetLogonHost = function() {
+    if (MessageHelper.IsExternal()) {
+        return MessageHelper.GetWebApiHost();
+    } else {
+        return MessageHelper.GetMailformsWebHost();
+    }
+}
+
+MessageHelper.GetMailformsWebHost = function () {
+    if (MessageHelper.IsExternal()) {
+        return MessageHelper.GetCurrentHost() + "VolvoForms/Web/";
+    }
+	return MessageHelper.GetCurrentHost() + "Mailforms4/MailformsWeb/";
+};
+
+MessageHelper.GetWebApiHost = function () {
+	return MessageHelper.GetCurrentHost() + "VolvoForms/API/";
+};
+
+MessageHelper.GetParmaBrowser = function () {
+    return MessageHelper.GetCurrentHost() + "VolvoForms/ParmaCache/ParmaCache.asmx";
+};
+
+MessageHelper.GetAttachmentsService = function() {
+    return MessageHelper.GetWebApiHost() + "Attachments.asmx";
+};
+
+MessageHelper.GetSapHRService = function() {
+    return MessageHelper.GetWebApiHost() + "SapHR.asmx";
+};
+
+MessageHelper.GetStampsService = function() {
+    return MessageHelper.GetCurrentHost() + "MailformsStamp/Stamps.asmx";
+}
+
+MessageHelper.GetAdminToolService = function() {
+    return MessageHelper.GetWebApiHost() + "AdminToolWebService.asmx";
+}
+
+MessageHelper.GetMFAuthorizationManagementService = function () {
+    return MessageHelper.GetWebApiHost() + "MFAuthorizationManagementService.asmx";
+}
+
+MessageHelper.GetEmployeeService = function () {
+    return MessageHelper.GetWebApiHost() + "Employee.asmx";
+};
+
+MessageHelper.GetAboutWebService = function() {
+    return MessageHelper.GetWebApiHost() + "About.asmx";
+}
+
+MessageHelper.GetVCOMService = function () {
+    return MessageHelper.GetCurrentHost() + "MailformsVCOM/vcom.asmx";
+}
+
+// A proxy web service (ASMX) between the SharePointList and this client JS application.
+// It must be hosted within the same domain as the actual MailfForm, 
+MessageHelper.GetSPClientService = function () {
+    return MessageHelper.GetWebApiHost() + "SPClient.asmx";
+}
+
+MessageHelper.GetSessionId = function () {
+
+    var regexp = new RegExp("(?:^MailformsSession|; \s*MailformsSession)=(.*?)(?:;|$)", "g");
+    var result = regexp.exec(document.cookie);
+    return (result === null) ? null : result[1];
+};
+
+MessageHelper.ClearSessionId = function () {
+    document.cookie = "MailformsSession=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    document.cookie = "PA.mailforms=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    document.cookie = "MailformsUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+};
+
+MessageHelper.HasAuthCookie = function () {
+    if (!MessageHelper.IsExternal()) {
+        return true; // internal acceess doesn't require auth cookie
+    }
+
+    var regexp = new RegExp("(?:^PA.mailforms|; \s*PA.mailforms)=(.*?)(?:;|$)", "g");
+    var result = regexp.exec(document.cookie);
+    return !(result === null);
+};
+
+
+function Xml() {
+
+    var xmlDoc;
+    var self = this;
+
+    Xml.prototype.getXml = function (text) {
+        if (text.substring(0, 1) != "<") {
+            return null;
+        }
+
+        xmlDoc = null;
+        if (window.DOMParser) {
+            var parser = new DOMParser();
+            xmlDoc = parser.parseFromString(text, "text/xml");
+        } else { // Internet Explorer
+            xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = false;
+            xmlDoc.loadXML(text);
+        }
+        return xmlDoc;
+    };
+
+    Xml.prototype.getNode = function(tag) {
+        var nodes = self.getNodes(tag);
+        if (nodes.length > 0) {
+            return nodes[0];
+        } else {
+            return null;
+        };
+    };
+
+    Xml.prototype.getNodes = function (tag) {
+        return xmlDoc.getElementsByTagName(tag);
+    };
+
+    Xml.prototype.setNode = function (parent, tag, val) {
+        var node = xmlDoc.createElement(tag);
+        node.textContent = val;
+        parent.appendChild(node);
+        return node;
+    };
+
+    Xml.prototype.getByTag = function (tag) {
+        var nodes = self.getNodes(tag);
+        if (nodes.length > 0) {
+            return nodes[0];
+        } else {
+            return null;
+        }
+    };
+
+    Xml.prototype.getTextContentByTag = function(tag) {
+        var node = self.getByTag(tag);
+        if (node == null) {
+            return "";
+        } else {
+            return node.textContent;
+        }
+    }
+
+    Xml.prototype.getText = function () {
+        return (new XMLSerializer()).serializeToString(xmlDoc);
+    }
+};
+
+Xml.getXml = function(text) {
+    var x = new Xml();
+    if (x.getXml(text) != null) {
+        return x;
+    } else {
+        return null;
+    }
+};
+
+Xml.getDocument = function (text) {
+    var x = new Xml();
+    var d = x.getXml(text);
+    return d;
+};
+
+
+
+
+/**************************************************
+* Function to generate Mailforms form instance ID *
+* 2006-01-09 Mateusz Madejski                     *
+*                                                 *
+* Instance ID format:                             *
+*    UUUUUUUUDDDDDDDDTTTTTTTTT                    *
+* where                                           *
+*    U - user ID (filled with "-" up to 8 chars)  *
+*    D - date YYYYMMDD (8 chars)                  *
+*    T - time HHMMSSXXX (9 chars)                 *
+*                    |__ milliseconds             *
+*    (total 25 characters)                        *
+\*************************************************/
+function Instance() {
+
+    Instance.prototype.getInstanceID = function (userId) {
+        var sUID;
+        var sysDate;
+        var sDate;
+        var sTime;
+        var nPos;
+
+        //user ID
+        if (userId == null) {
+            sUID = "";
+        } else {
+            sUID = userId;
+            //cut off domain name, if any
+            nPos = sUID.indexOf("\\");
+            if (nPos >= 0) {
+                sUID = sUID.substr(nPos + 1, sUID.length - nPos - 1);
+            }
+
+            //truncate to 8 characters
+            sUID = sUID.substr(0, 8).toUpperCase();
+        }
+
+        //fill with "-" up to 8 characters if shorter
+        while (sUID.length < 8) {
+            sUID += "-";
+        }
+
+        //get current date + time
+        sysDate = new Date();
+        sDate = sysDate.getFullYear().toString() + leadingZeroes(sysDate.getMonth() + 1, 2) + leadingZeroes(sysDate.getDate(), 2);
+        sTime = leadingZeroes(sysDate.getHours(), 2) + leadingZeroes(sysDate.getMinutes(), 2) + leadingZeroes(sysDate.getSeconds(), 2) + leadingZeroes(sysDate.getMilliseconds(), 3);
+
+        //instance ID
+        return sUID + sDate + sTime;
+    };
+
+    //concatenate a value with zeroes in front up to specified length
+    var leadingZeroes = function (value, n) {
+        var temp = value.toString();
+        while (temp.length < n) {
+            temp = "0" + temp;
+        }
+        return temp;
+    }
+
+};
+
+Instance.getInstanceID = function(userId) {
+    var ins = new Instance();
+    return ins.getInstanceID(userId);
+};
+
+function ConfirmationMode() {}
+ConfirmationMode.NoConfirmation = 0;
+ConfirmationMode.SendOneConfirmation = 1;
+ConfirmationMode.SendAllConfirmations = 2;
+
+
+function QueryParam() {}
+QueryParam.Command = "COMMAND";
+QueryParam.Class = "CLASS";
+QueryParam.Tid = "OBJ";
+QueryParam.Store = "STORE";
+QueryParam.Language = "LANG";
+
+
+function Loading() {
+
+    Loading.prototype.AddLoadingProgress = function() {
+        var divProgress = document.getElementById("divProgress");
+        if (divProgress == null) {
+            divProgress = document.createElement("div");
+            divProgress.id = "divProgress";
+            divProgress.className = "cProgress";
+            var loadingText = document.createElement("div");
+            loadingText.id = "divProgressLoadingText";
+            loadingText.className = "cProgressLoadingText";
+            loadingText.appendChild(document.createTextNode("Loading ..."));
+            divProgress.appendChild(loadingText);
+            document.body.insertBefore(divProgress, document.body.firstChild);
+        }
+    };
+
+    Loading.prototype.RemoveLoadingProgress = function() {
+        var progress = document.getElementById("divProgress");
+        if (progress != null) {
+            progress.style.display = "none";
+        }
+
+        var link = document.getElementById("lnkLogout");
+        if (link.innerHTML.length == 0) {
+            link.onclick = function() {
+                MailformsApi.Logout();
+                //MessageHelper.ClearSessionId();
+                //msg.RedirectToLogon();
+            };
+            var msg = GetScopeMessage();
+            var us = msg.UserName;
+            if (us.substr(0, 4).toUpperCase() == "XDS\\") {
+                us = us.substr(5);
+            }
+            link.appendChild(document.createTextNode("Logout " + us));
+
+            if (!MessageHelper.IsProduction()) {
+                var divInfo = document.getElementById("serverInfo");
+                divInfo.textContent = "Please be advised that you are logged in on development server.";
+            };
+        };
+    };
+}
+
+function Common() {
+
+    var tempCallBack = null;
+
+    Common.prototype.DLtoaliases = function (emails, resultType, callback) {
+
+        var type = "";
+        switch (resultType) {
+            case "mail":
+                type = "m";
+                break;
+            case "alias":
+                type = "a";
+                break;
+            default:
+                MsgBox.Info("ResultType should be either 'mail' or 'alias'.");
+                return;
+        }
+
+        tempCallBack = callback;
+        MailformsApi.Resolve(MessageHelper.GetSessionId(), emails, resCallBack);
+    };
+
+    var resCallBack = function (status, result) {
+        if (!status) {
+            tempCallBack(false, result);
+        } else {
+            var xml = null;
+            try {
+                xml = Xml.getXml(result);
+            } catch (e) {
+                tempCallBack(false, result);
+                return;
+            }
+            tempCallBack(true, result);
+        }
+    };
+
+    Common.prototype.GetApprover = function (user, callback) {
+        var reg = /CN=(.*?),/g;
+        var manId = user.Manager;
+        var matches = reg.exec(user.Manager);
+        if (matches) {
+            manId = matches[1];
+        };
+
+        if (manId !== "") {
+            LdapClient.FindById(manId, callback);
+        } else {
+            callback(null);
+        }
+    };
+
+    Common.prototype.IsUserInPPDL = function(userId, ppdl, callback) {
+        Common.DLtoaliases(ppdl, "alias",
+            function (status, data) {
+                var list = [];
+                if (status) {
+                    list = angular.fromJson(data);
+                }
+
+                callback(
+                    ArrayUtil.any(list,
+                        function(user) {
+                            return user.DisplayName === userId;
+                        }));
+            });
+    }
+}
+
+Common.GetApprover = function (user, callback) {
+    var cm = new Common();
+    cm.GetApprover(user, callback);
+}
+
+Common.DLtoaliases = function (emails, resultType, callback) {
+    var cm = new Common();
+    cm.DLtoaliases(emails, resultType, callback);
+}
+
+Common.IsUserInPPDL = function(userId, ppdl, callback) {
+    var cm = new Common();
+    cm.IsUserInPPDL(userId, ppdl, callback);
+}
+
+
+
+function RecordsetClient() {
+    var client = new WsClient(MessageHelper.GetWebApiHost() + "RecordsetWebService.asmx");
+    var soap, method;
+    var xmlns = "http://volvo.com/Mailforms/Recordset";
+
+    var tempCallBack = null;
+    var self = this;
+
+    var parseResponse = function(response) {
+        if (response == null) {
+            return [];
+        };
+        if (response.substring(0, 1) !== "<") {
+            MsgBox.Error(response);
+            return [];
+        };
+
+        var xml = Xml.getXml(response);
+        var records = xml.getNodes("Table");
+        self.Fields = [];
+
+        var data = [];
+        for (var i = 0; i < records.length; i++) {
+            data[i] = new Object();
+            for (var j = 0; j < records[i].childNodes.length; j++) {
+                if (records[i].childNodes[j].nodeType === 1) {
+                    var name = records[i].childNodes[j].localName;
+                    var val = records[i].childNodes[j].textContent;
+                    data[i][name] = val;
+                }
+            }
+        };
+
+        return data;
+    }
+
+    var GetDataCallback = function (response) {
+
+        if (response.status != 200) {
+            tempCallBack(false, response.status + " " + response.statusText + " " + response.responseText);
+            return;
+        };
+
+        var r = WsClient.parseResponse(response.responseText, method);
+        var data = parseResponse(r);
+
+        tempCallBack(true, data, self.args[0]);
+    };
+
+    RecordsetClient.prototype.SaveArguments = function () {
+        self.args = arguments;
+    }
+
+    RecordsetClient.prototype.GetSqlData = function (profile, statement, callback) {
+        tempCallBack = callback;
+        method = "GetData";
+        soap = new SoapEnvelope(method, xmlns);
+
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("sql", PlainEncrypt(statement), true);
+        soap.add("profile", profile);
+
+        client.Call(soap, GetDataCallback);
+    }
+
+}
+
+RecordsetClient.GetSqlData = function (profile, statement, callback) {
+    var cm = new RecordsetClient();
+    cm.SaveArguments(arguments);
+    cm.GetSqlData(profile, statement, callback);
+}
+
+
+function LdapClient() {
+    var client = new WsClient(MessageHelper.GetWebApiHost() + "Ldap.asmx");
+    var tempCallback = null;
+    var xmlns = "http://volvo.com/Mailforms/Ldap";
+    var method, soap;
+    var self = this;
+
+    var parseResult = function (status, result) {
+        if (status && result != null) {
+            var entries = angular.fromJson(result);
+            tempCallback(entries, status, self.args[0]);
+        } else {
+            tempCallback(result, status, self.args[0]);
+        }
+    }
+
+    var processResponse = function (response) {
+        if (response.status !== 200) {
+            parseResult(false, response.status + " " + response.statusText);
+        } else {
+            parseResult(true, WsClient.parseResponse(response.responseText, method, false));
+        }
+    }
+
+    LdapClient.prototype.Find = function (source, maxCount, displayName, firstName, lastName, title, mail, company, department, office, city, securityId, sapId, all, callback) {
+        tempCallback = callback;
+        method = "Find";
+        soap = new SoapEnvelope(method, xmlns);
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("source", source);
+        soap.add("maxCount", maxCount);
+        soap.add("displayName", displayName);
+        soap.add("firstName", firstName);
+        soap.add("lastName", lastName);
+        soap.add("title", title);
+        soap.add("mail", mail);
+        soap.add("company", company);
+        soap.add("department", department);
+        soap.add("office", office);
+        soap.add("city", city);
+        soap.add("securityId", securityId);
+        soap.add("sapId", sapId);
+        soap.add("all", all);
+        
+        client.Call(soap, processResponse);
+    }
+
+    LdapClient.prototype.FindById = function (source, uid, callback) {
+        tempCallback = callback;
+        method = "FindById";
+        soap = new SoapEnvelope(method, xmlns);
+        soap.add("sessionId", MessageHelper.GetSessionId());
+        soap.add("source", source);
+        soap.add("uid", uid);
+        
+        client.Call(soap, processResponse);
+    }
+
+    LdapClient.prototype.SaveArguments = function () {
+        this.args = arguments;
+    }
+}
+
+LdapClient.Find = function (source, maxCount, displayName, firstName, lastName, title, mail, company, department, office, city, securityId, sapId, all, callback) {
+    var ldap = new LdapClient();
+    ldap.SaveArguments(Array.prototype.slice.call(arguments).slice(14));
+    return ldap.Find(source, maxCount, displayName, firstName, lastName, title, mail, company, department, office, city, securityId, sapId, all, callback);
+}
+
+LdapClient.FindById = function (uid, callback, domain) {
+    var message = GetScopeMessage();
+    if (uid === message.UserName && message.UserData != null && domain !== LdapClient.Domains.VCD) {
+        callback(message.UserData);
+    } else {
+        var ldap = new LdapClient();
+        var ad = domain || LdapClient.Domains.VCN;
+        ldap.SaveArguments(Array.prototype.slice.call(arguments).slice(2));
+        ldap.FindById(ad, uid, callback);
+    }
+}
+
+LdapClient.Domains = {
+    VCN: "VCN",
+    VCD: "VCD",
+    XSN: "XSN"
+}
+
+
+function GetScope() {
+    return angular.element(document.querySelector("[ng-controller=mailformController]")).scope();
+}
+
+function GetScopeMessage() {
+    return GetScope().Message;
+}
+
+function GetScopeFields() {
+    return GetScope().Fields;
+}
+
+function GetScopeObject(field, value) {
+    var data = document.querySelectorAll("[ng-model=\"Fields." + field + "\"]");
+    if (value == null && data.length > 0) {
+        return data[0];
+    } else {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].value == value) {
+                return data[i];
+            }
+        }
+    }
+    return null;
+}
+
+function GetScopeRadio(field) {
+    var data = document.querySelectorAll("[ng-model=\"Fields." + field + "\"]");
+    var value = GetScopeFields()[field];
+    if (value == undefined) {
+        var empty = { innerText: "" }; // prevent null reference using innerText property
+        return empty;
+    }
+
+    if (data.length == 1) {
+        return data[0];
+    } else {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].attributes["btn-radio"].value == "'" + value + "'") {
+                return data[i];
+            }
+        }
+    }
+    return null;
+}
+
+function SetOnClick(query, delegate) {
+    var objs = document.querySelectorAll(query);
+    for (var i in objs) {
+        objs[i].click = delegate;
+    }
+}
+
+function AdjustTextArea(oTextarea, nMinHeight) {
+    if (oTextarea != null) {
+        if (oTextarea.scrollHeight != oTextarea.offsetHeight) {
+            var h = oTextarea.scrollHeight + oTextarea.offsetHeight - oTextarea.clientHeight;
+            var sh = h.toString() + "px";
+            oTextarea.style.height = sh;
+        }
+    }
+}
+
+function Translate(label) {
+    var scope = GetScope();
+    return scope.Labels[label];
+}
+
+function ToBase64(file) {
+    var array = new Uint8Array(file);
+    var chunk = 32 * 1024;
+
+    var c = [];
+    for (var i = 0; i < array.length; i += chunk) {
+        c.push(String.fromCharCode.apply(null, array.subarray(i, i + chunk)));
+    }
+    var base64 = btoa(c.join(""));
+
+    return base64;
+}
+
+function padLeft(length, str) {
+    return Array(length - str.length + 1).join(" ") + str;
+};
+
+function padRight(length, str) {
+    return str + Array(length - str.length + 1).join(" ");
+};
+
+function padCenter(length, str) {
+    var left = parseInt(((length - str.length) / 2).toString());
+    return Array(left).join(" ") + str;
+};
+
+function FormatNote(text, width, align) {
+    if (text == null) {
+        text = "";
+    }
+	
+	if (typeof(text) !== "string") {
+		text = text.toString();
+	}
+	
+    text = text.substr(0, width);
+    switch (align) {
+        case 1: // left
+            return padRight(width, text);
+        case 2: // center
+            return padCenter(width, text);
+        case 3: // right
+            return padLeft(width, text);
+        case 4: // justified
+            return padLeft(width, text);
+	}
+}
+
+/* Thanks to CSS Tricks for pointing out this bit of jQuery
+http://css-tricks.com/equal-height-blocks-in-rows/
+It's been modified into a function called at page load and then each time the page is resized. One large modification was to remove the set height before each new calculation. */
+function equalHeight (container) {
+
+    var currentTallest = 0;
+    var rowDivs = new Array();
+    for (var node in container.childNodes) {
+        var el = container.childNodes[node];
+        if (el.nodeType != 1) {
+            continue;
+        }
+        el.style.height = "auto";
+        rowDivs.push(el);
+        currentTallest = (currentTallest < el.clientHeight) ? (el.clientHeight) : (currentTallest);
+    };
+
+    var sh = currentTallest.toString() + "px;";
+
+    for (var currentDiv = 0 ; currentDiv < rowDivs.length ; currentDiv++) {
+        rowDivs[currentDiv].style.minHeight = sh;
+    };
+
+};
+
+/* Extend Date prototype */
+Date.prototype.getWeek = function() {
+    var today = new Date(+this);
+    var janone = new Date(today.getFullYear(), 0, 1);
+    return Math.ceil((((today - janone) / 86400000) + janone.getDay() + 1) / 7);
+}
+
+Date.prototype.addDays = function(days) {
+    var dat = new Date(this.valueOf());
+    if (days == parseInt(days)) {
+        dat.setDate(dat.getDate() + parseInt(days));
+    }
+    return dat;
+}
+
+Date.prototype.addMonths = function(months) {
+    var date = new Date(this.valueOf());
+    if (months == parseInt(months)) {
+        date.setMonth(date.getMonth() + parseInt(months));
+    }
+    return date;
+}
+
+Date.prototype.toShortString = function () {
+    var day = this.getDate();
+    var month = this.getMonth() + 1;
+    var year = this.getFullYear();
+    return year + "-" + pad(month, 2) + "-" + pad(day,2);
+}
+
+/* Extend String prototype */
+String.prototype.contains = function(searchvalue) {
+    return this.search(searchvalue) > -1;
+}
+
+String.empty = "";
+
+/* Utils */
+
+function StringUtil() {}
+
+StringUtil.contains = function(text, search, ignoreCase) {
+    if (ignoreCase) {
+        text = text.toUpperCase();
+        search = search.toUpperCase();
+    }
+    return text.search(search) > -1;
+}
+
+
+function ArrayUtil() { }
+
+ArrayUtil.any = function(array, test) {
+    for (var index = 0; index < array.length; index++) {
+        if (test(array[index])) return true;
+    }
+    return false;
+}
+
+ArrayUtil.all = function (array, test) {
+    for (var index = 0; index < array.length; index++) {
+        if (!test(array[index])) return false;
+    }
+    return true;
+}
+
+ArrayUtil.forEach = function(array, func) {
+    if (!func || !array) return;
+    for (var index = 0; index < array.length; index++) {
+        func(array[index]);
+    }
+}
+
+ArrayUtil.cast = function(array, columns) {
+    if (!array && !columns && columns.length > 0) return [];
+    var out = [];
+    for (var index = 0; index < array.length; index++) {
+        if (columns.length > 1) {
+            var obj = {};
+            for (var col in columns) {
+                obj[col] = array[index][col];
+            }
+            out[index] = obj;
+        } else {
+            out[index] = array[index][columns[0]];
+        }
+    }
+    return out;
+}
+
+
+/* Pad integers */
+function pad(number, length) {
+    var s = "" + number;
+    while (s.length < length) {
+        s = "0" + s;
+    }
+    return s;
+}
+
+/* Check if Field is Dirty */
+function isDirty(fieldValue, resetValue) {
+    return fieldValue != undefined && fieldValue !== "" && fieldValue !== resetValue;
+}
+
+/* Return value of property or undefined if object is null*/
+function prop(object, property) {
+    return (object == null) ? undefined : object[property];
+}
+
+/* Return velue of property or empty string if object is null*/
+function prope(object, property) {
+    return prop(object, property) || "";
+}
+
+/* Return value of field (or property) if object exists 
+   Return empty string in other case */
+function Value(field, property) {
+    if (property) {
+        return prope(field, property);
+    }
+    return field || "";
+}
+
+function addSpace(data, length) {
+    while (data.length < length) {
+        data += " ";
+    }
+    return data;
+}
+
+function isReadonlyControl(id) {
+    var element = document.getElementById(id);
+    if (element == null) return true;
+    var isReadonly = element.hasAttribute("readonly") || element.hasAttribute("disabled");
+    return isReadonly;
+};
+
+function ComboDefinition(name) {
+
+    ComboDefinition.prototype.name = "";
+    ComboDefinition.prototype.values = [];
+    ComboDefinition.prototype.valueField = "";
+    ComboDefinition.prototype.textField = "";
+    ComboDefinition.prototype.table = "";
+    ComboDefinition.prototype.fields = "";
+    ComboDefinition.prototype.whereCondition = null;
+    ComboDefinition.prototype.orderField = null;
+    ComboDefinition.prototype.multilanguage = false;
+    ComboDefinition.prototype.autoSelect = null;
+    ComboDefinition.prototype.type = ComboDefinition.Types.SQL;
+
+    this.name = name;
+
+    ComboDefinition.prototype.getById = function(value) {
+        for (var i = 0; i < this.values.length; i++) {
+            if (this.values[i][this.valueField] == value) {
+                return this.values[i];
+            }
+        }
+        return undefined;
+    }
+
+    ComboDefinition.prototype.getByText = function(value) {
+        for (var i = 0; i < this.values.length; i++) {
+            if (this.values[i][this.textField] == value) {
+                return this.values[i];
+            }
+        }
+        return undefined;
+    }
+
+    ComboDefinition.prototype.fillSelectedValue = function(callback) {
+        if (scope.Fields[this.name]) {
+            this.values = [];
+            this.values.splice(0, 0, scope.Fields[this.name]);
+        }
+
+        if (callback) {
+            callback();
+        }
+    }
+
+    ComboDefinition.prototype.fillAllValues = function(callback) {
+        if (!scope.Message.WriteAccess) {
+            this.fillSelectedValue(callback);
+        }
+
+        var self = this;
+
+        switch (this.type) {
+            case ComboDefinition.Types.SQL:
+                RecordsetClient.GetSqlData("MailformsPublic", this.buildStatement(), fillComboFromRs, this, callback);
+                break;
+            case ComboDefinition.Types.ArrayOfObjects:
+                checkAndSetAutoSelect(this, callback);
+                break;
+            case ComboDefinition.Types.SPList:
+                SpListClient.GetSPListData(this.table + "?$select=" + this.fields, function(items) {
+                    fillCombo(self, items, callback);
+                });
+                break;
+            default:
+                RecordsetClient.GetSqlData("MailformsPublic", this.buildStatement(), fillComboFromRs, this, callback);
+                break;
+        }
+        
+    }
+
+    ComboDefinition.prototype.buildStatement = function() {
+        var statement = "SELECT ";
+        if (this.fields.length > 0) {
+            statement += this.fields;
+        } else {
+            statement += this.valueField;
+            if (this.multilanguage) {
+                for (var i in scope.Languages) {
+                    var lang = scope.Languages[i];
+                    statement += ", " + this.textField + "_" + lang;
+                }
+            } else if (this.textField != this.valueField) {
+                statement += ", " + this.textField;
+            }
+        }
+
+        statement += " FROM " + this.table;
+
+        if (this.whereCondition != null && this.whereCondition != "") {
+            statement += " WHERE " + this.whereCondition();
+        }
+        if (this.orderField != null && this.orderField != "") {
+            statement += " ORDER BY " + this.orderField;
+        }
+        return statement;
+    }
+
+    var fillComboFromRs = function (status, values, args) {
+        if (!status) {
+            scope.ErrorMessage = values;
+            return;
+        }
+
+        var combo = args[3];
+        var callback = args[4];
+
+        if (combo.multilanguage) {
+            for (var i in values) {
+                values[i][combo.textField] = values[i][combo.textField + "_" + scope.CurrentLanguage];
+            }
+        }
+
+        combo.values = values;
+
+        scope.$apply(function() {
+        checkAndSetAutoSelect(combo, callback);
+		});
+    };
+
+    var fillCombo = function (combo, items, callback) {
+        
+        if (combo.multilanguage) {
+            for (var i in items) {
+                values[i][combo.textField] = items[i][combo.textField + "_" + scope.CurrentLanguage];
+            }
+        }
+
+        combo.values = items;
+
+        scope.$apply();
+
+        checkAndSetAutoSelect(combo, callback);
+    };
+
+    var checkAndSetAutoSelect = function(combo, callback) {
+        if (combo.values.length > 0 && combo.autoSelect && !scope.Fields[combo.name]) {
+            switch (combo.autoSelect) {
+                case ComboDefinition.SelectFirst:
+                    scope.Fields[combo.name] = combo.values[0];
+                    break;
+                case ComboDefinition.SelectIfOne:
+                    if (combo.values.length == 1) {
+                        scope.Fields[combo.name] = combo.values[0];
+                    }
+            }
+        }
+
+        if (callback != null) {
+            callback();
+        }
+    }
+};
+
+ComboDefinition.SelectFirst = "First";
+ComboDefinition.SelectIfOne = "If one";
+
+ComboDefinition.Types = function () { };
+ComboDefinition.Types.Manual = "Manual";
+ComboDefinition.Types.SQL = "SQL";
+ComboDefinition.Types.ArrayOfObjects = "Array";
+ComboDefinition.Types.SPList = "SP";
+
+
+function Enums() { };
+
+Enums.Unknown = 0;
+Enums.Yes = 1;
+Enums.No = 2;
+
+
+// MRU List deninition
+var MruDefinition = function(mruName, mruField) {
+    
+    function MruDefinition(name, field) {
+        this.name = name;
+        this.field = field;
+        var newValues = [];
+        var self = this;
+
+        MruDefinition.prototype.init = function() {
+            var formClass = scope.Message.MessageClass;
+            var userId = scope.Message.UserName;
+
+            var callback = function(status, data) {
+                self.values = [];
+                for (var i in data) {
+                    self.values.push(data[i].Value);
+                }
+            }
+
+            RecordsetClient.GetSqlData("MailformsPublic",
+                "EXEC [dbo].[MRUGet] '" + formClass + "', '" + this.name + "', '" + userId + "'",
+                callback);
+        };
+
+        MruDefinition.prototype.add = function (toAdd) {
+            newValues.push(toAdd);
+            this.values.push(toAdd);
+        };
+
+        MruDefinition.prototype.save = function () {
+            if (this.field != undefined && isDirty(scope.Fields[this.field], "")) {
+                newValues.push(scope.Fields[this.field]);
+            }
+
+            var formClass = scope.Message.MessageClass;
+            var userId = scope.Message.UserName;
+
+            var soap = new SoapEnvelope();
+            soap.body = "<SaveMru xmlns=\"http://volvo.com/Mailforms/MailformsApi\">" +
+                "<formClass>" +
+                formClass +
+                "</formClass>" +
+                "<userId>" +
+                userId +
+                "</userId>" +
+                "<mruName>" +
+                this.name +
+                "</mruName>" +
+                "<values>" +
+                angular.toJson(newValues) +
+                "</values>" +
+                "</SaveMru>";
+
+            var client = new WsClient(MessageHelper.GetWebApiHost() + "MailformsApi.asmx");
+            client.Call(soap.toString(),
+                function (result) {
+                    // empty callback
+                });
+        };
+
+    };
+
+    MruDefinition.prototype.field = String.empty;
+    MruDefinition.prototype.name = String.empty;
+    MruDefinition.prototype.values = [];
+    MruDefinition.prototype.newValues = [];
+
+    return new MruDefinition(mruName, mruField);
+};
+
+
+function PlainEncrypt(plainText) {
+    if (typeof CryptoJS !== "undefined") {
+        var key = CryptoJS.enc.Utf8.parse('4B08-B22E-E9977E');
+        var iv = CryptoJS.enc.Utf8.parse('4B08-B22E-E9977E');
+        var result = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(plainText), key,
+            {
+                keySize: 128 / 8,
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+        return result;
+    }
+    return plainText;
+}
+
+var MfDate = (function() {
+
+    var object = null;
+
+    //constructor
+    var MfDate = function (date) {
+        if (date === "undefined") {
+            object = new Date();
+        }
+        if (Object.prototype.toString.call(date) === "[object Date]") {
+            object = date;
+        }
+    }
+
+    MfDate.prototype.toString = function () {
+        return object.getFullYear() + "-" + pad(object.getMonth() + 1,2) + "-" + pad(object.getDate(), 2);
+    }
+
+    MfDate.prototype.toLocaleString = function() {
+        return this.toString();
+    }
+
+    return MfDate;
+})();
+

@@ -1,0 +1,454 @@
+var scope;
+
+function SetupController() {
+	scope = GetScope();
+	var Fields = scope.Fields;
+	// Variables
+
+	scope.About =
+	{
+		Title: "Tjänstekörning med privatbil",
+		Version: "18.0",
+		Description: "",
+		Owners: [
+			{
+				Name: "Anna Jarnving",
+				Email: "anna.jarnving@volvo.com"
+			},
+		]
+	};
+
+	scope.Dates = ['AttestDate','SpecOfTripDatePicker'];
+	scope.DynamicTables = ['SpecOfTripTable','TripTable'];
+	scope.Fields['SpecOfTripTable'] = [];
+	scope.Fields['TripTable'] = [];
+	scope.DateFormat = 'yyyy-MM-dd';
+	scope.WeekFormat = 'yyyyww';
+	scope.DatetimeFormat = 'yyyy-MM-dd HH:mm:ss';
+	scope.DatePickerOptions = { startingDay: 1 }
+	scope.SaveAndCopyMessage = '';
+
+	SetupTranslations();
+
+	// ComboBoxes
+
+	scope.ComboBoxes['RecipientOfPaymentPSAcb'] = new ComboDefinition("RecipientOfPaymentPSAcb");
+	scope.ComboBoxes['RecipientOfPaymentPSAcb'].type = ComboDefinition.Types.ArrayOfObjects;
+	scope.ComboBoxes['RecipientOfPaymentPSAcb'].valueField = "RowNum";
+	scope.ComboBoxes['RecipientOfPaymentPSAcb'].textField = "Area";
+	scope.ComboBoxes['RecipientOfPaymentPSAcb'].autoSelect = ComboDefinition.SelectIfOne;
+
+	scope.ComboBoxes['AttestCbo'] = new ComboDefinition("AttestCbo");
+	scope.ComboBoxes['AttestCbo'].type = ComboDefinition.Types.ArrayOfObjects;
+	scope.ComboBoxes['AttestCbo'].valueField = "UserID";
+	scope.ComboBoxes['AttestCbo'].textField = "Description";
+	scope.ComboBoxes['AttestCbo'].autoSelect = ComboDefinition.SelectFirst;
+
+	// MRU lists
+
+	// Conditions
+
+	scope.PRS1 = function () {
+		return (scope.Fields.RecipientOfPaymentEmail != scope.Fields.IssuerEmail);
+	};
+    
+	scope.PRS2 = function () {
+		return ((document.getElementById('SpecOfTripBusinessTypeOvertime').style.display) == "");
+	};
+    
+	scope.PRS3 = function () {
+		return ((scope.Message.IsReadOnly()));
+	};
+    
+	scope.RTG1 = function () {
+		return (scope.Fields.AttestAttested == 'Yes' );
+	};
+    
+	scope.RTG2 = function () {
+		return (scope.Fields.AttestAttested == 'No' );
+	};
+    
+	scope.VLD1 = function () {
+		return (scope.Fields.AttestAttested == 'No' );
+	};
+    
+	scope.VLD2 = function () {
+		return ((!isDirty(scope.Fields.AttestEmail,''))) && ((!isDirty(scope.Fields.AttestName,'')));
+	};
+    
+	scope.VLD3 = function () {
+		return ((isDirty(scope.Fields.SpecOfTripKM,'')));
+	};
+    
+	scope.VLD4 = function () {
+		return ((isDirty(scope.Fields.SpecOfTripTollFee,'')));
+	};
+    
+	scope.PRSIsCompOnList = function () {
+		return (!((isCompanyOnList())));
+	};
+    
+	scope.VLD5IsTypeTripSelected = function () {
+		return (!(scope.Fields.SpecOfTripBusinessType == 'Overtime' )) && (!(scope.Fields.SpecOfTripBusinessType == 'Trip' ));
+	};
+    
+	// Events
+	scope.INIT_VCOM = function () {
+		INIT_VCOM();
+	};
+    
+	scope.RecipientHandler = function () {
+		EVT_RecipientInit();
+	};
+    
+	scope.RecipientSelect = function () {
+		EVT_RecipientSelect();
+	};
+    
+	scope.KmColored = function () {
+		EVT_KmColored();
+	};
+    
+	scope.AdjustSpecOfTrip = function () {
+		EVT_AdjustSpecOfTrip();
+	};
+    
+	scope.SelectAttest = function () {
+		EVT_SelectAttest();
+	};
+    
+	scope.CopyTable = function () {
+		CopyTable();
+	};
+    
+	scope.Info_Address_Code = function () {
+		Info_Address_Code();
+	};
+    
+	scope.SpecOfTripTableAddRowHandler = function () {
+		SpecOfTripTableAddRow();
+	};
+    
+	scope.SpecOfTripUpdateSummariesHandler = function () {
+		SpecOfTripTableUpdateSummaries();
+	};
+    
+	scope.GetCompensationPeriodsHandler = function () {
+		GetCompensationPeriods();
+	};
+    
+	scope.SendFormHandler = function () {
+		SendFormCust();
+	};
+    
+	scope.SetTableRowOverride = function () {
+		SetTableRowOverride();
+	};
+    
+
+	// Buttons
+
+	scope.SetRecipientOfPaymentButton1ADProperties = function(user) {
+		scope.Fields.RecipientOfPaymentCompany = user != null ? user.Company : '';
+		scope.Fields.RecipientOfPaymentName = user != null ? user.DisplayName : '';
+		scope.Fields.RecipientOfPaymentCity = user != null ? user.City : '';
+		scope.Fields.RecipientOfPaymentEmplNo = user != null ? user.EmployeeId : '';
+		scope.Fields.RecipientOfPaymentEmail = user != null ? user.Mail : '';
+		scope.Fields.RecipientOfPaymentDepartment = user != null ? user.Department : '';
+		scope.Fields.RecipientOfPaymentLocation = user != null ? user.Location : '';
+		scope.Fields.RecipientOfPaymentID = user != null ? user.Id : '';
+		scope.Fields.SpecOfTripChargeCostCenter = user != null ? user.CostCentre : '';
+
+		scope.RecipientSelect();
+	};
+
+	scope.RecipientOfPaymentButton1Click = function () {
+		scope.openPeoplePicker('VCN', false, scope.SetRecipientOfPaymentButton1ADProperties, null, ['VCN', 'VCD']);
+	};
+
+	scope.SetRecipientOfPaymentButton2ADProperties = function(user) {
+		scope.Fields.RecipientOfPaymentCompany = user != null ? user.Company : '';
+		scope.Fields.RecipientOfPaymentName = user != null ? user.DisplayName : '';
+		scope.Fields.RecipientOfPaymentCity = user != null ? user.City : '';
+		scope.Fields.RecipientOfPaymentEmplNo = user != null ? user.EmployeeId : '';
+		scope.Fields.RecipientOfPaymentEmail = user != null ? user.Mail : '';
+		scope.Fields.RecipientOfPaymentDepartment = user != null ? user.Department : '';
+		scope.Fields.RecipientOfPaymentLocation = user != null ? user.Location : '';
+		scope.Fields.RecipientOfPaymentID = user != null ? user.Id : '';
+		scope.Fields.SpecOfTripChargeCostCenter = user != null ? user.CostCentre : '';
+	};
+
+	scope.RecipientOfPaymentButton2Click = function () {
+		scope.openPeoplePicker('VCD', false, scope.SetRecipientOfPaymentButton2ADProperties, null, null);
+	};
+
+
+	scope.AttestButton1Click = function() { scope.openAttestDeputyEntryListEntryList(); }
+
+	scope.printForm = function () {
+		scope._printForm();
+	}
+	scope.validateForm = function () {
+		scope._validateForm();
+	}
+	scope.saveForm = function () {
+		scope._saveForm();
+	}
+	scope.cancelForm = function () {
+		scope._cancelForm();
+	}
+	scope.closeForm = function () {
+		scope._closeForm();
+	}
+	scope.printForm = function () {
+		scope._printForm();
+	}
+	scope.openAbout = function () {
+		scope._openAbout();
+	}
+
+	scope.createSpecOfTripTableRow = function(id) {
+		var row = 
+		{
+			SpecOfTripDatePicker: scope.Fields.SpecOfTripDatePicker,
+			SpecOfTripPlace: scope.Fields.SpecOfTripPlace,
+			SpecOfTripAssignment: scope.Fields.SpecOfTripAssignment,
+			SpecOfTripTollFee: scope.Fields.SpecOfTripTollFee,
+			SpecOfTripOvertime: scope.Fields.SpecOfTripOvertime,
+			SpecOfTripTrip: scope.Fields.SpecOfTripTrip,
+			SpecOfTripKM: scope.Fields.SpecOfTripKM,
+			Id: id
+		};
+		return row;
+	};
+
+	scope.setSpecOfTripTableRow = function(entry) {
+		
+			scope.Fields.SpecOfTripDatePicker = entry.SpecOfTripDatePicker;
+			scope.Fields.SpecOfTripPlace = entry.SpecOfTripPlace;
+			scope.Fields.SpecOfTripAssignment = entry.SpecOfTripAssignment;
+			scope.Fields.SpecOfTripTollFee = entry.SpecOfTripTollFee;
+			scope.Fields.SpecOfTripOvertime = entry.SpecOfTripOvertime;
+			scope.Fields.SpecOfTripTrip = entry.SpecOfTripTrip;
+			scope.Fields.SpecOfTripKM = entry.SpecOfTripKM;
+		};
+
+	scope.cleanSpecOfTripTableRow = function() {
+		scope.Fields.SpecOfTripDatePicker = null;
+		scope.Fields.SpecOfTripPlace = "";
+		scope.Fields.SpecOfTripAssignment = "";
+		scope.Fields.SpecOfTripTollFee = "";
+		scope.Fields.SpecOfTripOvertime = "";
+		scope.Fields.SpecOfTripTrip = "";
+		scope.Fields.SpecOfTripKM = "";
+		
+	};
+
+	scope.isDirtySpecOfTripTableRow = function() {
+		return isDirty(scope.Fields.SpecOfTripDatePicker, null)
+			|| isDirty(scope.Fields.SpecOfTripPlace, "")
+			|| isDirty(scope.Fields.SpecOfTripAssignment, "")
+			|| isDirty(scope.Fields.SpecOfTripTollFee, "")
+			|| isDirty(scope.Fields.SpecOfTripOvertime, "")
+			|| isDirty(scope.Fields.SpecOfTripTrip, "")
+			|| isDirty(scope.Fields.SpecOfTripKM, "");
+	};
+
+	scope.SpecOfTripButton1Click = function() {
+		scope.dynTabAddClick('SpecOfTripTable', SpecOfTripTableValidateRow, scope.createSpecOfTripTableRow, scope.cleanSpecOfTripTableRow);
+		SpecOfTripTableAddRow();
+
+	};	scope.parse = function(array) {
+		for (var index in array) {
+			array[index].SpecOfTripDatePicker = new Date(array[index].SpecOfTripDatePicker);
+		}
+	};
+	scope.createTripTableRow = function(id) {
+		var row = 
+		{
+			SpecOfTripDatePicker: scope.Fields.SpecOfTripDatePicker,
+			SpecOfTripPlace: scope.Fields.SpecOfTripPlace,
+			SpecOfTripAssignment: scope.Fields.SpecOfTripAssignment,
+			SpecOfTripTollFee: scope.Fields.SpecOfTripTollFee,
+			SpecOfTripOvertime: scope.Fields.SpecOfTripOvertime,
+			SpecOfTripTrip: scope.Fields.SpecOfTripTrip,
+			SpecOfTripKM: scope.Fields.SpecOfTripKM,
+			Id: id
+		};
+		return row;
+	};
+
+	scope.setTripTableRow = function(entry) {
+		
+			scope.Fields.SpecOfTripDatePicker = entry.SpecOfTripDatePicker;
+			scope.Fields.SpecOfTripPlace = entry.SpecOfTripPlace;
+			scope.Fields.SpecOfTripAssignment = entry.SpecOfTripAssignment;
+			scope.Fields.SpecOfTripTollFee = entry.SpecOfTripTollFee;
+			scope.Fields.SpecOfTripOvertime = entry.SpecOfTripOvertime;
+			scope.Fields.SpecOfTripTrip = entry.SpecOfTripTrip;
+			scope.Fields.SpecOfTripKM = entry.SpecOfTripKM;
+		};
+
+	scope.cleanTripTableRow = function() {
+		scope.Fields.SpecOfTripDatePicker = null;
+		scope.Fields.SpecOfTripPlace = "";
+		scope.Fields.SpecOfTripAssignment = "";
+		scope.Fields.SpecOfTripTollFee = "";
+		scope.Fields.SpecOfTripOvertime = "";
+		scope.Fields.SpecOfTripTrip = "";
+		scope.Fields.SpecOfTripKM = "";
+		
+	};
+
+	scope.isDirtyTripTableRow = function() {
+		return isDirty(scope.Fields.SpecOfTripDatePicker, null)
+			|| isDirty(scope.Fields.SpecOfTripPlace, "")
+			|| isDirty(scope.Fields.SpecOfTripAssignment, "")
+			|| isDirty(scope.Fields.SpecOfTripTollFee, "")
+			|| isDirty(scope.Fields.SpecOfTripOvertime, "")
+			|| isDirty(scope.Fields.SpecOfTripTrip, "")
+			|| isDirty(scope.Fields.SpecOfTripKM, "");
+	};
+
+	scope.TripButton1Click = function() {
+		scope.dynTabAddClick('TripTable', TripTableValidateRow, scope.createTripTableRow, scope.cleanTripTableRow);
+	};	scope.parse = function(array) {
+		for (var index in array) {
+			array[index].SpecOfTripDatePicker = new Date(array[index].SpecOfTripDatePicker);
+		}
+	};
+
+
+
+	scope.openAttestDeputyEntryListEntryList = function() {
+		var scope = GetScope();
+		var statement = "SELECT DeputyId FROM garGlobalAuthorizationRegister WHERE DeputyId IS NOT NULL AND UserID = '" + scope.Fields.AttestCbo.UserID + "'";
+		scope.openEntryList(statement, function(value) { });
+	}
+
+	scope.SetupUser = function(user) {
+		switch(scope.Message.CurrentRoute) {
+			case 0:
+				scope.Fields.IssuerName = user != null ? user.DisplayName : '';
+				scope.Fields.IssuerEmplNo = user != null ? user.EmployeeId : '';
+				scope.Fields.IssuerPhone = user != null ? user.Phone : '';
+				scope.Fields.IssuerEmail = user != null ? user.Mail : '';
+				scope.Fields.RecipientOfPaymentID = user != null ? user.Id : '';
+				scope.Fields.RecipientOfPaymentCompany = user != null ? user.Company : '';
+				scope.Fields.RecipientOfPaymentName = user != null ? user.DisplayName : '';
+				scope.Fields.RecipientOfPaymentCity = user != null ? user.City : '';
+				scope.Fields.RecipientOfPaymentEmplNo = user != null ? user.EmployeeId : '';
+				scope.Fields.RecipientOfPaymentEmail = user != null ? user.Mail : '';
+				scope.Fields.RecipientOfPaymentDepartment = user != null ? user.Department : '';
+				scope.Fields.RecipientOfPaymentLocation = user != null ? user.Location : '';
+				scope.Fields.SpecOfTripChargeCostCenter = user != null ? user.CostCentre : '';
+				break;
+			case 1:
+				scope.Fields.AttestName = user != null ? user.DisplayName : '';
+				break;
+		}
+		scope.$apply();
+		FormInitValues();
+	};
+
+	function FormAttachments() {
+		Attachments.Count(function (files){
+			scope.AttachmentCount = files.length;
+			scope.$apply();
+			FormInitValues();
+		});
+	}
+
+
+	scope.FormInit = function(message) {
+		if (scope.Message.WriteAccess) {
+			scope.rsMax++; 
+			LdapClient.FindById(scope.Message.UserName, scope.SetupUser);
+		} else {
+			FormInitValues();
+		}
+	}
+
+	function FormInitValues() {
+		scope.rsMax = 0;
+
+		// initialize
+		switch(scope.Message.CurrentRoute){
+			case 0:
+
+				if ((scope.Message.Command !== "OPEN" || !scope.Message.IsDraft()) && scope.Message.WriteAccess) {
+				scope.Fields.SpecOfTripKMOvertimeTotal = 0;
+				scope.Fields.SpecOfTripKMBusinessTotal = 0;
+				scope.Fields.SpecOfTripKMTotal = 0;
+				scope.Fields.SpecOfTripTollFeeTotal = 0;
+				scope.Fields.SpecOfTripAccountTaxFree = 733101;
+				scope.Fields.SpecOfTripAccountTaxable = 733201;
+				scope.Fields.SpecOfTripNumberOfPassengers = 0;
+				scope.Fields.SpecOfTripTotalSum = 0;
+				scope.Fields.SpecOfTripTrip = "";
+				scope.Fields.SpecOfTripOvertime = "";
+				scope.Fields.RecipientOfPaymentRegNbr = "";
+				scope.Fields.AttestCbo = 0;
+				}
+				scope.$apply(function() {
+					scope.InitDoneIfAllComboBoxFilled();
+				});
+				break;
+			case 1:
+				scope.rsMax += 1;
+
+
+				if ((scope.Message.Command !== "OPEN" || !scope.Message.IsDraft()) && scope.Message.WriteAccess) {
+				scope.Fields.AttestDate = new Date();
+				scope.Fields.RecipientOfPaymentPSAtx = scope.Fields.RecipientOfPaymentPSAcb.Area;
+				scope.Fields.AttestComment = "";
+				}
+				scope.ComboBoxes['RecipientOfPaymentPSAcb'].fillSelectedValue(scope.InitComboBoxDone);
+				break;
+			case 2:
+				scope.rsMax += 2;
+
+				scope.ComboBoxes['AttestCbo'].fillSelectedValue(scope.InitComboBoxDone);
+				scope.ComboBoxes['RecipientOfPaymentPSAcb'].fillSelectedValue(scope.InitComboBoxDone);
+				break;
+			case 3:
+				scope.rsMax += 1;
+
+
+				if ((scope.Message.Command !== "OPEN" || !scope.Message.IsDraft()) && scope.Message.WriteAccess) {
+				scope.Fields.TripTable = scope.Fields.SpecOfTripTable;
+				scope.Fields.RecipientOfPaymentPSAtx = scope.Fields.RecipientOfPaymentPSAcb.Area;
+				}
+				scope.ComboBoxes['RecipientOfPaymentPSAcb'].fillSelectedValue(scope.InitComboBoxDone);
+				break;
+		}
+	};
+
+	scope.FormInitDone = function() {
+
+		// call registered event handlers
+		INIT_VCOM();
+		EVT_RecipientInit();
+		EVT_KmColored();
+		EVT_AdjustSpecOfTrip();
+		CopyTable();
+		GetCompensationPeriods();
+		SetTableRowOverride();
+
+		scope.applyLanguage();
+		scope.Ready = true;
+
+		scope.$apply();
+		// adjust textareas
+		AdjustTextArea(GetScopeObject('ExplanationComment'), 24)
+		AdjustTextArea(GetScopeObject('AttestComment'), 24)
+
+		// set initial focus
+		window.load.RemoveLoadingProgress();
+		window.focus();
+
+	};
+
+	scope.start();
+    
+};

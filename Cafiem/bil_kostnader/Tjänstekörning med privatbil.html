@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<!-- saved from url=(0172)https://forms.volvo.net/VolvoForms/IPM/NOTE/VOLVO/VIT/BA/BUILDER/VBSFORMS_TRIP/VER18/VBSFORMS_TRIP_0.htm?class=IPM/NOTE/VOLVO/VIT/BA/BUILDER/VBSFORMS_TRIP/VER18&command=new -->
+<html xmlns:mf="http://volvo.com/mailforms/builder"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=100">
+
+<title>Tjänstekörning med privatbil</title>
+<link rel="stylesheet" type="text/css" href="./Tjänstekörning med privatbil_files/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="./Tjänstekörning med privatbil_files/bootstrap-theme.css">
+<link rel="stylesheet" type="text/css" href="./Tjänstekörning med privatbil_files/mf.css">
+<link rel="stylesheet" type="text/css" href="./Tjänstekörning med privatbil_files/angular-csp.css">
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/validators.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/angular.min.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/ui-bootstrap-tpls-0.12.1.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/ldapExchProps.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/mailformsapiwebservice.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/msgboxes.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/misc.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/message.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/mailformController.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/controllers.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/directives.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/Recordset.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/sap.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/aes.js.ladda ned"></script>
+
+
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/Controller.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/Translations.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/BusinessLogic.js.ladda ned"></script>
+<script type="text/javascript" src="./Tjänstekörning med privatbil_files/CustomCode.js.ladda ned"></script>
+
+</head>
+<body><div id="divProgress" class="cProgress" style="display: none;"><div id="divProgressLoadingText" class="cProgressLoadingText">Loading ...</div></div>
+<div class="container">
+<div class="row hidden-print" style="margin-top: 10px;">
+<div class="col-xs-9 cInfo" id="serverInfo"></div>
+<div class="col-xs-3">
+<a class="cLogoutLink" id="lnkLogout" style="float: right">Logout V016387</a>
+</div>
+</div>
+<div class="row">
+<div id="divMain" class="cMain col-xs-12 ng-scope" ng-app="mailform-app" ng-controller="mailformController">
+<form name="form" novalidate="" class="css-form ng-pristine ng-valid-mf-date ng-valid-mf-numeric ng-valid-date-disabled ng-invalid ng-invalid-required ng-valid-maxlength">
+<div>
+<div class="row">
+<div id="divHeader" class="cHeader col-xs-12 ng-binding">Tjänstekörning med privatbil</div>
+</div>
+<div class="row">
+<div class="col-xs-3 col-xs-offset-9 col-sm-2 col-sm-offset-10 col-md-1 col-md-offset-11 hidden-print">
+<select class="input-sm form-control ng-pristine ng-untouched ng-valid" style="width: 80%" ng-change="applyLanguage();" ng-model="CurrentLanguage">
+<!-- ngRepeat: item in Languages --><option ng-repeat="item in Languages" value="SWE" class="ng-binding ng-scope">SWE</option><!-- end ngRepeat: item in Languages --><option ng-repeat="item in Languages" value="ENG" class="ng-binding ng-scope">ENG</option><!-- end ngRepeat: item in Languages -->
+</select>
+</div>
+</div>
+<div class="row equal">
+<!--RecipientOfPayment section-->
+<div id="divRecipientOfPayment" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading ng-binding">Betalningsmottagare</div>
+<div class="panel-body">
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment1" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-9 cell">
+<div></div>
+</div>
+<div class="col-xs-12 col-sm-3 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="RecipientOfPaymentButton1" name="RecipientOfPaymentButton1" ng-click="RecipientOfPaymentButton1Click()" style="width: 100%">
+<span class="ng-binding">Hämta</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment3" mf-readonly="true" disabled="disabled">
+<div mf-readonly="true" disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Bolag</div>
+</div>
+<div class="col-xs-12 col-sm-10 col-lg-5 col-print-10 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentCompany" id="RecipientOfPaymentCompany" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.RecipientOfPaymentCompany" ng-model="Fields.RecipientOfPaymentCompany" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" value="VOLVO INFORMATION TECHNOLOGY AB" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.RecipientOfPaymentCompany.$error.required)" disabled="disabled">*</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment4" mf-readonly="true" disabled="disabled">
+<div mf-readonly="true" disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Namn</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentName" id="RecipientOfPaymentName" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.RecipientOfPaymentName" ng-model="Fields.RecipientOfPaymentName" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" value="Lövdinger Per" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.RecipientOfPaymentName.$error.required)" disabled="disabled">*</span>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 text-right cell" disabled="disabled">
+<div style="text-align: Right" class="ng-binding" disabled="disabled">Ort</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-4 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentCity" id="RecipientOfPaymentCity" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.RecipientOfPaymentCity" ng-model="Fields.RecipientOfPaymentCity" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" value="Göteborg" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.RecipientOfPaymentCity.$error.required)" disabled="disabled">*</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment5" mf-readonly="true" disabled="disabled">
+<div mf-readonly="true" disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Anst. Nr.</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-5 col-print-2 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentEmplNo" id="RecipientOfPaymentEmplNo" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid-required ng-valid ng-valid-maxlength" ng-value="Fields.RecipientOfPaymentEmplNo" ng-model="Fields.RecipientOfPaymentEmplNo" maxlength="5" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" value="16387" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.RecipientOfPaymentEmplNo.$error.required)" disabled="disabled">*</span>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 text-right cell" disabled="disabled">
+<div style="text-align: Right" class="ng-binding" disabled="disabled">Email</div>
+</div>
+<div class="col-xs-12 col-sm-6 col-lg-5 col-print-6 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentEmail" id="RecipientOfPaymentEmail" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.RecipientOfPaymentEmail" ng-model="Fields.RecipientOfPaymentEmail" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" value="per.lovdinger@volvo.com" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.RecipientOfPaymentEmail.$error.required)" disabled="disabled">*</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment6" mf-readonly="true" disabled="disabled">
+<div mf-readonly="true" disabled="disabled">
+<div class="row" disabled="disabled">
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell" disabled="disabled">
+<div class="ng-binding" disabled="disabled">Avdelning</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-5 col-print-2 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentDepartment" id="RecipientOfPaymentDepartment" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.RecipientOfPaymentDepartment" ng-model="Fields.RecipientOfPaymentDepartment" readonly="true" value="DE82750">
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 text-right cell" disabled="disabled">
+<div style="text-align: Right" class="ng-binding" disabled="disabled">Säkerhets ID</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-5 col-print-2 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentID" id="RecipientOfPaymentID" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.RecipientOfPaymentID" ng-model="Fields.RecipientOfPaymentID" readonly="true" value="V016387">
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 text-right cell" disabled="disabled">
+<div style="text-align: Right" class="ng-binding" disabled="disabled">Geogr. placering</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell" disabled="disabled">
+<div disabled="disabled">
+<input name="RecipientOfPaymentLocation" id="RecipientOfPaymentLocation" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.RecipientOfPaymentLocation" ng-model="Fields.RecipientOfPaymentLocation" readonly="true" value="AB3N">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divRecipientOfPayment7" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-6 col-lg-6 col-print-6 cell">
+<div></div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 col-print-2 cell">
+<div class="ng-binding">Sub Area</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 col-print-4 cell">
+<div>
+<select class="input-sm form-control hidden-print ng-pristine ng-untouched ng-invalid ng-invalid-required" name="RecipientOfPaymentPSAcb" id="RecipientOfPaymentPSAcb" ng-value="Fields.RecipientOfPaymentPSAcb" ng-model="Fields.RecipientOfPaymentPSAcb" ng-required="Message.WriteAccess &amp;&amp; (true)" ng-hide="isReadonlyControl(&#39;RecipientOfPaymentPSAcb&#39;)" ng-options="obj as obj.Area for obj in ComboBoxes.RecipientOfPaymentPSAcb.values track by obj.RowNum" required="required"><option value="" label="" class=""></option></select>
+<input class="input-sm form-control hidden-print ng-pristine ng-untouched ng-valid ng-hide" ng-model="Fields.RecipientOfPaymentPSAcb.Area" mf-readonly="true" ng-hide="!isReadonlyControl(&#39;RecipientOfPaymentPSAcb&#39;)" readonly="true">
+<input class="input-sm form-control hidden-screen" ng-value="Fields.RecipientOfPaymentPSAcb.Area">
+<span class="form-control-feedback cRed" style="margin-right:20px" ng-hide="!(form.RecipientOfPaymentPSAcb.$error.required)">*</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--Issuer section-->
+<div id="divIssuer" class="panel panel-info cSection col-xs-12 col-sm-12 ng-hide" mf-readonly="PRS1() || !Message.WriteAccess" ng-hide="!PRS1()">
+<div class="panel-heading ng-binding">Utfärdare</div>
+<div class="panel-body">
+<div class="cSubSection" id="divIssuer1">
+<div>
+<div class="row">
+<div class="col-xs-12 col-sm-2 col-lg-1 cell">
+<div class="ng-binding">Namn</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 cell">
+<div>
+<input name="IssuerName" id="IssuerName" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.IssuerName" ng-model="Fields.IssuerName" mf-readonly="true" readonly="true" value="Lövdinger Per">
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 cell">
+<div class="ng-binding">Anst. Nr.</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 cell">
+<div>
+<input name="IssuerEmplNo" id="IssuerEmplNo" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.IssuerEmplNo" ng-model="Fields.IssuerEmplNo" mf-readonly="true" readonly="true" value="16387">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divIssuer2">
+<div>
+<div class="row">
+<div class="col-xs-12 col-sm-2 col-lg-1 cell">
+<div class="ng-binding">Telefon</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 cell">
+<div>
+<input name="IssuerPhone" id="IssuerPhone" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.IssuerPhone" ng-model="Fields.IssuerPhone" mf-readonly="true" readonly="true" value="+46 31 3223436">
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-lg-1 cell">
+<div class="ng-binding">Email</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 cell">
+<div>
+<input name="IssuerEmail" id="IssuerEmail" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.IssuerEmail" ng-model="Fields.IssuerEmail" mf-readonly="true" readonly="true" value="per.lovdinger@volvo.com">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divIssuer3">
+<div>
+<div class="row">
+<div class="col-xs-12 col-sm-2 col-lg-1 cell">
+<div class="ng-binding">Email</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-lg-5 cell">
+<div>
+<input name="IssuerEmail" id="IssuerEmail" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.IssuerEmail" ng-model="Fields.IssuerEmail" mf-readonly="true" readonly="true" value="per.lovdinger@volvo.com">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--SpecOfTrip section-->
+<div id="divSpecOfTrip" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading ng-binding">Specifikation av resor</div>
+<div class="panel-body">
+<div class="cSubSection" id="divSpecOfTrip1" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-2 col-sm-2 text-center cell" mf-readonly="!Message.WriteAccess">
+<div style="text-align: Center" class="ng-binding">Datum</div>
+</div>
+<div class="col-xs-2 col-sm-2 text-center cell" mf-readonly="!Message.WriteAccess">
+<div style="text-align: Center" class="ng-binding">Orter som besökts Från / Till</div>
+</div>
+<div class="col-xs-2 col-sm-2 text-center cell" mf-readonly="!Message.WriteAccess">
+<div style="text-align: Center" class="ng-binding">Ärende/Uppdrag</div>
+</div>
+<div class="col-xs-2 col-sm-2 text-center cell" mf-readonly="!Message.WriteAccess">
+<div style="text-align: Center" class="ng-binding">Toll fee</div>
+</div>
+<div class="col-xs-1 col-sm-1 text-center cLabel_Red cell" mf-readonly="!Message.WriteAccess">
+<div ng-hide="!PRSIsCompOnList()" style="text-align: Center" class="ng-binding">Övertid*</div>
+</div>
+<div class="col-xs-1 col-sm-1 text-center cLabel_Blue cell" mf-readonly="!Message.WriteAccess">
+<div style="text-align: Center" class="ng-binding">Tjänste- resa</div>
+</div>
+<div class="col-xs-2 col-sm-2 text-center cell" mf-readonly="!Message.WriteAccess">
+<div style="text-align: Center" class="ng-binding">Antal körda kilometer</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divSpecOfTrip2" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-2 col-sm-2 cell" mf-readonly="!Message.WriteAccess">
+<div>
+<input type="date" name="SpecOfTripDatePicker" id="SpecOfTripDatePicker" class="input-sm mobileOnly ng-pristine ng-untouched ng-valid ng-valid-required" style="width: 70%; line-height: normal" ng-value="Fields.SpecOfTripDatePicker" ng-model="Fields.SpecOfTripDatePicker" ng-required="Message.WriteAccess &amp;&amp; isDirtySpecOfTripTableRow()">
+<p class="input-group hideOnMobile">
+<input type="text" class="input-sm form-control date-picker-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-mf-date ng-valid-required" name="SpecOfTripDatePicker" id="SpecOfTripDatePicker" datepicker-popup="yyyy-MM-dd" datepicker-options="DatePickerOptions" ng-value="Fields.SpecOfTripDatePicker | date: &#39;yyyy-MM-dd&#39;" ng-model="Fields.SpecOfTripDatePicker" is-open="Popups[171]" ng-readonly="true" ng-required="Message.WriteAccess &amp;&amp; isDirtySpecOfTripTableRow()" mf-date="Message.WriteAccess &amp;&amp; isDirtySpecOfTripTableRow()" readonly="readonly"><ul class="dropdown-menu ng-valid ng-valid-date-disabled" ng-style="{display: (isOpen &amp;&amp; &#39;block&#39;) || &#39;none&#39;, top: position.top+&#39;px&#39;, left: position.left+&#39;px&#39;}" ng-keydown="keydown($event)" datepicker-popup-wrap="" ng-model="date" ng-change="dateSelection()" style="display: none;">
+	<li ng-transclude=""><div ng-switch="datepickerMode" role="application" ng-keydown="keydown($event)" datepicker="" starting-day="1" class="ng-isolate-scope">
+  <!-- ngSwitchWhen: day --><table role="grid" aria-labelledby="datepicker-5-5747-title" aria-activedescendant="datepicker-5-5747-10" ng-switch-when="day" tabindex="0">
+  <thead>
+    <tr>
+      <th><button type="button" class="btn btn-default btn-sm pull-left" ng-click="move(-1)" tabindex="-1"><i class="glyphicon glyphicon-chevron-left"></i></button></th>
+      <th colspan="6"><button id="datepicker-5-5747-title" role="heading" aria-live="assertive" aria-atomic="true" type="button" class="btn btn-default btn-sm" ng-click="toggleMode()" tabindex="-1" style="width:100%;"><strong class="ng-binding">February 2018</strong></button></th>
+      <th><button type="button" class="btn btn-default btn-sm pull-right" ng-click="move(1)" tabindex="-1"><i class="glyphicon glyphicon-chevron-right"></i></button></th>
+    </tr>
+    <tr>
+      <th ng-show="showWeeks" class="text-center"></th>
+      <!-- ngRepeat: label in labels track by $index --><th ng-repeat="label in labels track by $index" class="text-center ng-scope"><small aria-label="Monday" class="ng-binding">Mon</small></th><!-- end ngRepeat: label in labels track by $index --><th ng-repeat="label in labels track by $index" class="text-center ng-scope"><small aria-label="Tuesday" class="ng-binding">Tue</small></th><!-- end ngRepeat: label in labels track by $index --><th ng-repeat="label in labels track by $index" class="text-center ng-scope"><small aria-label="Wednesday" class="ng-binding">Wed</small></th><!-- end ngRepeat: label in labels track by $index --><th ng-repeat="label in labels track by $index" class="text-center ng-scope"><small aria-label="Thursday" class="ng-binding">Thu</small></th><!-- end ngRepeat: label in labels track by $index --><th ng-repeat="label in labels track by $index" class="text-center ng-scope"><small aria-label="Friday" class="ng-binding">Fri</small></th><!-- end ngRepeat: label in labels track by $index --><th ng-repeat="label in labels track by $index" class="text-center ng-scope"><small aria-label="Saturday" class="ng-binding">Sat</small></th><!-- end ngRepeat: label in labels track by $index --><th ng-repeat="label in labels track by $index" class="text-center ng-scope"><small aria-label="Sunday" class="ng-binding">Sun</small></th><!-- end ngRepeat: label in labels track by $index -->
+    </tr>
+  </thead>
+  <tbody>
+    <!-- ngRepeat: row in rows track by $index --><tr ng-repeat="row in rows track by $index" class="ng-scope">
+      <td ng-show="showWeeks" class="text-center h6"><em class="ng-binding">5</em></td>
+      <!-- ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-0" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">29</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-1" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">30</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-2" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">31</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-3" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">01</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-4" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">02</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-5" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">03</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-6" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">04</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date -->
+    </tr><!-- end ngRepeat: row in rows track by $index --><tr ng-repeat="row in rows track by $index" class="ng-scope">
+      <td ng-show="showWeeks" class="text-center h6"><em class="ng-binding">6</em></td>
+      <!-- ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-7" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">05</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-8" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">06</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-9" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">07</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-10" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm active" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-info">08</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-11" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">09</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-12" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">10</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-13" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">11</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date -->
+    </tr><!-- end ngRepeat: row in rows track by $index --><tr ng-repeat="row in rows track by $index" class="ng-scope">
+      <td ng-show="showWeeks" class="text-center h6"><em class="ng-binding">7</em></td>
+      <!-- ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-14" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">12</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-15" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">13</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-16" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">14</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-17" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">15</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-18" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">16</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-19" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">17</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-20" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">18</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date -->
+    </tr><!-- end ngRepeat: row in rows track by $index --><tr ng-repeat="row in rows track by $index" class="ng-scope">
+      <td ng-show="showWeeks" class="text-center h6"><em class="ng-binding">8</em></td>
+      <!-- ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-21" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">19</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-22" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">20</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-23" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">21</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-24" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">22</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-25" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">23</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-26" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">24</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-27" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">25</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date -->
+    </tr><!-- end ngRepeat: row in rows track by $index --><tr ng-repeat="row in rows track by $index" class="ng-scope">
+      <td ng-show="showWeeks" class="text-center h6"><em class="ng-binding">9</em></td>
+      <!-- ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-28" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">26</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-29" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">27</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-30" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding">28</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-31" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">01</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-32" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">02</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-33" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">03</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-34" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">04</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date -->
+    </tr><!-- end ngRepeat: row in rows track by $index --><tr ng-repeat="row in rows track by $index" class="ng-scope">
+      <td ng-show="showWeeks" class="text-center h6"><em class="ng-binding">10</em></td>
+      <!-- ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-35" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">05</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-36" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">06</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-37" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">07</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-38" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">08</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-39" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">09</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-40" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">10</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date --><td ng-repeat="dt in row track by dt.date" class="text-center ng-scope" role="gridcell" id="datepicker-5-5747-41" aria-disabled="false">
+        <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{&#39;btn-info&#39;: dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{&#39;text-muted&#39;: dt.secondary, &#39;text-info&#39;: dt.current}" class="ng-binding text-muted">11</span></button>
+      </td><!-- end ngRepeat: dt in row track by dt.date -->
+    </tr><!-- end ngRepeat: row in rows track by $index -->
+  </tbody>
+</table><!-- end ngSwitchWhen: -->
+  <!-- ngSwitchWhen: month -->
+  <!-- ngSwitchWhen: year -->
+</div></li>
+	<!-- ngIf: showButtonBar --><li ng-if="showButtonBar" style="padding:10px 9px 2px" class="ng-scope">
+		<span class="btn-group pull-left">
+			<button type="button" class="btn btn-sm btn-info ng-binding" ng-click="select(&#39;today&#39;)">Today</button>
+			<button type="button" class="btn btn-sm btn-danger ng-binding" ng-click="select(null)">Clear</button>
+		</span>
+		<button type="button" class="btn btn-sm btn-success pull-right ng-binding" ng-click="close()">Done</button>
+	</li><!-- end ngIf: showButtonBar -->
+</ul>
+<span class="form-control-feedback cRed ng-hide" style="margin-right:30px" ng-hide="!(form.SpecOfTripDatePicker.$error.required)">*</span>
+<span class="input-group-btn">
+<button type="button" class="btn btn-default date-picker-btn input-sm" ng-click="openDatePicker($event, 171);">
+<i class="glyphicon glyphicon-calendar"></i>
+</button>
+</span>
+</p>
+</div>
+</div>
+<div class="col-xs-2 col-sm-2 cell" mf-readonly="!Message.WriteAccess">
+<div>
+<input name="SpecOfTripPlace" id="SpecOfTripPlace" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.SpecOfTripPlace" ng-model="Fields.SpecOfTripPlace" ng-required="Message.WriteAccess &amp;&amp; isDirtySpecOfTripTableRow()">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.SpecOfTripPlace.$error.required)">*</span>
+</div>
+</div>
+<div class="col-xs-2 col-sm-2 cell" mf-readonly="!Message.WriteAccess">
+<div>
+<input name="SpecOfTripAssignment" id="SpecOfTripAssignment" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.SpecOfTripAssignment" ng-model="Fields.SpecOfTripAssignment" ng-required="Message.WriteAccess &amp;&amp; isDirtySpecOfTripTableRow()">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.SpecOfTripAssignment.$error.required)">*</span>
+</div>
+</div>
+<div class="col-xs-2 col-sm-2 cell" mf-readonly="!Message.WriteAccess">
+<div>
+<input name="SpecOfTripTollFee" id="SpecOfTripTollFee" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-mf-numeric" ng-value="Fields.SpecOfTripTollFee" ng-model="Fields.SpecOfTripTollFee" mf-numeric="Message.WriteAccess &amp;&amp; isDirtySpecOfTripTableRow() &amp;&amp; (VLD4())" ng-model-options="{ allowInvalid: true }">
+</div>
+</div>
+<div class="col-xs-1 col-sm-1 text-center cell" mf-readonly="!Message.WriteAccess">
+<div ng-hide="!PRSIsCompOnList()">
+<input class="cOption ng-pristine ng-untouched ng-valid" type="radio" name="SpecOfTripBusinessType" id="SpecOfTripBusinessTypeOvertime" ng-model="Fields.SpecOfTripBusinessType" ng-checked="Fields.SpecOfTripBusinessType == &#39;Overtime&#39;" value="Overtime">
+<span class="opt-label">
+</span></div>
+</div>
+<div class="col-xs-1 col-sm-1 text-center cell" mf-readonly="!Message.WriteAccess">
+<div>
+<input class="cOption ng-pristine ng-untouched ng-valid" type="radio" name="SpecOfTripBusinessType" id="SpecOfTripBusinessTypeTrip" ng-model="Fields.SpecOfTripBusinessType" ng-checked="Fields.SpecOfTripBusinessType == &#39;Trip&#39;" value="Trip">
+<span class="opt-label">
+</span></div>
+</div>
+<div class="col-xs-2 col-sm-2 cell" mf-readonly="!Message.WriteAccess">
+<div>
+<input name="SpecOfTripKM" id="SpecOfTripKM" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-mf-numeric ng-valid-maxlength" ng-value="Fields.SpecOfTripKM" ng-model="Fields.SpecOfTripKM" maxlength="4" mf-numeric="Message.WriteAccess &amp;&amp; isDirtySpecOfTripTableRow() &amp;&amp; (VLD3())" ng-model-options="{ allowInvalid: true }">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divSpecOfTrip3" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-2 col-sm-2 cell">
+<div></div>
+</div>
+<div class="col-xs-2 col-sm-2 cell">
+<div></div>
+</div>
+<div class="col-xs-2 col-sm-2 cell">
+<div></div>
+</div>
+<div class="col-xs-4 col-sm-4 cell">
+<div></div>
+</div>
+<div class="col-xs-2 col-sm-2 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="SpecOfTripButton1" name="SpecOfTripButton1" ng-click="SpecOfTripButton1Click()" style="width: 100%">
+<span class="ng-binding">Lägg</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divSpecOfTrip4" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 cell">
+<div>
+<table class="dynTab table table-bordered table-striped table-condensed table-hover" id="SpecOfTripTable">
+<thead>
+<tr>
+<td class="ng-binding">Datum</td>
+<td class="ng-binding">Orter som besökts Från / Till</td>
+<td class="ng-binding">Ärende/Uppdrag</td>
+<td class="ng-binding">Toll fee</td>
+<td class="ng-binding">Övertid*</td>
+<td class="ng-binding">Tjänste- resa</td>
+<td class="ng-binding">Antal körda kilometer</td>
+</tr>
+</thead>
+<tbody>
+<!-- ngRepeat: entry in Fields['SpecOfTripTable'] -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divSpecOfTrip5" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 cell">
+<div></div>
+</div>
+<div class="col-xs-3 col-sm-8 cell">
+<div></div>
+</div>
+<div class="col-xs-3 col-sm-1 col-print-8 text-right cLabel_Red cell">
+<div style="text-align: Right" class="ng-binding">Km</div>
+</div>
+<div class="col-xs-3 col-sm-1 col-print-2 text-center cLabel_Blue cell">
+<div style="text-align: Center" class="ng-binding">Km</div>
+</div>
+<div class="col-xs-3 col-sm-2 col-print-2 text-left cell">
+<div style="text-align: Left" class="ng-binding">Km</div>
+</div>
+</div>
+<div class="row">
+<div class="hidden-xs col-sm-4 col-print-4 cell">
+<div></div>
+</div>
+<div class="col-xs-3 col-sm-4 col-print-6 text-right cell">
+<div style="text-align: Right" class="ng-binding">Totalt antal körda kilometer:</div>
+</div>
+<div class="col-xs-3 col-sm-1 col-print-2 cell">
+<div>
+<input name="SpecOfTripKMOvertimeTotal" id="SpecOfTripKMOvertimeTotal" type="text" class="input-sm form-control cDataRightAlign ng-pristine ng-untouched ng-valid" ng-value="Fields.SpecOfTripKMOvertimeTotal" ng-model="Fields.SpecOfTripKMOvertimeTotal" value="0">
+</div>
+</div>
+<div class="col-xs-3 col-sm-1 col-print-2 cell">
+<div>
+<input name="SpecOfTripKMBusinessTotal" id="SpecOfTripKMBusinessTotal" type="text" class="input-sm form-control cDataRightAlign ng-pristine ng-untouched ng-valid" ng-value="Fields.SpecOfTripKMBusinessTotal" ng-model="Fields.SpecOfTripKMBusinessTotal" value="0" style="color: blue;">
+</div>
+</div>
+<div class="col-xs-3 col-sm-2 col-print-2 cell">
+<div>
+<input name="SpecOfTripKMTotal" id="SpecOfTripKMTotal" type="text" class="input-sm form-control cDataRightAlign ng-pristine ng-untouched ng-valid" ng-value="Fields.SpecOfTripKMTotal" ng-model="Fields.SpecOfTripKMTotal" mf-readonly="true" readonly="true" value="0">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSection" id="divSpecOfTrip6" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-6 col-sm-7 col-print-7 cell">
+<div></div>
+</div>
+<div class="col-xs-3 col-sm-3 col-print-3 text-right cell">
+<div style="text-align: Right" class="ng-binding">Toll Fee totalt:</div>
+</div>
+<div class="col-xs-3 col-sm-2 col-print-2 cell">
+<div>
+<input name="SpecOfTripTollFeeTotal" id="SpecOfTripTollFeeTotal" type="text" class="input-sm form-control cDataRightAlign ng-pristine ng-untouched ng-valid" ng-value="Fields.SpecOfTripTollFeeTotal" ng-model="Fields.SpecOfTripTollFeeTotal" mf-readonly="true" readonly="true" value="0">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSection" id="divSpecOfTrip7" mf-readonly="!Message.WriteAccess">
+<hr class="cSeparator">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div class="ng-binding">Belasta kostnadsställe</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div class="ng-binding">Belasta ordernummer</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div class="ng-binding">Belasta wbs-element</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div></div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div class="ng-binding">Konto</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div class="ng-binding">Belopp</div>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div>
+<input name="SpecOfTripChargeCostCenter" id="SpecOfTripChargeCostCenter" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid ng-valid-mf-numeric ng-valid-required" ng-value="Fields.SpecOfTripChargeCostCenter" ng-model="Fields.SpecOfTripChargeCostCenter" ng-required="Message.WriteAccess &amp;&amp; (true)" mf-numeric="Message.WriteAccess &amp;&amp; (true)" ng-model-options="{ allowInvalid: true }" value="3611" required="required">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.SpecOfTripChargeCostCenter.$error.required)">*</span>
+</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div>
+<input name="SpecOfTripChargeOrderNo" id="SpecOfTripChargeOrderNo" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.SpecOfTripChargeOrderNo" ng-model="Fields.SpecOfTripChargeOrderNo">
+</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div>
+<input name="SpecOfTripChargeWBS" id="SpecOfTripChargeWBS" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.SpecOfTripChargeWBS" ng-model="Fields.SpecOfTripChargeWBS">
+</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cLabel_Blue cell">
+<div class="ng-binding">Skattefria:</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div>
+<input name="SpecOfTripAccountTaxFree" id="SpecOfTripAccountTaxFree" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.SpecOfTripAccountTaxFree" ng-model="Fields.SpecOfTripAccountTaxFree" mf-readonly="true" readonly="true" value="733101">
+</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div>
+<input name="SpecOfTripAmmountTaxFree" id="SpecOfTripAmmountTaxFree" type="text" class="input-sm form-control cDataRightAlign ng-pristine ng-untouched ng-valid" ng-value="Fields.SpecOfTripAmmountTaxFree" ng-model="Fields.SpecOfTripAmmountTaxFree" mf-readonly="true" readonly="true">
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div></div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div></div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div></div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cLabel_Red cell">
+<div class="ng-binding">Skattepliktiga:</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div>
+<input name="SpecOfTripAccountTaxable" id="SpecOfTripAccountTaxable" type="text" class="input-sm form-control ng-pristine ng-untouched ng-valid" ng-value="Fields.SpecOfTripAccountTaxable" ng-model="Fields.SpecOfTripAccountTaxable" mf-readonly="true" readonly="true" value="733201">
+</div>
+</div>
+<div class="col-xs-2 col-sm-2 col-print-2 cell">
+<div>
+<input name="SpecOfTripAmmountTaxable" id="SpecOfTripAmmountTaxable" type="text" class="input-sm form-control cDataRightAlign ng-pristine ng-untouched ng-valid" ng-value="Fields.SpecOfTripAmmountTaxable" ng-model="Fields.SpecOfTripAmmountTaxable" mf-readonly="true" readonly="true">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSection" id="divSpecOfTrip8" mf-readonly="!Message.WriteAccess">
+<hr class="cSeparator">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-6 col-print-6 cLabel_Bold cell">
+<div class="ng-binding">*** Utbetalas i samband med lönen ***</div>
+</div>
+<div class="col-xs-12 col-sm-4 col-print-4 cLabel_Bold cell">
+<div class="ng-binding">Totalsumma att utfå KRONOR</div>
+</div>
+<div class="col-xs-12 col-sm-2 col-print-2 cell">
+<div>
+<input name="SpecOfTripTotalSum" id="SpecOfTripTotalSum" type="text" class="input-sm form-control cDataRightAlign ng-pristine ng-untouched ng-valid ng-valid-required" ng-value="Fields.SpecOfTripTotalSum" ng-model="Fields.SpecOfTripTotalSum" mf-readonly="true" ng-required="Message.WriteAccess &amp;&amp; (true)" readonly="true" required="required" value="0">
+<span class="form-control-feedback cRed ng-hide" ng-hide="!(form.SpecOfTripTotalSum.$error.required)">*</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divSpecOfTrip9" mf-readonly="!Message.WriteAccess" ng-hide="!PRSIsCompOnList()">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-5 col-print-5 cLabel_Bold cell">
+<div class="ng-binding">OBS! Lönesystemet håller reda på att ersättning och skatt blir rätt utifrån angivna antal kilometer.</div>
+</div>
+<div class="col-xs-12 cell">
+<div></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSectionNoMargin" id="divSpecOfTrip10" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 cell">
+<div class="ng-binding">*I de fall ersättning skall utgå för körning till och från arbete blir hela beloppet skattepliktigt.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--Explanation section-->
+<div id="divExplanation" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading ng-binding">Förklarande text (Tryck Enter för ny rad!)</div>
+<div class="panel-body">
+<div class="cSubSection" id="divExplanation1">
+<div>
+<div class="row">
+<div class="col-xs-12 col-print-12 cell">
+<div>
+<textarea class="form-control hidden-print ng-pristine ng-untouched ng-valid" name="ExplanationComment" id="ExplanationComment" ng-value="Fields.ExplanationComment" ng-model="Fields.ExplanationComment" style="height: 30px;"></textarea>
+<p class="form-control cTextArea hidden-screen ng-binding"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--Attest section-->
+<div id="divAttest" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading ng-binding">Attest</div>
+<div class="panel-body">
+<div class="cSubSectionNoMargin" id="divAttest1" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-2 cell">
+<div class="ng-binding">Namn</div>
+</div>
+<div class="col-xs-12 col-sm-4 cell">
+<div>
+<select class="input-sm form-control hidden-print ng-pristine ng-untouched ng-valid ng-valid-required" name="AttestCbo" id="AttestCbo" ng-value="Fields.AttestCbo" ng-model="Fields.AttestCbo" ng-required="Message.WriteAccess &amp;&amp; (true)" ng-change="SelectAttest();" ng-hide="isReadonlyControl(&#39;AttestCbo&#39;)" ng-options="obj as obj.Description for obj in ComboBoxes.AttestCbo.values track by obj.UserID" required="required" value="[object Object]"><option value="V035464" selected="selected" label="Maria Nilson (DE82750)">Maria Nilson (DE82750)</option><option value="A272396" label="Magnus Dahlgren (DE82700)">Magnus Dahlgren (DE82700)</option></select>
+<input class="input-sm form-control hidden-print ng-pristine ng-untouched ng-valid ng-hide" ng-model="Fields.AttestCbo.Description" mf-readonly="true" ng-hide="!isReadonlyControl(&#39;AttestCbo&#39;)" readonly="true">
+<input class="input-sm form-control hidden-screen" ng-value="Fields.AttestCbo.Description" value="Maria Nilson (DE82750)">
+<span class="form-control-feedback cRed ng-hide" style="margin-right:20px" ng-hide="!(form.AttestCbo.$error.required)">*</span>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 cell">
+<div></div>
+</div>
+<div class="col-xs-12 col-sm-4 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="AttestButton1" name="AttestButton1" ng-click="AttestButton1Click()" style="width: 100%">
+<span class="ng-binding">Visa ställföreträdande chef</span>
+<i class="glyphicon glyphicon-list-alt"></i>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--Trip section-->
+</div>
+<div class="row equal">
+<!--Navigation section-->
+<div id="divNavigation" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading h10"></div>
+<div class="panel-body">
+<div class="cSubSectionNoMargin" id="divNavigation2" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-print-12 text-center cLabel_BoldRed cell">
+<div style="text-align: Center" class="ng-binding">Genom att trycka Sänd bekräftar du att uppgifterna är korrekta. Efter attest måste DU printa ut formuläret och skicka det till Traveladm.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cSubSection" id="divNavigation3" mf-readonly="!Message.WriteAccess">
+<div mf-readonly="!Message.WriteAccess">
+<div class="row">
+<div class="col-xs-12 col-sm-2 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="NavigationButton1" name="NavigationButton1" ng-click="printForm();" mf-enabled="" style="width: 100%">
+<span class="ng-binding">Skriv ut</span>
+</button>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="NavigationButton2" name="NavigationButton2" ng-click="validateForm();" style="width: 100%">
+<span class="ng-binding">Validera</span>
+</button>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 cell">
+<div></div>
+</div>
+<div class="col-xs-12 col-sm-2 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="NavigationButton3" name="NavigationButton3" ng-click="SendFormHandler();" style="width: 100%">
+<span class="ng-binding">Sänd</span>
+</button>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="NavigationButton4" name="NavigationButton4" ng-click="saveForm();" style="width: 100%">
+<span class="ng-binding">Spara</span>
+</button>
+</div>
+</div>
+<div class="col-xs-12 col-sm-2 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="NavigationButton5" name="NavigationButton5" ng-click="cancelForm();" mf-enabled="" style="width: 100%">
+<span class="ng-binding">Avbryt</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row equal">
+<!--About section-->
+<div id="divAbout" class="panel panel-info cSection col-xs-12 col-sm-12" mf-readonly="!Message.WriteAccess">
+<div class="panel-heading h10"></div>
+<div class="panel-body">
+<div class="cSubSection" id="divAbout1">
+<div>
+<div class="row">
+<div class="col-xs-12 col-sm-2 cell">
+<div>
+<button type="button" class="btn btn-primary hidden-print" id="AboutButton1" name="AboutButton1" ng-click="openAbout();" mf-enabled="" style="width: 100%">
+<span class="ng-binding">Om formuläret</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row hidden-print ng-hide" ng-show="ErrorMessage">
+<div class="col-xs-12 cLabel_BoldRed ng-binding"></div>
+</div>
+</form>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+            var load = new Loading();
+            load.AddLoadingProgress();
+          </script>
+
+
+</body></html>
